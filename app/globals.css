@@ -1,5 +1,12 @@
 :root {
   color-scheme: dark;
+  --line: #1f1f1f;
+  --line-soft: #171717;
+  --surface: #0b0b0b;
+  --surface-raised: #121212;
+  --text: #f4f4f4;
+  --muted: #8a8a8a;
+  --accent: #f4f4f4;
 }
 
 * {
@@ -15,7 +22,7 @@ body {
 
 body {
   background: #000;
-  color: #f4f4f4;
+  color: var(--text);
   font-family: "Vazirmatn Variable", "Vazirmatn", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -42,5 +49,342 @@ body {
 .subtitle {
   margin: 0;
   font-size: 1rem;
-  color: #8a8a8a;
+  color: var(--muted);
+}
+
+.mono {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Buttons */
+
+.primary {
+  width: 100%;
+  border: 0;
+  border-radius: 0.85rem;
+  background: var(--accent);
+  color: #0a0a0a;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ghost {
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.ghost:hover:not(:disabled) {
+  border-color: #3a3a3a;
+}
+
+.ghost:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.login-button {
+  max-width: 20rem;
+  margin-top: 1.5rem;
+}
+
+/* Modal */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  z-index: 50;
+  animation: fade-in 0.18s ease;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  text-align: right;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  animation: rise-in 0.2s ease;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-close:hover:not(:disabled) {
+  color: var(--text);
+  border-color: #3a3a3a;
+}
+
+.steps {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.step {
+  height: 3px;
+  flex: 1;
+  border-radius: 999px;
+  background: var(--line);
+  transition: background 0.2s ease;
+}
+
+.step-done {
+  background: #4a4a4a;
+}
+
+.step-active {
+  background: var(--accent);
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.modal-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.label {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #cfcfcf;
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface-raised);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.75rem 0.85rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.input:focus {
+  border-color: #6a6a6a;
+}
+
+.input::placeholder {
+  color: #4d4d4d;
+}
+
+select.input {
+  appearance: none;
+  padding-left: 2rem;
+  background-image: linear-gradient(45deg, transparent 50%, #8a8a8a 50%),
+    linear-gradient(135deg, #8a8a8a 50%, transparent 50%);
+  background-position: calc(0.9rem) center, calc(0.9rem + 5px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.otp-input {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.7em;
+  text-align: center;
+  padding: 0.7rem 1rem 0.7rem 0.3rem;
+}
+
+.field-hint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6f6f6f;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.primary + .row {
+  margin-top: 0.5rem;
+}
+
+.error {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #ff9a9a;
+}
+
+.dev-code {
+  margin: 0 0 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px dashed #2f2f2f;
+  border-radius: 0.7rem;
+  background: #0f0f0f;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: #b9b9b9;
+}
+
+/* Signed in card */
+
+.card {
+  margin-top: 1.75rem;
+  width: 100%;
+  max-width: 24rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--surface);
+  text-align: right;
+}
+
+.card-greeting {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.card-note {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.35rem 0 0.5rem;
+}
+
+.detail {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.6rem;
+  background: var(--surface-raised);
+  font-size: 0.85rem;
+}
+
+.detail dt {
+  color: var(--muted);
+}
+
+.detail dd {
+  margin: 0;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 420px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }

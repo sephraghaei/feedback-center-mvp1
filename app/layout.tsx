@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "@fontsource-variable/vazirmatn";
+import { APP_NAME } from "@/lib/config";
 import "./globals.css";
 
-const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "پروژه سیاه";
+const appName = APP_NAME;
 
 export const metadata: Metadata = {
   title: appName,

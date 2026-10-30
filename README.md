@@ -1,6 +1,6 @@
 # black-project
 
-A minimal black themed Next.js app, RTL and Persian, with Vazirmatn as the main font. The home page shows a centered `Hello`.
+A minimal black themed Next.js app, RTL and Persian, with Vazirmatn as the main font. The home page shows a centered `Hello` with a three step login flow: phone number, a Kavenegar OTP, then a short profile.
 
 ## Stack
 
@@ -19,6 +19,8 @@ Open http://localhost:3000. Node 22 is required.
 
 Every variable lives in `.env` (see `.env.example` for the names). Production values are set in the Vercel dashboard, never in the repository.
 
+OTP behavior is configured by `OTP_LENGTH`, `OTP_EXPIRES_IN_SECONDS` and `OTP_ALLOWED_ATTEMPS`; Kavenegar uses `KAVENEGAR_API_KEY`, `KAVENEGAR_TEMPLATE` and `KAVENEGAR_SENDER_TYPE`. `BETTER_AUTH_SECRET` signs the session cookie and must be set in production, otherwise the auth routes answer 503.
+
 ## Deployment
 
 The project deploys on Vercel. Vercel detects Next.js, so no build config is needed: it runs `next build` and serves the output.
@@ -28,12 +30,15 @@ The project deploys on Vercel. Vercel detects Next.js, so no build config is nee
 3. Add the environment variables in Project Settings, then Environment Variables. Use the same names as `.env.example`:
 
 ```
-NEXT_PUBLIC_APP_NAME
+NEXT_PUBLIC_NAME
 BETTER_AUTH_URL
 BETTER_AUTH_SECRET
-DATABASE_URL
+OTP_LENGTH
+OTP_EXPIRES_IN_SECONDS
+OTP_ALLOWED_ATTEMPS
 KAVENEGAR_API_KEY
-KAVENEGAR_SENDER
+KAVENEGAR_TEMPLATE
+KAVENEGAR_SENDER_TYPE
 ```
 
 `BETTER_AUTH_URL` must be the production URL, for example `https://feedback-center-mvp1.vercel.app`.
