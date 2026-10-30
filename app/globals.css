@@ -151,16 +151,16 @@ body {
   position: absolute;
   top: 0.85rem;
   left: 0.85rem;
-  width: 2rem;
-  height: 2rem;
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
   border: 1px solid var(--line);
-  border-radius: 50%;
+  border-radius: 999px;
   background: transparent;
   color: var(--muted);
-  font-size: 1.1rem;
+  font-family: inherit;
+  font-size: 0.75rem;
   line-height: 1;
+  padding: 0.45rem 0.85rem;
   cursor: pointer;
 }
 
@@ -170,25 +170,9 @@ body {
 }
 
 .steps {
-  display: flex;
-  gap: 0.35rem;
-  margin-bottom: 1.25rem;
-}
-
-.step {
-  height: 3px;
-  flex: 1;
-  border-radius: 999px;
-  background: var(--line);
-  transition: background 0.2s ease;
-}
-
-.step-done {
-  background: #4a4a4a;
-}
-
-.step-active {
-  background: var(--accent);
+  margin: 0 0 1.25rem;
+  font-size: 0.78rem;
+  color: var(--muted);
 }
 
 .modal-body {

@@ -202,17 +202,12 @@ export default function AuthFlow({
               aria-label="بستن"
               disabled={loading}
             >
-              ×
+              بستن
             </button>
 
-            <div className="steps" aria-hidden="true">
-              {[1, 2, 3].map((item) => (
-                <span
-                  key={item}
-                  className={item === step ? "step step-active" : item < step ? "step step-done" : "step"}
-                />
-              ))}
-            </div>
+            <p className="steps" aria-live="polite">
+              مرحله {toPersianDigits(String(step))} از {toPersianDigits("3")}
+            </p>
 
             {step === 1 ? (
               <form className="modal-body" onSubmit={submitPhone}>
