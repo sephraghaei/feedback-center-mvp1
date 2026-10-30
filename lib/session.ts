@@ -4,21 +4,46 @@ import type { Session } from "./profile";
 export const SESSION_COOKIE = "fc_session";
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 
+const warned = new Set<string>();
+
+/**
+ * A session key is needed to sign cookies. BETTER_AUTH_SECRET is the intended
+ * one; the Kavenegar key is a server only secret too, so it can stand in and
+ * keep login working when the dedicated variable has not been set yet.
+ */
+function keyMaterial(): { value: string; source: string } | null {
+  const explicit = process.env.BETTER_AUTH_SECRET?.trim();
+  if (explicit) return { value: explicit, source: "BETTER_AUTH_SECRET" };
+
+  const kavenegar = process.env.KAVENEGAR_API_KEY?.trim();
+  if (kavenegar) return { value: kavenegar, source: "KAVENEGAR_API_KEY" };
+
+  return null;
+}
+
 export function sessionConfigured(): boolean {
-  return Boolean(process.env.BETTER_AUTH_SECRET?.trim()) || process.env.NODE_ENV !== "production";
+  return Boolean(keyMaterial()) || process.env.NODE_ENV !== "production";
 }
 
 function secret(): string {
-  const value = process.env.BETTER_AUTH_SECRET?.trim();
-  if (value) return value;
+  const material = keyMaterial();
+  if (material) {
+    if (material.source !== "BETTER_AUTH_SECRET" && !warned.has("fallback")) {
+      warned.add("fallback");
+      console.warn(
+        "[auth] BETTER_AUTH_SECRET is not set, signing sessions with KAVENEGAR_API_KEY. Set BETTER_AUTH_SECRET to use a dedicated key.",
+      );
+    }
+    return material.value;
+  }
   if (process.env.NODE_ENV === "production") {
-    throw new Error("BETTER_AUTH_SECRET is not set");
+    throw new Error("No session secret available: set BETTER_AUTH_SECRET");
   }
   return "dev-only-session-secret";
 }
 
 function sign(body: string): string {
-  return createHmac("sha256", secret()).update(body).digest("base64url");
+  return createHmac("sha256", secret()).update(`fc-session.v1.${body}`).digest("base64url");
 }
 
 export function seal(payload: unknown): string {
