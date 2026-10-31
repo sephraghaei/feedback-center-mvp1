@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { logger } from "./logger";
 import type { Session } from "./profile";
 
 export const SESSION_COOKIE = "fc_session";
@@ -30,9 +31,10 @@ function secret(): string {
   if (material) {
     if (material.source !== "BETTER_AUTH_SECRET" && !warned.has("fallback")) {
       warned.add("fallback");
-      console.warn(
-        "[auth] BETTER_AUTH_SECRET is not set, signing sessions with KAVENEGAR_API_KEY. Set BETTER_AUTH_SECRET to use a dedicated key.",
-      );
+      logger.warn("auth.session.secret_fallback", {
+        message:
+          "BETTER_AUTH_SECRET is not set, signing sessions with KAVENEGAR_API_KEY. Set BETTER_AUTH_SECRET to use a dedicated key.",
+      });
     }
     return material.value;
   }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { clientLogger } from "@/lib/client-logger";
 import { SEX_OPTIONS } from "@/lib/profile";
 import { toPersianDigits } from "@/lib/phone";
 
@@ -102,6 +103,7 @@ export default function AuthFlow({
     setActivePhone(phone ?? "");
     setPhoneInput("");
     setOpen(true);
+    clientLogger.info("ui.auth.modal_opened", { context: { status } });
     if (status === "guest") {
       const saved = window.localStorage.getItem(LAST_PHONE_KEY);
       if (saved) setPhoneInput(saved);
@@ -110,6 +112,7 @@ export default function AuthFlow({
 
   function close() {
     if (loading) return;
+    clientLogger.info("ui.auth.modal_closed", { context: { step } });
     setOpen(false);
     reset();
   }
@@ -122,8 +125,10 @@ export default function AuthFlow({
   }
 
   async function requestOtp(value: string) {
+    const resend = step === 2;
     setLoading(true);
     setError(null);
+    clientLogger.info("ui.auth.otp_requested", { context: { resend } });
     try {
       const data = await postJson("/api/auth/request-otp", { phone: value });
       setActivePhone(String(data.phone ?? value));
@@ -132,6 +137,7 @@ export default function AuthFlow({
       setStep(2);
       setResendIn(30);
     } catch (issue) {
+      clientLogger.warn("ui.auth.otp_request_failed", { error: issue, context: { resend } });
       setError(issue instanceof Error ? issue.message : "ارسال کد انجام نشد.");
     } finally {
       setLoading(false);
@@ -147,14 +153,18 @@ export default function AuthFlow({
     event.preventDefault();
     setLoading(true);
     setError(null);
+    clientLogger.info("ui.auth.otp_submitted");
     try {
       const data = await postJson("/api/auth/verify-otp", { code });
       if (data.hasProfile) {
+        clientLogger.info("ui.auth.otp_verified", { context: { hasProfile: true } });
         finish(activePhone);
       } else {
+        clientLogger.info("ui.auth.otp_verified", { context: { hasProfile: false } });
         setStep(3);
       }
     } catch (issue) {
+      clientLogger.warn("ui.auth.otp_verify_failed", { error: issue });
       setError(issue instanceof Error ? issue.message : "تایید کد انجام نشد.");
       setCode("");
       codeRef.current?.focus();
@@ -167,10 +177,13 @@ export default function AuthFlow({
     event.preventDefault();
     setLoading(true);
     setError(null);
+    clientLogger.info("ui.auth.profile_submitted");
     try {
       await postJson("/api/auth/profile", { name, age, sex, company });
+      clientLogger.info("ui.auth.profile_saved");
       finish(activePhone);
     } catch (issue) {
+      clientLogger.warn("ui.auth.profile_save_failed", { error: issue });
       setError(issue instanceof Error ? issue.message : "ذخیره پروفایل انجام نشد.");
     } finally {
       setLoading(false);
@@ -405,8 +418,14 @@ export function LogoutButton() {
   async function logout() {
     setLoading(true);
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) {
+        throw new Error(`Logout failed with status ${response.status}`);
+      }
+      clientLogger.info("ui.auth.logout");
       router.refresh();
+    } catch (issue) {
+      clientLogger.error("ui.auth.logout_failed", { error: issue });
     } finally {
       setLoading(false);
     }

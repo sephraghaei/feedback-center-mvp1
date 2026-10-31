@@ -1,14 +1,23 @@
 import { cookies } from "next/headers";
 import AuthFlow, { LogoutButton } from "./components/auth-flow";
 import { OTP_LENGTH } from "@/lib/config";
+import { logger } from "@/lib/logger";
 import { SESSION_COOKIE, readSession } from "@/lib/session";
 import { toPersianDigits } from "@/lib/phone";
+import { userRef } from "@/lib/user-ref";
 
 export default async function Home() {
   const cookieStore = await cookies();
   const session = readSession(cookieStore.get(SESSION_COOKIE)?.value);
   const profile = session?.profile;
   const status = !session ? "guest" : profile ? "ready" : "needs-profile";
+
+  logger.info("page.home.view", {
+    context: {
+      status,
+      ...(session ? { userRef: userRef(session.phone) } : {}),
+    },
+  });
 
   return (
     <main className="page">

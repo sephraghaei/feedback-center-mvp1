@@ -1,4 +1,5 @@
 import { KAVENEGAR_SENDER, KAVENEGAR_SENDER_TYPE, KAVENEGAR_TEMPLATE } from "./config";
+import { logger } from "./logger";
 
 export type SmsResult =
   | { status: "sent"; channel: "template" | "text" }
@@ -14,6 +15,8 @@ async function callKavenegar(
   endpoint: string,
   params: Record<string, string>,
 ): Promise<{ ok: true } | { ok: false; message: string }> {
+  const startedAt = Date.now();
+
   try {
     const response = await fetch(
       `https://api.kavenegar.com/v1/${encodeURIComponent(apiKey)}/${endpoint}`,
@@ -31,16 +34,31 @@ async function callKavenegar(
       | null;
 
     if (!response.ok || payload?.return?.status !== 200) {
-      return {
-        ok: false,
-        message:
-          payload?.return?.message ??
-          `ارسال پیامک انجام نشد. کد پاسخ کاوه‌نگار: ${payload?.return?.status ?? response.status}`,
-      };
+      const message =
+        payload?.return?.message ??
+        `ارسال پیامک انجام نشد. کد پاسخ کاوه‌نگار: ${payload?.return?.status ?? response.status}`;
+      logger.warn("sms.kavenegar.rejected", {
+        message,
+        context: {
+          endpoint,
+          httpStatus: response.status,
+          providerStatus: payload?.return?.status,
+          durationMs: Date.now() - startedAt,
+        },
+      });
+      return { ok: false, message };
     }
 
+    logger.debug("sms.kavenegar.sent", {
+      context: { endpoint, httpStatus: response.status, durationMs: Date.now() - startedAt },
+    });
     return { ok: true };
-  } catch {
+  } catch (error) {
+    logger.error("sms.kavenegar.network_error", {
+      message: "Kavenegar request failed",
+      error,
+      context: { endpoint, durationMs: Date.now() - startedAt },
+    });
     return {
       ok: false,
       message: "ارتباط با کاوه‌نگار برقرار نشد. کمی بعد دوباره تلاش کن.",
@@ -54,7 +72,10 @@ async function callKavenegar(
  */
 export async function sendOtpSms(phone: string, code: string): Promise<SmsResult> {
   const apiKey = process.env.KAVENEGAR_API_KEY?.trim();
-  if (!apiKey) return { status: "skipped" };
+  if (!apiKey) {
+    logger.debug("sms.skipped", { message: "KAVENEGAR_API_KEY is not set" });
+    return { status: "skipped" };
+  }
 
   if (KAVENEGAR_TEMPLATE) {
     const result = await callKavenegar(apiKey, "verify/lookup.json", {

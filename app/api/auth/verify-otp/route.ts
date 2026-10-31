@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { withApiLogging } from "@/lib/api-logger";
 import { OTP_MAX_ATTEMPTS } from "@/lib/config";
 import { normalizeCode, OTP_COOKIE, otpCookieOptions, otpPolicy, readOtp, sealOtp } from "@/lib/otp";
 import { toPersianDigits } from "@/lib/phone";
@@ -10,10 +11,11 @@ import {
   sessionConfigured,
   sessionCookieOptions,
 } from "@/lib/session";
+import { userRef } from "@/lib/user-ref";
 
-export async function POST(request: NextRequest) {
+export const POST = withApiLogging("/api/auth/verify-otp", async (request, _context, log) => {
   if (!sessionConfigured()) {
-    console.error("[auth] BETTER_AUTH_SECRET is not set");
+    log.error("auth.config.missing_secret");
     return NextResponse.json(
       { message: "پیکربندی سرور کامل نشده. کمی بعد دوباره تلاش کن." },
       { status: 503 },
@@ -24,19 +26,24 @@ export async function POST(request: NextRequest) {
   try {
     input = await request.json();
   } catch {
+    log.warn("auth.otp.invalid_body");
     return NextResponse.json({ message: "درخواست معتبر نیست." }, { status: 400 });
   }
 
   const pending = readOtp(request.cookies.get(OTP_COOKIE)?.value);
   if (!pending) {
+    log.warn("auth.otp.missing");
     return NextResponse.json(
       { message: "کد منقضی شده. شماره را دوباره بفرست تا کد تازه بگیریم." },
       { status: 400 },
     );
   }
 
+  const ref = userRef(pending.phone);
+
   const code = normalizeCode((input as { code?: unknown } | null)?.code);
   if (!code) {
+    log.warn("auth.otp.invalid_format", { context: { userRef: ref } });
     return NextResponse.json(
       { message: `کد ${toPersianDigits(String(otpPolicy.length))} رقمی را کامل وارد کن.` },
       { status: 400 },
@@ -44,6 +51,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (pending.expiresAt < Date.now()) {
+    log.warn("auth.otp.expired", { context: { userRef: ref } });
     const response = NextResponse.json(
       { message: "زمان این کد تمام شد. یک کد تازه بگیر." },
       { status: 400 },
@@ -53,6 +61,9 @@ export async function POST(request: NextRequest) {
   }
 
   if (pending.attempts >= OTP_MAX_ATTEMPTS) {
+    log.warn("auth.otp.too_many_attempts", {
+      context: { userRef: ref, attempts: pending.attempts },
+    });
     const response = NextResponse.json(
       { message: "تعداد تلاش‌ها زیاد شد. یک کد تازه بگیر." },
       { status: 429 },
@@ -64,6 +75,9 @@ export async function POST(request: NextRequest) {
   if (pending.code !== code) {
     const attempts = pending.attempts + 1;
     const remaining = OTP_MAX_ATTEMPTS - attempts;
+    log.warn("auth.otp.incorrect", {
+      context: { userRef: ref, attempts, remaining },
+    });
     const response = NextResponse.json(
       {
         message:
@@ -93,6 +107,14 @@ export async function POST(request: NextRequest) {
       ? existing
       : createSession(pending.phone);
 
+  log.info("auth.otp.verified", {
+    context: {
+      userRef: ref,
+      hasProfile: Boolean(session.profile),
+      newSession: !(existing && existing.phone === pending.phone),
+    },
+  });
+
   const response = NextResponse.json({
     ok: true,
     phone: session.phone,
@@ -105,4 +127,4 @@ export async function POST(request: NextRequest) {
   });
   response.cookies.delete(OTP_COOKIE);
   return response;
-}
+});

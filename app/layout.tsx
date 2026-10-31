@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@fontsource-variable/vazirmatn";
 import { APP_NAME } from "@/lib/config";
+import ClientLogger from "./components/client-logger";
 import "./globals.css";
 
 const appName = APP_NAME;
@@ -15,7 +16,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fa" dir="rtl">
-      <body>{children}</body>
+      <body>
+        <ClientLogger />
+        {children}
+      </body>
     </html>
   );
 }
