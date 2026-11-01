@@ -8,10 +8,12 @@ export type Profile = {
 };
 
 export type Session = {
+  userId?: string;
   phone: string;
   method: "phone";
   createdAt: number;
   expiresAt: number;
+  /** Only present on sessions issued before the database existed. */
   profile?: Profile;
 };
 

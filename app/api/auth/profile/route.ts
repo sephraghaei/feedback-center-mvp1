@@ -7,6 +7,7 @@ import {
   sealSession,
   sessionCookieOptions,
 } from "@/lib/session";
+import { ensureUser, saveProfile } from "@/lib/user-store";
 import { userRef } from "@/lib/user-ref";
 
 export const POST = withApiLogging("/api/auth/profile", async (request, _context, log) => {
@@ -33,7 +34,16 @@ export const POST = withApiLogging("/api/auth/profile", async (request, _context
     return NextResponse.json({ message: result.error }, { status: 400 });
   }
 
-  const updated = { ...session, profile: result.profile };
+  const userId = await ensureUser(session.phone);
+  await saveProfile(userId, result.profile);
+
+  const updated = {
+    userId,
+    phone: session.phone,
+    method: "phone" as const,
+    createdAt: session.createdAt,
+    expiresAt: session.expiresAt,
+  };
   const response = NextResponse.json({ ok: true, profile: result.profile });
   response.cookies.set({
     ...sessionCookieOptions,

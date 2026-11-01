@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { withApiLogging } from "@/lib/api-logger";
 import { normalizePhone } from "@/lib/phone";
-import { OTP_COOKIE, createOtpCode, otpCookieOptions, otpPolicy, sealOtp } from "@/lib/otp";
+import { OTP_COOKIE, createOtpCode, hashOtpCode, otpCookieOptions, otpPolicy, sealOtp } from "@/lib/otp";
 import { sessionConfigured } from "@/lib/session";
 import { sendOtpSms, smsConfigured } from "@/lib/sms";
 import { userRef } from "@/lib/user-ref";
+import { createVerification, deleteVerification } from "@/lib/verification-store";
 
 export const POST = withApiLogging("/api/auth/request-otp", async (request, _context, log) => {
   if (!sessionConfigured()) {
@@ -34,19 +35,20 @@ export const POST = withApiLogging("/api/auth/request-otp", async (request, _con
 
   const ref = userRef(phone);
   const code = createOtpCode();
+  const verificationId = await createVerification(
+    phone,
+    hashOtpCode(code),
+    new Date(Date.now() + otpPolicy.ttlSeconds * 1000),
+  );
   const sent = await sendOtpSms(phone, code);
 
   if (sent.status === "failed") {
+    await deleteVerification(verificationId);
     log.error("auth.otp.send_failed", { message: sent.message, context: { userRef: ref } });
     return NextResponse.json({ message: sent.message }, { status: 502 });
   }
 
-  const token = sealOtp({
-    phone,
-    code,
-    attempts: 0,
-    expiresAt: Date.now() + otpPolicy.ttlSeconds * 1000,
-  });
+  const token = sealOtp({ verificationId });
 
   if (sent.status === "skipped") {
     log.warn("auth.otp.sms_skipped", { context: { userRef: ref } });

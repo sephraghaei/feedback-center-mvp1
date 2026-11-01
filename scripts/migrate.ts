@@ -1,11 +1,22 @@
 /**
- * Migration entry point.
+ * Applies Drizzle migrations to the database in DATABASE_URL.
  *
- * Runs from `npm run deploy` (and from CI) before the build. Never at startup.
- * The project has no database schema yet, so this is a no-op for now.
+ * Runs from `npm run deploy` and locally with `npm run migrate`. Never at
+ * application startup.
  */
+import path from "node:path";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
+import { getDb } from "../lib/db";
+
+try {
+  process.loadEnvFile(".env");
+} catch {
+  // The environment may already come from the shell or CI.
+}
+
 async function main(): Promise<void> {
-  console.log("No migrations to run.");
+  await migrate(getDb(), { migrationsFolder: path.join(process.cwd(), "drizzle") });
+  console.log("Migrations applied.");
 }
 
 main().catch((error: unknown) => {

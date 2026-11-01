@@ -44,8 +44,12 @@ function secret(): string {
   return "dev-only-session-secret";
 }
 
+export function getSessionSecret(): string {
+  return secret();
+}
+
 function sign(body: string): string {
-  return createHmac("sha256", secret()).update(`fc-session.v1.${body}`).digest("base64url");
+  return createHmac("sha256", getSessionSecret()).update(`fc-session.v1.${body}`).digest("base64url");
 }
 
 export function seal(payload: unknown): string {
@@ -87,9 +91,10 @@ export function readSession(token: string | undefined | null): Session | null {
   return session;
 }
 
-export function createSession(phone: string): Session {
+export function createSession(phone: string, userId: string): Session {
   const now = Date.now();
   return {
+    userId,
     phone,
     method: "phone",
     createdAt: now,

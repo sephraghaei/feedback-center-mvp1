@@ -4,22 +4,30 @@ A minimal black themed Next.js app, RTL and Persian, with Vazirmatn as the main 
 
 ## Stack
 
-Next.js (app router) with React 19 and TypeScript, deployed on Vercel. The full stack is documented in [docs/main-stack.md](docs/main-stack.md) and the related files in [docs/](docs). Logging conventions are in [docs/logging.md](docs/logging.md).
+Next.js (app router) with React 19 and TypeScript, deployed on Vercel. Users, OTP verifications and profiles are stored in Postgres through Drizzle ORM. The full stack is documented in [docs/main-stack.md](docs/main-stack.md) and the related files in [docs/](docs). Logging conventions are in [docs/logging.md](docs/logging.md).
 
 ## Local development
 
+Postgres is required. Create the local database once, then install, migrate and run:
+
 ```bash
+createdb feedback_center
+cp .env.example .env
+# set DATABASE_URL in .env
 npm install
+npm run migrate
 npm run dev
 ```
 
-Open http://localhost:3000. Node 22 is required.
+Open http://localhost:3000. Node 22 is required. After changing `lib/db/schema.ts`, run `npm run db:generate` to create a new SQL migration and `npm run migrate` to apply it.
 
 ## Environment
 
 Every variable lives in `.env` (see `.env.example` for the names). Production values are set in the Vercel dashboard, never in the repository.
 
 OTP behavior is configured by `OTP_LENGTH`, `OTP_EXPIRES_IN_SECONDS` and `OTP_ALLOWED_ATTEMPS`; Kavenegar uses `KAVENEGAR_API_KEY`, `KAVENEGAR_TEMPLATE` and `KAVENEGAR_SENDER_TYPE`. `BETTER_AUTH_SECRET` signs the session cookie. If it is missing, the signing key is derived from `KAVENEGAR_API_KEY` so login still works; set a dedicated secret to keep the two independent. With neither set, production auth routes answer 503.
+
+`DATABASE_URL` is the Postgres connection string, for example `postgresql://USER@localhost:5432/feedback_center`. Run `npm run migrate` against that database before the app starts.
 
 Logging uses `LOG_LEVEL`, `LOG_FORMAT` and `NEXT_PUBLIC_LOG_LEVEL`. Production defaults to structured JSON at `INFO`; see [docs/logging.md](docs/logging.md) for levels, fields and filtering.
 
@@ -34,6 +42,7 @@ The project deploys on Vercel. Vercel detects Next.js, so no build config is nee
 ```
 NEXT_PUBLIC_NAME
 BETTER_AUTH_URL
+DATABASE_URL
 BETTER_AUTH_SECRET
 OTP_LENGTH
 OTP_EXPIRES_IN_SECONDS

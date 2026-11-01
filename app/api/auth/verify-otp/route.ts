@@ -1,17 +1,26 @@
 import { NextResponse } from "next/server";
 import { withApiLogging } from "@/lib/api-logger";
 import { OTP_MAX_ATTEMPTS } from "@/lib/config";
-import { normalizeCode, OTP_COOKIE, otpCookieOptions, otpPolicy, readOtp, sealOtp } from "@/lib/otp";
+import {
+  matchesOtpCode,
+  normalizeCode,
+  OTP_COOKIE,
+  otpCookieOptions,
+  otpPolicy,
+  readOtp,
+  sealOtp,
+} from "@/lib/otp";
 import { toPersianDigits } from "@/lib/phone";
 import {
   SESSION_COOKIE,
   createSession,
-  readSession,
   sealSession,
   sessionConfigured,
   sessionCookieOptions,
 } from "@/lib/session";
+import { ensureUser, getProfile } from "@/lib/user-store";
 import { userRef } from "@/lib/user-ref";
+import { consumeVerification, getVerification, incrementAttempts } from "@/lib/verification-store";
 
 export const POST = withApiLogging("/api/auth/verify-otp", async (request, _context, log) => {
   if (!sessionConfigured()) {
@@ -31,15 +40,18 @@ export const POST = withApiLogging("/api/auth/verify-otp", async (request, _cont
   }
 
   const pending = readOtp(request.cookies.get(OTP_COOKIE)?.value);
-  if (!pending) {
+  const verification = pending ? await getVerification(pending.verificationId) : null;
+  const ref = userRef(verification?.phone);
+
+  if (!verification || verification.consumedAt) {
     log.warn("auth.otp.missing");
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "کد منقضی شده. شماره را دوباره بفرست تا کد تازه بگیریم." },
       { status: 400 },
     );
+    response.cookies.delete(OTP_COOKIE);
+    return response;
   }
-
-  const ref = userRef(pending.phone);
 
   const code = normalizeCode((input as { code?: unknown } | null)?.code);
   if (!code) {
@@ -50,7 +62,7 @@ export const POST = withApiLogging("/api/auth/verify-otp", async (request, _cont
     );
   }
 
-  if (pending.expiresAt < Date.now()) {
+  if (verification.expiresAt.getTime() < Date.now()) {
     log.warn("auth.otp.expired", { context: { userRef: ref } });
     const response = NextResponse.json(
       { message: "زمان این کد تمام شد. یک کد تازه بگیر." },
@@ -60,9 +72,9 @@ export const POST = withApiLogging("/api/auth/verify-otp", async (request, _cont
     return response;
   }
 
-  if (pending.attempts >= OTP_MAX_ATTEMPTS) {
+  if (verification.attempts >= OTP_MAX_ATTEMPTS) {
     log.warn("auth.otp.too_many_attempts", {
-      context: { userRef: ref, attempts: pending.attempts },
+      context: { userRef: ref, attempts: verification.attempts },
     });
     const response = NextResponse.json(
       { message: "تعداد تلاش‌ها زیاد شد. یک کد تازه بگیر." },
@@ -72,9 +84,9 @@ export const POST = withApiLogging("/api/auth/verify-otp", async (request, _cont
     return response;
   }
 
-  if (pending.code !== code) {
-    const attempts = pending.attempts + 1;
-    const remaining = OTP_MAX_ATTEMPTS - attempts;
+  if (!matchesOtpCode(code, verification.codeHash)) {
+    const attempts = await incrementAttempts(verification.id);
+    const remaining = Math.max(0, OTP_MAX_ATTEMPTS - attempts);
     log.warn("auth.otp.incorrect", {
       context: { userRef: ref, attempts, remaining },
     });
@@ -82,18 +94,18 @@ export const POST = withApiLogging("/api/auth/verify-otp", async (request, _cont
       {
         message:
           remaining > 0
-            ? `کد درست نیست. ${remaining} تلاش دیگر باقی مانده.`
+            ? `کد درست نیست. ${toPersianDigits(String(remaining))} تلاش دیگر باقی مانده.`
             : "تعداد تلاش‌ها زیاد شد. یک کد تازه بگیر.",
       },
       { status: 400 },
     );
     if (remaining > 0) {
-      const ttl = Math.max(1, Math.floor((pending.expiresAt - Date.now()) / 1000));
+      const ttl = Math.max(1, Math.floor((verification.expiresAt.getTime() - Date.now()) / 1000));
       response.cookies.set({
         ...otpCookieOptions,
         maxAge: ttl,
         name: OTP_COOKIE,
-        value: sealOtp({ ...pending, attempts }),
+        value: sealOtp({ verificationId: verification.id }),
       });
     } else {
       response.cookies.delete(OTP_COOKIE);
@@ -101,24 +113,32 @@ export const POST = withApiLogging("/api/auth/verify-otp", async (request, _cont
     return response;
   }
 
-  const existing = readSession(request.cookies.get(SESSION_COOKIE)?.value);
-  const session =
-    existing && existing.phone === pending.phone
-      ? existing
-      : createSession(pending.phone);
+  const consumed = await consumeVerification(verification.id, verification.phone);
+  if (!consumed) {
+    log.warn("auth.otp.missing");
+    const response = NextResponse.json(
+      { message: "کد منقضی شده. شماره را دوباره بفرست تا کد تازه بگیریم." },
+      { status: 400 },
+    );
+    response.cookies.delete(OTP_COOKIE);
+    return response;
+  }
+
+  const userId = await ensureUser(verification.phone);
+  const profile = await getProfile(userId);
+  const session = createSession(verification.phone, userId);
 
   log.info("auth.otp.verified", {
     context: {
       userRef: ref,
-      hasProfile: Boolean(session.profile),
-      newSession: !(existing && existing.phone === pending.phone),
+      hasProfile: Boolean(profile),
     },
   });
 
   const response = NextResponse.json({
     ok: true,
     phone: session.phone,
-    hasProfile: Boolean(session.profile),
+    hasProfile: Boolean(profile),
   });
   response.cookies.set({
     ...sessionCookieOptions,

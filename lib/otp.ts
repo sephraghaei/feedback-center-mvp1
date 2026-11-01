@@ -1,6 +1,6 @@
-import { randomInt } from "node:crypto";
+import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
 import { OTP_LENGTH, OTP_MAX_ATTEMPTS, OTP_TTL_SECONDS } from "./config";
-import { seal, unseal } from "./session";
+import { getSessionSecret, seal, unseal } from "./session";
 
 export const OTP_COOKIE = "fc_otp";
 
@@ -24,10 +24,7 @@ const ROUND_CODES = [
 ];
 
 export type PendingOtp = {
-  phone: string;
-  code: string;
-  attempts: number;
-  expiresAt: number;
+  verificationId: string;
 };
 
 export function createOtpCode(): string {
@@ -48,11 +45,21 @@ export function sealOtp(pending: PendingOtp): string {
 }
 
 export function readOtp(token: string | undefined | null): PendingOtp | null {
-  const pending = unseal<PendingOtp>(token);
-  if (!pending || typeof pending.code !== "string" || typeof pending.phone !== "string") {
+  const pending = unseal<{ verificationId?: unknown }>(token);
+  if (!pending || typeof pending.verificationId !== "string") {
     return null;
   }
-  return pending;
+  return { verificationId: pending.verificationId };
+}
+
+export function hashOtpCode(code: string): string {
+  return createHmac("sha256", getSessionSecret()).update(`fc-otp.v1.${code}`).digest("hex");
+}
+
+export function matchesOtpCode(code: string, storedHash: string): boolean {
+  const expected = Buffer.from(hashOtpCode(code));
+  const actual = Buffer.from(storedHash);
+  return expected.length === actual.length && timingSafeEqual(expected, actual);
 }
 
 export function normalizeCode(input: unknown): string | null {

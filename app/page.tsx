@@ -4,12 +4,14 @@ import { OTP_LENGTH } from "@/lib/config";
 import { logger } from "@/lib/logger";
 import { SESSION_COOKIE, readSession } from "@/lib/session";
 import { toPersianDigits } from "@/lib/phone";
+import { loadUserWithProfile } from "@/lib/user-store";
 import { userRef } from "@/lib/user-ref";
 
 export default async function Home() {
   const cookieStore = await cookies();
   const session = readSession(cookieStore.get(SESSION_COOKIE)?.value);
-  const profile = session?.profile;
+  const user = session ? await loadUserWithProfile(session.phone, session.profile) : null;
+  const profile = user?.profile;
   const status = !session ? "guest" : profile ? "ready" : "needs-profile";
 
   logger.info("page.home.view", {
@@ -24,7 +26,7 @@ export default async function Home() {
       <h1 className="title">Hello</h1>
       <p className="subtitle">خوش آمدید</p>
 
-      {profile ? (
+      {profile && session ? (
         <section className="card" aria-label="حساب کاربری">
           <p className="card-greeting">سلام، {profile.name} عزیز</p>
           <p className="card-note">خوشحالیم که اینجایی.</p>
