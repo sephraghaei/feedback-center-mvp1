@@ -8,19 +8,24 @@ function stripQuery(path: string): string {
 }
 
 export function register(): void {
-  const databaseConfigured = Boolean(databaseUrlFromEnv());
-  if (!databaseConfigured) {
+  const runtime = process.env.NEXT_RUNTIME ?? "nodejs";
+  const databaseConfigured = runtime === "nodejs" ? Boolean(databaseUrlFromEnv()) : undefined;
+
+  if (databaseConfigured === false) {
     logger.error("app.database.missing", {
       message: missingDatabaseUrlMessage(),
+      context: { runtime },
     });
   }
 
   logger.info("app.server.started", {
     context: {
-      runtime: process.env.NEXT_RUNTIME ?? "nodejs",
+      runtime,
       environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? "unknown",
       deployment: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7),
-      database: databaseConfigured ? "configured" : "missing",
+      ...(databaseConfigured === undefined
+        ? {}
+        : { database: databaseConfigured ? "configured" : "missing" }),
     },
   });
 }
