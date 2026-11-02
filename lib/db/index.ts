@@ -2,6 +2,7 @@ import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { logger } from "../logger";
 import * as schema from "./schema";
+import { databaseUrlFromEnv, missingDatabaseUrlMessage } from "./url";
 
 type Database = NodePgDatabase<typeof schema>;
 
@@ -16,9 +17,9 @@ const globalForDb = globalThis as DbGlobal;
  * reuse one pool instead of opening a new one per module instance.
  */
 export function getDb(): Database {
-  const connectionString = process.env.DATABASE_URL?.trim();
+  const connectionString = databaseUrlFromEnv();
   if (!connectionString) {
-    throw new Error("DATABASE_URL is not set. Add it to .env before using the database.");
+    throw new Error(missingDatabaseUrlMessage());
   }
 
   if (!globalForDb.__feedbackCenterDb) {

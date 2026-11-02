@@ -27,7 +27,7 @@ Every variable lives in `.env` (see `.env.example` for the names). Production va
 
 OTP behavior is configured by `OTP_LENGTH`, `OTP_EXPIRES_IN_SECONDS` and `OTP_ALLOWED_ATTEMPS`; Kavenegar uses `KAVENEGAR_API_KEY`, `KAVENEGAR_TEMPLATE` and `KAVENEGAR_SENDER_TYPE`. `BETTER_AUTH_SECRET` signs the session cookie. If it is missing, the signing key is derived from `KAVENEGAR_API_KEY` so login still works; set a dedicated secret to keep the two independent. With neither set, production auth routes answer 503.
 
-`DATABASE_URL` is the Postgres connection string, for example `postgresql://USER@localhost:5432/feedback_center`. Run `npm run migrate` against that database before the app starts.
+`DATABASE_URL` is the Postgres connection string, for example `postgresql://USER@localhost:5432/feedback_center`. If it is absent, the app also accepts the values that managed Postgres integrations on Vercel inject: `POSTGRES_URL`, `POSTGRES_PRISMA_URL` and `POSTGRES_URL_NON_POOLING`, in that order. Run `npm run migrate` against that database before the app starts.
 
 Logging uses `LOG_LEVEL`, `LOG_FORMAT` and `NEXT_PUBLIC_LOG_LEVEL`. Production defaults to structured JSON at `INFO`; see [docs/logging.md](docs/logging.md) for levels, fields and filtering.
 
@@ -58,6 +58,14 @@ NEXT_PUBLIC_LOG_LEVEL
 ```
 
 `BETTER_AUTH_URL` must be the production URL, for example `https://feedback-center-mvp1.vercel.app`.
+
+Production needs a hosted Postgres, not the local database. Connect Supabase or Vercel Postgres from the Vercel Marketplace and the integration provides `POSTGRES_URL` (pooled, used by the app) and `POSTGRES_URL_NON_POOLING` (for migrations). If you prefer your own database, add its URL as `DATABASE_URL` for Production and Preview. After the variable exists, apply the schema once from your machine against the production database, passing the non-pooling URL explicitly, then redeploy:
+
+```bash
+DATABASE_URL="postgresql://...direct..." npm run migrate
+```
+
+A deployment that starts without a connection string logs `app.database.missing` and phone login answers 500, so check the function logs after the first deploy.
 
 4. Deploy. Every push to `main` redeploys the project, and every branch and pull request gets a preview deployment.
 

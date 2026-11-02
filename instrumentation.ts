@@ -1,4 +1,5 @@
 import type { Instrumentation } from "next";
+import { databaseUrlFromEnv, missingDatabaseUrlMessage } from "@/lib/db/url";
 import { logger } from "@/lib/logger";
 
 function stripQuery(path: string): string {
@@ -7,11 +8,19 @@ function stripQuery(path: string): string {
 }
 
 export function register(): void {
+  const databaseConfigured = Boolean(databaseUrlFromEnv());
+  if (!databaseConfigured) {
+    logger.error("app.database.missing", {
+      message: missingDatabaseUrlMessage(),
+    });
+  }
+
   logger.info("app.server.started", {
     context: {
       runtime: process.env.NEXT_RUNTIME ?? "nodejs",
       environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? "unknown",
       deployment: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7),
+      database: databaseConfigured ? "configured" : "missing",
     },
   });
 }
