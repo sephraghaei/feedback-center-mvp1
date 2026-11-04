@@ -1,4 +1,4 @@
-# black-project
+# Feedback-Center
 
 A minimal black themed Next.js app, RTL and Persian, with Vazirmatn as the main font. The home page shows a centered `Hello` with a three step login flow: phone number, a Kavenegar OTP, then a short profile.
 
