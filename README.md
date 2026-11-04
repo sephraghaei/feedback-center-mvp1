@@ -29,6 +29,10 @@ OTP behavior is configured by `OTP_LENGTH`, `OTP_EXPIRES_IN_SECONDS` and `OTP_AL
 
 `DATABASE_URL` is the Postgres connection string, for example `postgresql://USER@localhost:5432/feedback_center`. If it is absent, the app also accepts the values that managed Postgres integrations on Vercel inject: `POSTGRES_URL`, `POSTGRES_PRISMA_URL` and `POSTGRES_URL_NON_POOLING`, in that order. Run `npm run migrate` against that database before the app starts.
 
+When the host ends in `.supabase.co` or `.supabase.com`, the app removes the `sslmode` and `sslrootcert` URL parameters and verifies the server against the bundled Supabase root CA in `lib/db/supabase-ca.ts`. Use the Supavisor pooler host `aws-0-<region>.pooler.supabase.com` with the `postgres.<project-ref>` user: direct `db.<project-ref>.supabase.co` connections publish only IPv6 addresses and fail with `ENOTFOUND` on IPv4 networks and on Vercel.
+
+`GET /api/health` reports the database state without writing anything. It answers 200 when the schema is applied, 503 with `database: "not_configured"` when no connection string is set, and 503 with `database: "unreachable"` plus a short `reason` (`dns`, `connection_refused`, `auth_failed`, `tls` and so on) when the connection fails.
+
 Logging uses `LOG_LEVEL`, `LOG_FORMAT` and `NEXT_PUBLIC_LOG_LEVEL`. Production defaults to structured JSON at `INFO`; see [docs/logging.md](docs/logging.md) for levels, fields and filtering.
 
 ## Deployment
@@ -59,13 +63,16 @@ NEXT_PUBLIC_LOG_LEVEL
 
 `BETTER_AUTH_URL` must be the production URL, for example `https://feedback-center-mvp1.vercel.app`.
 
-Production needs a hosted Postgres, not the local database. Connect Supabase or Vercel Postgres from the Vercel Marketplace and the integration provides `POSTGRES_URL` (pooled, used by the app) and `POSTGRES_URL_NON_POOLING` (for migrations). If you prefer your own database, add its URL as `DATABASE_URL` for Production and Preview. After the variable exists, apply the schema once from your machine against the production database, passing the non-pooling URL explicitly, then redeploy:
+Production needs a hosted Postgres, not the local database. Connect Supabase or Vercel Postgres from the Vercel Marketplace and the integration provides `POSTGRES_URL` (pooled, used by the app) and `POSTGRES_URL_NON_POOLING` (for migrations). If you prefer your own database, add its URL as `DATABASE_URL` for Production and Preview. Set the variable before the first deploy and redeploy after changing it, because Vercel only reads environment variables at build and start time.
+
+With Supabase, take the session pooler connection string from Project Settings, then Database: `postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres`. Apply the schema once from your machine, then check the route:
 
 ```bash
-DATABASE_URL="postgresql://...direct..." npm run migrate
+DATABASE_URL="postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres" npm run migrate
+curl -s https://feedback-center-mvp1.vercel.app/api/health
 ```
 
-A deployment that starts without a connection string logs `app.database.missing` and phone login answers 500, so check the function logs after the first deploy.
+A healthy deploy answers `{"ok":true,"database":"connected","tables":{"users":true,"profiles":true,"verifications":true}}`. A deployment that starts without a connection string logs `app.database.missing` and phone login answers 500, so check `/api/health` and the function logs after the first deploy.
 
 4. Deploy. Every push to `main` redeploys the project, and every branch and pull request gets a preview deployment.
 
