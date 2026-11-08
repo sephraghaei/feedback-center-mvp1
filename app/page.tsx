@@ -23,8 +23,7 @@ export default async function Home() {
 
   return (
     <main className="page">
-      <h1 className="title">Hello</h1>
-      <p className="subtitle">خوش آمدید</p>
+      <h1 className="title" dir="ltr">Feedback-center</h1>
 
       {profile && session ? (
         <section className="card" aria-label="حساب کاربری">
