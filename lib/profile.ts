@@ -9,8 +9,9 @@ export type Profile = {
 
 export type Session = {
   userId?: string;
-  phone: string;
-  method: "phone";
+  phone?: string;
+  email?: string;
+  method: "phone" | "email";
   createdAt: number;
   expiresAt: number;
   /** Only present on sessions issued before the database existed. */

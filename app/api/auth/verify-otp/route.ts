@@ -18,9 +18,14 @@ import {
   sessionConfigured,
   sessionCookieOptions,
 } from "@/lib/session";
-import { ensureUser, getProfile } from "@/lib/user-store";
+import { ensureUserByEmail, ensureUserByPhone, getProfile } from "@/lib/user-store";
 import { userRef } from "@/lib/user-ref";
-import { consumeVerification, getVerification, incrementAttempts } from "@/lib/verification-store";
+import {
+  consumeVerification,
+  getVerification,
+  incrementAttempts,
+  verificationIdentifier,
+} from "@/lib/verification-store";
 
 export const POST = withApiLogging("/api/auth/verify-otp", async (request, _context, log) => {
   if (!sessionConfigured()) {
@@ -41,12 +46,12 @@ export const POST = withApiLogging("/api/auth/verify-otp", async (request, _cont
 
   const pending = readOtp(request.cookies.get(OTP_COOKIE)?.value);
   const verification = pending ? await getVerification(pending.verificationId) : null;
-  const ref = userRef(verification?.phone);
+  const ref = userRef(verification?.phone ?? verification?.email);
 
   if (!verification || verification.consumedAt) {
     log.warn("auth.otp.missing");
     const response = NextResponse.json(
-      { message: "کد منقضی شده. شماره را دوباره بفرست تا کد تازه بگیریم." },
+      { message: "کد منقضی شده. دوباره درخواست بده تا کد تازه بگیری." },
       { status: 400 },
     );
     response.cookies.delete(OTP_COOKIE);
@@ -113,20 +118,23 @@ export const POST = withApiLogging("/api/auth/verify-otp", async (request, _cont
     return response;
   }
 
-  const consumed = await consumeVerification(verification.id, verification.phone);
+  const consumed = await consumeVerification(verification.id, verificationIdentifier(verification));
   if (!consumed) {
     log.warn("auth.otp.missing");
     const response = NextResponse.json(
-      { message: "کد منقضی شده. شماره را دوباره بفرست تا کد تازه بگیریم." },
+      { message: "کد منقضی شده. دوباره درخواست بده تا کد تازه بگیری." },
       { status: 400 },
     );
     response.cookies.delete(OTP_COOKIE);
     return response;
   }
 
-  const userId = await ensureUser(verification.phone);
+  const identifier = verificationIdentifier(verification);
+  const userId = "phone" in identifier
+    ? await ensureUserByPhone(identifier.phone)
+    : await ensureUserByEmail(identifier.email);
   const profile = await getProfile(userId);
-  const session = createSession(verification.phone, userId);
+  const session = createSession(identifier, userId);
 
   log.info("auth.otp.verified", {
     context: {
@@ -137,7 +145,8 @@ export const POST = withApiLogging("/api/auth/verify-otp", async (request, _cont
 
   const response = NextResponse.json({
     ok: true,
-    phone: session.phone,
+    phone: session.phone ?? null,
+    email: session.email ?? null,
     hasProfile: Boolean(profile),
   });
   response.cookies.set({

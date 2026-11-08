@@ -5,7 +5,8 @@ import type { Profile } from "./profile";
 
 export type UserWithProfile = {
   userId: string;
-  phone: string;
+  phone: string | null;
+  email: string | null;
   profile: Profile | null;
 };
 
@@ -18,10 +19,20 @@ function rowToProfile(row: ProfileRow): Profile {
   };
 }
 
-export async function ensureUser(phone: string): Promise<string> {
+export async function ensureUserByPhone(phone: string): Promise<string> {
   const db = getDb();
   await db.insert(users).values({ phone }).onConflictDoNothing({ target: users.phone });
   const [user] = await db.select({ id: users.id }).from(users).where(eq(users.phone, phone)).limit(1);
+  if (!user) {
+    throw new Error("Could not create or find the user");
+  }
+  return user.id;
+}
+
+export async function ensureUserByEmail(email: string): Promise<string> {
+  const db = getDb();
+  await db.insert(users).values({ email }).onConflictDoNothing({ target: users.email });
+  const [user] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
   if (!user) {
     throw new Error("Could not create or find the user");
   }
@@ -62,8 +73,13 @@ export async function saveProfile(userId: string, profile: Profile): Promise<voi
  * database existed carry the profile inside the signed cookie, so that profile
  * is written on first use. This is the lazy migration for current users.
  */
-export async function loadUserWithProfile(phone: string, legacyProfile?: Profile): Promise<UserWithProfile> {
-  const userId = await ensureUser(phone);
+export async function loadUserWithProfile(
+  identifier: { phone?: string; email?: string },
+  legacyProfile?: Profile,
+): Promise<UserWithProfile> {
+  const phone = identifier.phone ?? null;
+  const email = identifier.email ?? null;
+  const userId = phone ? await ensureUserByPhone(phone) : await ensureUserByEmail(email ?? "");
   let profile = await getProfile(userId);
 
   if (!profile && legacyProfile) {
@@ -71,5 +87,5 @@ export async function loadUserWithProfile(phone: string, legacyProfile?: Profile
     profile = legacyProfile;
   }
 
-  return { userId, phone, profile };
+  return { userId, phone, email, profile };
 }

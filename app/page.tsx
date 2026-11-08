@@ -10,14 +10,14 @@ import { userRef } from "@/lib/user-ref";
 export default async function Home() {
   const cookieStore = await cookies();
   const session = readSession(cookieStore.get(SESSION_COOKIE)?.value);
-  const user = session ? await loadUserWithProfile(session.phone, session.profile) : null;
+  const user = session ? await loadUserWithProfile(session, session.profile) : null;
   const profile = user?.profile;
   const status = !session ? "guest" : profile ? "ready" : "needs-profile";
 
   logger.info("page.home.view", {
     context: {
       status,
-      ...(session ? { userRef: userRef(session.phone) } : {}),
+      ...(session ? { userRef: userRef(session.phone ?? session.email) } : {}),
     },
   });
 
@@ -32,10 +32,18 @@ export default async function Home() {
           <p className="card-note">خوشحالیم که اینجایی.</p>
 
           <dl className="details">
-            <div className="detail">
-              <dt>شماره موبایل</dt>
-              <dd className="mono">{toPersianDigits(session.phone)}</dd>
-            </div>
+            {session.phone ? (
+              <div className="detail">
+                <dt>شماره موبایل</dt>
+                <dd className="mono">{toPersianDigits(session.phone)}</dd>
+              </div>
+            ) : null}
+            {session.email ? (
+              <div className="detail">
+                <dt>ایمیل</dt>
+                <dd className="mono ltr">{session.email}</dd>
+              </div>
+            ) : null}
             {profile.age ? (
               <div className="detail">
                 <dt>سن</dt>
@@ -59,7 +67,7 @@ export default async function Home() {
           <LogoutButton />
         </section>
       ) : (
-        <AuthFlow status={status} phone={session?.phone} codeLength={OTP_LENGTH} />
+        <AuthFlow status={status} phone={session?.phone} email={session?.email} codeLength={OTP_LENGTH} />
       )}
     </main>
   );

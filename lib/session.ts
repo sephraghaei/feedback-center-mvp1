@@ -86,17 +86,20 @@ export function readSession(token: string | undefined | null): Session | null {
   } catch {
     return null;
   }
-  if (!session || typeof session.phone !== "string") return null;
+  if (!session || (typeof session.phone !== "string" && typeof session.email !== "string")) return null;
   if (typeof session.expiresAt !== "number" || session.expiresAt < Date.now()) return null;
   return session;
 }
 
-export function createSession(phone: string, userId: string): Session {
+export function createSession(
+  identifier: { phone: string } | { email: string },
+  userId: string,
+): Session {
   const now = Date.now();
   return {
     userId,
-    phone,
-    method: "phone",
+    ...identifier,
+    method: "phone" in identifier ? "phone" : "email",
     createdAt: now,
     expiresAt: now + SESSION_MAX_AGE * 1000,
   };

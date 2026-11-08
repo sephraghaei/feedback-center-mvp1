@@ -35,6 +35,8 @@ When the host ends in `.supabase.co` or `.supabase.com`, the app removes the `ss
 
 Logging uses `LOG_LEVEL`, `LOG_FORMAT` and `NEXT_PUBLIC_LOG_LEVEL`. Production defaults to structured JSON at `INFO`; see [docs/logging.md](docs/logging.md) for levels, fields and filtering.
 
+Login works with a phone number through Kavenegar SMS or with an email through Resend. `KAVENEGAR_API_KEY` enables SMS codes; `RESEND_API_KEY` and `RESEND_FROM` enable email codes. Without either provider the request still succeeds in development and returns `devCode` for the interface.
+
 ## Deployment
 
 The project deploys on Vercel. Vercel detects Next.js, so no build config is needed: it runs `next build` and serves the output.
