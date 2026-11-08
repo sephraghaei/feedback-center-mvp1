@@ -37,6 +37,8 @@ Logging uses `LOG_LEVEL`, `LOG_FORMAT` and `NEXT_PUBLIC_LOG_LEVEL`. Production d
 
 Login works with a phone number through Kavenegar SMS or with an email through Resend. `KAVENEGAR_API_KEY` enables SMS codes; `RESEND_API_KEY` and `RESEND_FROM` enable email codes. Without either provider the request still succeeds in development and returns `devCode` for the interface.
 
+Email and Google sign-in run through Clerk. `npx clerk init` writes development keys to `.env.local` (gitignored); in production set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` from the Clerk dashboard. The interface stays Persian and RTL through the `faIR` localization. Clerk users are linked to the same `users`/`profiles` tables by `clerk_id`, so the profile step and account card behave the same as phone login.
+
 ## Deployment
 
 The project deploys on Vercel. Vercel detects Next.js, so no build config is needed: it runs `next build` and serves the output.

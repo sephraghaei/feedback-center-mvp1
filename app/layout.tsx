@@ -1,3 +1,5 @@
+import { ClerkProvider } from "@clerk/nextjs";
+import { faIR } from "@clerk/localizations";
 import type { Metadata } from "next";
 import "@fontsource-variable/vazirmatn";
 import { APP_NAME } from "@/lib/config";
@@ -17,8 +19,19 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body>
-        <ClientLogger />
-        {children}
+        <ClerkProvider
+          localization={faIR}
+          appearance={{
+            variables: {
+              colorPrimary: "#f4f4f4",
+              colorBackground: "#0b0b0b",
+              borderRadius: "0.75rem",
+            },
+          }}
+        >
+          <ClientLogger />
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );

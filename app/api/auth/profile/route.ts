@@ -1,3 +1,4 @@
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { withApiLogging } from "@/lib/api-logger";
 import { validateProfile } from "@/lib/profile";
@@ -7,17 +8,24 @@ import {
   sealSession,
   sessionCookieOptions,
 } from "@/lib/session";
-import { ensureUserByEmail, ensureUserByPhone, saveProfile } from "@/lib/user-store";
+import {
+  ensureUserByClerkId,
+  ensureUserByEmail,
+  ensureUserByPhone,
+  saveProfile,
+} from "@/lib/user-store";
 import { userRef } from "@/lib/user-ref";
 
 export const POST = withApiLogging("/api/auth/profile", async (request, _context, log) => {
   const session = readSession(request.cookies.get(SESSION_COOKIE)?.value);
-  if (!session) {
+  const clerkAuth = session ? null : await auth();
+  const clerkId = clerkAuth?.userId ?? null;
+  if (!session && !clerkId) {
     log.warn("auth.profile.unauthorized");
     return NextResponse.json({ message: "اول وارد حسابت شو." }, { status: 401 });
   }
 
-  const sessionRef = userRef(session.phone ?? session.email);
+  const sessionRef = userRef(session?.phone ?? session?.email ?? clerkId);
 
   let input: unknown;
   try {
@@ -36,25 +44,29 @@ export const POST = withApiLogging("/api/auth/profile", async (request, _context
     return NextResponse.json({ message: result.error }, { status: 400 });
   }
 
-  const userId = session.phone
-    ? await ensureUserByPhone(session.phone)
-    : await ensureUserByEmail(session.email ?? "");
+  const userId = session
+    ? session.phone
+      ? await ensureUserByPhone(session.phone)
+      : await ensureUserByEmail(session.email ?? "")
+    : await ensureUserByClerkId(clerkId as string);
   await saveProfile(userId, result.profile);
 
-  const updated = {
-    userId,
-    ...(session.phone ? { phone: session.phone } : {}),
-    ...(session.email ? { email: session.email } : {}),
-    method: session.method,
-    createdAt: session.createdAt,
-    expiresAt: session.expiresAt,
-  };
   const response = NextResponse.json({ ok: true, profile: result.profile });
-  response.cookies.set({
-    ...sessionCookieOptions,
-    name: SESSION_COOKIE,
-    value: sealSession(updated),
-  });
+  if (session) {
+    const updated = {
+      userId,
+      ...(session.phone ? { phone: session.phone } : {}),
+      ...(session.email ? { email: session.email } : {}),
+      method: session.method,
+      createdAt: session.createdAt,
+      expiresAt: session.expiresAt,
+    };
+    response.cookies.set({
+      ...sessionCookieOptions,
+      name: SESSION_COOKIE,
+      value: sealSession(updated),
+    });
+  }
 
   log.info("auth.profile.updated", {
     context: {

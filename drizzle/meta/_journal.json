@@ -15,6 +15,13 @@
       "when": 1794152369111,
       "tag": "0001_absurd_marauders",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794153333332,
+      "tag": "0002_tranquil_cammi",
+      "breakpoints": true
     }
   ]
 }

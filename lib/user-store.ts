@@ -39,6 +39,29 @@ export async function ensureUserByEmail(email: string): Promise<string> {
   return user.id;
 }
 
+export async function ensureUserByClerkId(clerkId: string, email?: string | null): Promise<string> {
+  const db = getDb();
+  if (email) {
+    const [existing] = await db
+      .select({ id: users.id, clerkId: users.clerkId })
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+    if (existing) {
+      if (!existing.clerkId) {
+        await db.update(users).set({ clerkId, updatedAt: new Date() }).where(eq(users.id, existing.id));
+      }
+      return existing.id;
+    }
+  }
+  await db.insert(users).values({ clerkId, email: email ?? null }).onConflictDoNothing({ target: users.clerkId });
+  const [user] = await db.select({ id: users.id }).from(users).where(eq(users.clerkId, clerkId)).limit(1);
+  if (!user) {
+    throw new Error("Could not create or find the user");
+  }
+  return user.id;
+}
+
 export async function getProfile(userId: string): Promise<Profile | null> {
   const [row] = await getDb().select().from(profiles).where(eq(profiles.userId, userId)).limit(1);
   return row ? rowToProfile(row) : null;

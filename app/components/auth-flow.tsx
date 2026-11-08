@@ -1,5 +1,6 @@
 "use client";
 
+import { SignInButton, useAuth, useClerk } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { clientLogger } from "@/lib/client-logger";
@@ -15,17 +16,6 @@ function maskPhone(phone: string): string {
   if (value.length < 8) return value;
   return `${value.slice(0, 4)} *** ${value.slice(-4)}`;
 }
-
-function maskEmail(email: string): string {
-  const [local = "", domain] = email.split("@");
-  if (!domain) return email;
-  const head = local.slice(0, 2);
-  return `${head}${"*".repeat(Math.max(1, local.length - head.length))}@${domain}`;
-}
-
-type LoginMethod = "phone" | "email";
-
-type LoginTarget = { phone: string } | { email: string };
 
 async function postJson(url: string, body: unknown) {
   const response = await fetch(url, {
@@ -46,27 +36,23 @@ async function postJson(url: string, body: unknown) {
 export default function AuthFlow({
   status,
   phone,
-  email,
   codeLength,
 }: {
   status: Status;
   phone?: string;
-  email?: string;
   codeLength: number;
 }) {
   const router = useRouter();
+  const { isSignedIn } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [method, setMethod] = useState<LoginMethod>("phone");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [devCode, setDevCode] = useState<string | null>(null);
   const [resendIn, setResendIn] = useState(0);
 
   const [activePhone, setActivePhone] = useState(phone ?? "");
-  const [activeEmail, setActiveEmail] = useState(email ?? "");
   const [phoneInput, setPhoneInput] = useState("");
-  const [emailInput, setEmailInput] = useState("");
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
@@ -74,9 +60,15 @@ export default function AuthFlow({
   const [company, setCompany] = useState("");
 
   const phoneRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isSignedIn) return;
+    setOpen(false);
+    reset();
+    router.refresh();
+  }, [isSignedIn, router]);
 
   useEffect(() => {
     if (step !== 2 || resendIn <= 0) return;
@@ -101,11 +93,10 @@ export default function AuthFlow({
 
   useEffect(() => {
     if (!open) return;
-    if (step === 1 && method === "phone") phoneRef.current?.focus();
-    if (step === 1 && method === "email") emailRef.current?.focus();
+    if (step === 1) phoneRef.current?.focus();
     if (step === 2) codeRef.current?.focus();
     if (step === 3) nameRef.current?.focus();
-  }, [open, step, method]);
+  }, [open, step]);
 
   function reset() {
     setError(null);
@@ -117,12 +108,9 @@ export default function AuthFlow({
 
   function openModal() {
     reset();
-    setMethod("phone");
     setStep(status === "needs-profile" ? 3 : 1);
     setActivePhone(phone ?? "");
-    setActiveEmail(email ?? "");
     setPhoneInput("");
-    setEmailInput("");
     setOpen(true);
     clientLogger.info("ui.auth.modal_opened", { context: { status } });
     if (status === "guest") {
@@ -145,20 +133,14 @@ export default function AuthFlow({
     router.refresh();
   }
 
-  async function requestOtp(target: LoginTarget) {
+  async function requestOtp(target: { phone: string }) {
     const resend = step === 2;
     setLoading(true);
     setError(null);
-    clientLogger.info("ui.auth.otp_requested", { context: { resend, method } });
+    clientLogger.info("ui.auth.otp_requested", { context: { resend } });
     try {
       const data = await postJson("/api/auth/request-otp", target);
-      if ("phone" in target) {
-        setActivePhone(target.phone);
-        setActiveEmail("");
-      } else {
-        setActiveEmail(target.email);
-        setActivePhone("");
-      }
+      setActivePhone(target.phone);
       setDevCode(typeof data.devCode === "string" ? data.devCode : null);
       setCode("");
       setStep(2);
@@ -174,16 +156,6 @@ export default function AuthFlow({
   async function submitPhone(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     await requestOtp({ phone: phoneInput });
-  }
-
-  async function submitEmail(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    await requestOtp({ email: emailInput.trim() });
-  }
-
-  function editIdentifier() {
-    setMethod(activeEmail ? "email" : "phone");
-    setStep(1);
   }
 
   async function submitCode(event: React.FormEvent<HTMLFormElement>) {
@@ -259,7 +231,7 @@ export default function AuthFlow({
               مرحله {toPersianDigits(String(step))} از {toPersianDigits("3")}
             </p>
 
-            {step === 1 && method === "phone" ? (
+            {step === 1 ? (
               <form className="modal-body" onSubmit={submitPhone}>
                 <h2 id="auth-title" className="modal-title">
                   خوش آمدی
@@ -294,67 +266,16 @@ export default function AuthFlow({
                   <span>یا</span>
                 </p>
 
-                <button
-                  type="button"
-                  className="ghost full"
-                  onClick={() => {
-                    reset();
-                    setMethod("email");
-                  }}
-                  disabled={loading}
-                >
-                  ورود با ایمیل
-                </button>
-                <button type="button" className="ghost full" disabled>
-                  ورود با حساب گوگل <span className="soon">به زودی</span>
-                </button>
-              </form>
-            ) : null}
-
-            {step === 1 && method === "email" ? (
-              <form className="modal-body" onSubmit={submitEmail}>
-                <h2 id="auth-title" className="modal-title">
-                  ورود با ایمیل
-                </h2>
-                <p className="modal-hint">ایمیلت را وارد کن تا کد ورود برایت بفرستیم.</p>
-
-                <label className="label" htmlFor="email">
-                  ایمیل
-                </label>
-                <input
-                  id="email"
-                  ref={emailRef}
-                  className="input ltr"
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  placeholder="name@example.com"
-                  value={emailInput}
-                  onChange={(event) => setEmailInput(event.target.value)}
-                  disabled={loading}
-                  required
-                />
-                <p className="field-hint">مثل name@example.com</p>
-
-                {error ? <p className="error">{error}</p> : null}
-
-                <button type="submit" className="primary" disabled={loading}>
-                  {loading ? "در حال ارسال کد..." : "دریافت کد ورود"}
-                </button>
-
-                <div className="row">
-                  <button
-                    type="button"
-                    className="ghost"
-                    onClick={() => {
-                      reset();
-                      setMethod("phone");
-                    }}
-                    disabled={loading}
-                  >
-                    بازگشت به ورود با موبایل
+                <SignInButton mode="modal">
+                  <button type="button" className="ghost full" disabled={loading}>
+                    ورود با ایمیل
                   </button>
-                </div>
+                </SignInButton>
+                <SignInButton mode="modal">
+                  <button type="button" className="ghost full" disabled={loading}>
+                    ورود با حساب گوگل
+                  </button>
+                </SignInButton>
               </form>
             ) : null}
 
@@ -365,13 +286,12 @@ export default function AuthFlow({
                 </h2>
                 <p className="modal-hint">
                   کد {toPersianDigits(String(codeLength))} رقمی را برای{" "}
-                  <span className="mono">{activeEmail ? maskEmail(activeEmail) : maskPhone(activePhone)}</span>{" "}
-                  فرستادیم.
+                  <span className="mono">{maskPhone(activePhone)}</span> فرستادیم.
                 </p>
 
                 {devCode ? (
                   <p className="dev-code">
-                    حالت توسعه: {activeEmail ? "ایمیل" : "پیامک"} تنظیم نشده، کد تو{" "}
+                    حالت توسعه: پیامک تنظیم نشده، کد تو{" "}
                     <span className="mono">{toPersianDigits(devCode)}</span> است.
                   </p>
                 ) : null}
@@ -408,15 +328,18 @@ export default function AuthFlow({
                 </button>
 
                 <div className="row">
-                  <button type="button" className="ghost" onClick={editIdentifier} disabled={loading}>
-                    {activeEmail ? "ویرایش ایمیل" : "ویرایش شماره"}
+                  <button
+                    type="button"
+                    className="ghost"
+                    onClick={() => setStep(1)}
+                    disabled={loading}
+                  >
+                    ویرایش شماره
                   </button>
                   <button
                     type="button"
                     className="ghost"
-                    onClick={() =>
-                      requestOtp(activeEmail ? { email: activeEmail } : { phone: activePhone })
-                    }
+                    onClick={() => requestOtp({ phone: activePhone })}
                     disabled={loading || resendIn > 0}
                   >
                     {resendIn > 0 ? `ارسال دوباره تا ${toPersianDigits(String(resendIn))} ثانیه` : "ارسال دوباره کد"}
@@ -532,6 +455,31 @@ export function LogoutButton() {
       router.refresh();
     } catch (issue) {
       clientLogger.error("ui.auth.logout_failed", { error: issue });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <button type="button" className="ghost" onClick={logout} disabled={loading}>
+      {loading ? "در حال خروج..." : "خروج از حساب"}
+    </button>
+  );
+}
+
+export function ClerkSignOutButton() {
+  const router = useRouter();
+  const { signOut } = useClerk();
+  const [loading, setLoading] = useState(false);
+
+  async function logout() {
+    setLoading(true);
+    try {
+      await signOut();
+      clientLogger.info("ui.auth.clerk_logout");
+      router.refresh();
+    } catch (issue) {
+      clientLogger.error("ui.auth.clerk_logout_failed", { error: issue });
     } finally {
       setLoading(false);
     }
