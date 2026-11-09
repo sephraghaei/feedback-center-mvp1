@@ -1,40 +1,41 @@
-/* Admin panel: light, RTL, Vazirmatn. Scoped so the public dark app is untouched. */
+/* Admin panel: matches the Feedback-center site (black surfaces, white actions,
+   Vazirmatn, RTL). Color is reserved for data: charts, status and method tones. */
 
 body:has(.admin-shell),
 body:has(.admin-login) {
-  background: #f4f4f6;
-  color: #16161a;
-  color-scheme: light;
+  background: #000;
+  color: #f4f4f4;
+  color-scheme: dark;
 }
 
 .admin-shell,
 .admin-login {
-  --bg: #f4f4f6;
-  --surface: #ffffff;
-  --surface-2: #f7f7f9;
-  --surface-3: #efeff2;
-  --line: #e6e6ea;
-  --line-strong: #d5d5dd;
-  --ink: #16161a;
-  --ink-2: #55555f;
-  --ink-3: #8b8b96;
-  --accent: #4f46e5;
-  --accent-ink: #4338ca;
-  --accent-soft: #eef2ff;
-  --green: #16a34a;
-  --green-soft: #e8f7ee;
-  --red: #dc2626;
-  --red-soft: #fdecec;
-  --amber: #d97706;
-  --amber-soft: #fdf3e3;
-  --blue: #2563eb;
-  --blue-soft: #e8effd;
-  --violet: #7c3aed;
-  --violet-soft: #f1eafd;
-  --teal: #0d9488;
-  --teal-soft: #e6f6f4;
+  --bg: #000;
+  --surface: #0b0b0b;
+  --surface-2: #121212;
+  --surface-3: #1a1a1a;
+  --line: #1f1f1f;
+  --line-strong: #2e2e2e;
+  --ink: #f4f4f4;
+  --ink-2: #b9b9b9;
+  --ink-3: #8a8a8a;
+  --accent: #f4f4f4;
+  --accent-ink: #0a0a0a;
+  --accent-soft: rgba(244, 244, 244, 0.08);
+  --green: #4ade80;
+  --green-soft: rgba(74, 222, 128, 0.12);
+  --red: #f87171;
+  --red-soft: rgba(248, 113, 113, 0.12);
+  --amber: #fbbf24;
+  --amber-soft: rgba(251, 191, 36, 0.12);
+  --blue: #60a5fa;
+  --blue-soft: rgba(96, 165, 250, 0.12);
+  --violet: #a78bfa;
+  --violet-soft: rgba(167, 139, 250, 0.12);
+  --teal: #2dd4bf;
+  --teal-soft: rgba(45, 212, 191, 0.12);
   --radius: 12px;
-  --shadow: 0 1px 2px rgba(20, 20, 30, 0.05), 0 8px 24px rgba(20, 20, 30, 0.07);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.45);
   direction: rtl;
   font-family: "Vazirmatn Variable", "Vazirmatn", system-ui, sans-serif;
   color: var(--ink);
@@ -42,7 +43,7 @@ body:has(.admin-login) {
 
 .admin-shell ::selection,
 .admin-login ::selection {
-  background: var(--accent-soft);
+  background: var(--accent);
   color: var(--accent-ink);
 }
 
@@ -65,7 +66,7 @@ body:has(.admin-login) {
 }
 .admin-shell ::-webkit-scrollbar-thumb:hover,
 .admin-login ::-webkit-scrollbar-thumb:hover {
-  background: var(--ink-3);
+  background: #3a3a3a;
   border: 3px solid transparent;
   background-clip: content-box;
 }
@@ -112,14 +113,17 @@ body:has(.admin-login) {
   display: grid;
   place-items: center;
   border-radius: 10px;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed 60%, #db2777);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+  background: linear-gradient(180deg, #ffffff 30%, #8a8a8a 100%);
+  color: #0a0a0a;
 }
 .brand-name {
   font-weight: 800;
   font-size: 1rem;
   letter-spacing: -0.01em;
+  background: linear-gradient(180deg, #ffffff 35%, #8a8a8a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 .brand-sub {
   font-size: 0.7rem;
@@ -156,9 +160,9 @@ body:has(.admin-login) {
   color: var(--ink);
 }
 .side-link.active {
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-  border-color: #dfe3ff;
+  background: var(--surface-3);
+  color: var(--ink);
+  border-color: var(--line-strong);
 }
 .side-link .icon {
   flex-shrink: 0;
@@ -174,7 +178,7 @@ body:has(.admin-login) {
   font-variant-numeric: tabular-nums;
 }
 .side-link.active .badge {
-  background: #fff;
+  background: var(--accent);
   color: var(--accent-ink);
 }
 
@@ -188,7 +192,7 @@ body:has(.admin-login) {
 .side-card {
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: linear-gradient(160deg, var(--accent-soft), #fff 70%);
+  background: linear-gradient(160deg, rgba(244, 244, 244, 0.06), transparent 70%);
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -246,7 +250,7 @@ body:has(.admin-login) {
   text-decoration: none;
 }
 .crumb a:hover {
-  color: var(--accent-ink);
+  color: var(--ink);
 }
 .crumb .current {
   color: var(--ink);
@@ -273,8 +277,8 @@ body:has(.admin-login) {
   border-radius: 999px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #4f46e5, #db2777);
-  color: #fff;
+  background: linear-gradient(180deg, #ffffff 30%, #8a8a8a 100%);
+  color: #0a0a0a;
   font-size: 0.75rem;
   font-weight: 800;
 }
@@ -303,6 +307,10 @@ body:has(.admin-login) {
   font-size: 1.7rem;
   font-weight: 800;
   letter-spacing: -0.02em;
+  background: linear-gradient(180deg, #ffffff 35%, #8a8a8a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 .count-badge {
   background: var(--surface-3);
@@ -327,7 +335,7 @@ body:has(.admin-login) {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border-radius: 10px;
+  border-radius: 0.85rem;
   border: 1px solid transparent;
   font-family: inherit;
   font-size: 0.85rem;
@@ -341,33 +349,31 @@ body:has(.admin-login) {
   transform: translateY(1px);
 }
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 .btn-primary {
   background: var(--accent);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.28);
+  color: var(--accent-ink);
 }
 .btn-primary:hover:not(:disabled) {
-  background: var(--accent-ink);
+  opacity: 0.9;
 }
 .btn-ghost {
-  background: var(--surface);
-  border-color: var(--line-strong);
-  color: var(--ink-2);
+  background: transparent;
+  border-color: var(--line);
+  color: var(--ink);
 }
 .btn-ghost:hover:not(:disabled) {
-  background: var(--surface-2);
-  color: var(--ink);
+  border-color: #3a3a3a;
 }
 .btn-danger {
   background: var(--red-soft);
   color: var(--red);
-  border-color: #f6d3d3;
+  border-color: rgba(248, 113, 113, 0.3);
 }
 .btn-danger:hover:not(:disabled) {
-  background: #fbdcdc;
+  background: rgba(248, 113, 113, 0.2);
 }
 .btn-icon {
   padding: 7px;
@@ -391,7 +397,7 @@ body:has(.admin-login) {
   height: 17px;
   border: 1.5px solid var(--line-strong);
   border-radius: 5px;
-  background: var(--surface);
+  background: var(--surface-2);
   cursor: pointer;
   display: inline-grid;
   place-items: center;
@@ -406,8 +412,8 @@ body:has(.admin-login) {
   content: "";
   width: 9px;
   height: 5px;
-  border-inline-start: 2px solid #fff;
-  border-bottom: 2px solid #fff;
+  border-inline-start: 2px solid #0a0a0a;
+  border-bottom: 2px solid #0a0a0a;
   transform: rotate(-45deg) translateY(-1px);
 }
 .check:indeterminate {
@@ -418,7 +424,7 @@ body:has(.admin-login) {
   content: "";
   width: 9px;
   height: 2px;
-  background: #fff;
+  background: #0a0a0a;
 }
 
 /* ---------- Toolbar / filters ---------- */
@@ -426,7 +432,7 @@ body:has(.admin-login) {
 .panel {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 1.25rem;
   box-shadow: var(--shadow);
   overflow: hidden;
 }
@@ -459,12 +465,11 @@ body:has(.admin-login) {
   color: var(--ink-2);
   padding: 7px 14px;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 .view-tab.active {
-  background: var(--surface);
+  background: var(--surface-3);
   color: var(--ink);
-  box-shadow: 0 1px 3px rgba(20, 20, 30, 0.12);
 }
 .search-box {
   margin-inline-start: auto;
@@ -483,8 +488,8 @@ body:has(.admin-login) {
 .search-box input {
   width: 100%;
   border: 1px solid var(--line-strong);
-  border-radius: 10px;
-  background: var(--surface);
+  border-radius: 0.75rem;
+  background: var(--surface-2);
   font-family: inherit;
   font-size: 0.85rem;
   color: var(--ink);
@@ -493,11 +498,11 @@ body:has(.admin-login) {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .search-box input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: #6a6a6a;
+  box-shadow: 0 0 0 3px rgba(244, 244, 244, 0.1);
 }
 .search-box input::placeholder {
-  color: var(--ink-3);
+  color: #4d4d4d;
 }
 
 .filters {
@@ -538,13 +543,17 @@ body:has(.admin-login) {
   background-size: 4px 4px;
   background-repeat: no-repeat;
 }
+.filter-select select option {
+  background: var(--surface-2);
+  color: var(--ink);
+}
 .filter-select.on {
-  border-color: var(--accent);
-  color: var(--accent-ink);
-  background: var(--accent-soft);
+  border-color: #6a6a6a;
+  color: var(--ink);
+  background: var(--surface-3);
 }
 .filter-select.on select {
-  color: var(--accent-ink);
+  color: var(--ink);
 }
 .filters .spacer {
   margin-inline-start: auto;
@@ -555,10 +564,10 @@ body:has(.admin-login) {
   gap: 10px;
   padding: 10px 16px;
   background: var(--accent-soft);
-  border-bottom: 1px solid #dfe3ff;
+  border-bottom: 1px solid var(--line-strong);
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--accent-ink);
+  color: var(--ink);
 }
 
 /* ---------- Table ---------- */
@@ -600,10 +609,10 @@ body:has(.admin-login) {
   color: var(--ink-3);
 }
 .th-sort.on {
-  color: var(--accent-ink);
+  color: var(--ink);
 }
 .th-sort.on .icon {
-  color: var(--accent-ink);
+  color: var(--ink);
 }
 .admin-table tbody td {
   padding: 12px 14px;
@@ -662,7 +671,7 @@ body:has(.admin-login) {
   border-radius: 999px;
   display: grid;
   place-items: center;
-  color: #fff;
+  color: #0a0a0a;
   font-weight: 800;
   flex-shrink: 0;
   letter-spacing: 0;
@@ -701,8 +710,8 @@ body:has(.admin-login) {
   align-items: center;
   gap: 6px;
   border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
   font-size: 0.74rem;
   font-weight: 700;
   padding: 4px 10px;
@@ -777,7 +786,7 @@ body:has(.admin-login) {
 }
 .board-col-head .badge {
   margin-inline-start: auto;
-  background: var(--surface);
+  background: var(--surface-3);
   border-radius: 999px;
   font-size: 0.7rem;
   padding: 2px 8px;
@@ -797,7 +806,6 @@ body:has(.admin-login) {
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 1px 2px rgba(20, 20, 30, 0.05);
 }
 .board-card .meta {
   min-width: 0;
@@ -890,8 +898,8 @@ body:has(.admin-login) {
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 15, 25, 0.4);
-  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
   z-index: 80;
   animation: admin-fade 0.18s ease;
 }
@@ -903,7 +911,7 @@ body:has(.admin-login) {
   width: min(440px, 100%);
   background: var(--surface);
   border-inline-end: 1px solid var(--line);
-  box-shadow: 0 0 60px rgba(15, 15, 25, 0.25);
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
   z-index: 81;
   display: flex;
   flex-direction: column;
@@ -965,8 +973,8 @@ body:has(.admin-login) {
 .field input,
 .field select {
   border: 1px solid var(--line-strong);
-  border-radius: 10px;
-  background: var(--surface);
+  border-radius: 0.75rem;
+  background: var(--surface-2);
   font-family: inherit;
   font-size: 0.88rem;
   color: var(--ink);
@@ -977,12 +985,16 @@ body:has(.admin-login) {
 }
 .field input:focus,
 .field select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: #6a6a6a;
+  box-shadow: 0 0 0 3px rgba(244, 244, 244, 0.1);
 }
 .field input.ltr {
   direction: ltr;
   text-align: left;
+}
+.field select option {
+  background: var(--surface-2);
+  color: var(--ink);
 }
 .field-row {
   display: grid;
@@ -993,7 +1005,7 @@ body:has(.admin-login) {
   margin: 0;
   background: var(--red-soft);
   color: var(--red);
-  border: 1px solid #f6d3d3;
+  border: 1px solid rgba(248, 113, 113, 0.3);
   border-radius: 10px;
   font-size: 0.8rem;
   padding: 10px 12px;
@@ -1020,13 +1032,13 @@ body:has(.admin-login) {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: var(--ink);
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-ink);
   border-radius: 12px;
   padding: 12px 16px;
   font-size: 0.84rem;
   font-weight: 600;
-  box-shadow: 0 12px 32px rgba(15, 15, 25, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
   animation: admin-toast 0.22s ease;
   max-width: calc(100vw - 48px);
 }
@@ -1042,8 +1054,8 @@ body:has(.admin-login) {
 }
 .toast-action {
   border: 0;
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
+  background: rgba(10, 10, 10, 0.12);
+  color: #0a0a0a;
   border-radius: 8px;
   font-family: inherit;
   font-size: 0.8rem;
@@ -1053,7 +1065,7 @@ body:has(.admin-login) {
   transition: background 0.15s ease;
 }
 .toast-action:hover {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(10, 10, 10, 0.22);
 }
 
 /* ---------- Dashboard ---------- */
@@ -1066,7 +1078,7 @@ body:has(.admin-login) {
 .stat-card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 1.25rem;
   box-shadow: var(--shadow);
   padding: 18px;
   display: flex;
@@ -1084,7 +1096,6 @@ body:has(.admin-login) {
   height: 110px;
   border-radius: 999px;
   background: var(--glow, var(--accent-soft));
-  opacity: 0.6;
   filter: blur(6px);
   pointer-events: none;
 }
@@ -1100,7 +1111,7 @@ body:has(.admin-login) {
   display: grid;
   place-items: center;
   background: var(--tint, var(--accent-soft));
-  color: var(--tone, var(--accent-ink));
+  color: var(--tone, var(--ink));
 }
 .stat-label {
   font-size: 0.8rem;
@@ -1131,7 +1142,7 @@ body:has(.admin-login) {
 .chart-card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 1.25rem;
   box-shadow: var(--shadow);
   padding: 18px;
   display: flex;
@@ -1175,9 +1186,8 @@ body:has(.admin-login) {
   cursor: pointer;
 }
 .range-tab.active {
-  background: var(--surface);
-  color: var(--accent-ink);
-  box-shadow: 0 1px 3px rgba(20, 20, 30, 0.12);
+  background: var(--surface-3);
+  color: var(--ink);
 }
 .bars-svg {
   width: 100%;
@@ -1251,8 +1261,8 @@ body:has(.admin-login) {
   place-items: center;
   padding: 24px;
   background:
-    radial-gradient(60rem 30rem at 85% -10%, rgba(79, 70, 229, 0.12), transparent 60%),
-    radial-gradient(50rem 28rem at 10% 110%, rgba(219, 39, 119, 0.1), transparent 60%),
+    radial-gradient(60rem 30rem at 85% -10%, rgba(244, 244, 244, 0.07), transparent 60%),
+    radial-gradient(50rem 28rem at 10% 110%, rgba(244, 244, 244, 0.05), transparent 60%),
     var(--bg);
 }
 .login-card {
@@ -1260,7 +1270,7 @@ body:has(.admin-login) {
   max-width: 400px;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: 1.25rem;
   box-shadow: var(--shadow);
   padding: 32px 28px;
   display: flex;
@@ -1284,9 +1294,8 @@ body:has(.admin-login) {
   border-radius: 15px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed 60%, #db2777);
-  color: #fff;
-  box-shadow: 0 10px 26px rgba(79, 70, 229, 0.35);
+  background: linear-gradient(180deg, #ffffff 30%, #8a8a8a 100%);
+  color: #0a0a0a;
   margin-bottom: 8px;
 }
 .login-title {
@@ -1294,6 +1303,10 @@ body:has(.admin-login) {
   font-size: 1.4rem;
   font-weight: 800;
   letter-spacing: -0.02em;
+  background: linear-gradient(180deg, #ffffff 35%, #8a8a8a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 .login-sub {
   margin: 0 0 12px;
@@ -1320,8 +1333,8 @@ body:has(.admin-login) {
 .password-wrap input {
   width: 100%;
   border: 1px solid var(--line-strong);
-  border-radius: 12px;
-  background: var(--surface);
+  border-radius: 0.85rem;
+  background: var(--surface-2);
   font-family: inherit;
   font-size: 1rem;
   color: var(--ink);
@@ -1333,8 +1346,8 @@ body:has(.admin-login) {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .password-wrap input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: #6a6a6a;
+  box-shadow: 0 0 0 3px rgba(244, 244, 244, 0.1);
 }
 .eye-btn {
   position: absolute;
@@ -1356,7 +1369,7 @@ body:has(.admin-login) {
   margin: 4px 0 0;
   background: var(--red-soft);
   color: var(--red);
-  border: 1px solid #f6d3d3;
+  border: 1px solid rgba(248, 113, 113, 0.3);
   border-radius: 10px;
   font-size: 0.8rem;
   padding: 10px 12px;
@@ -1400,7 +1413,7 @@ body:has(.admin-login) {
     right: 0;
     transform: translateX(100%);
     transition: transform 0.24s ease;
-    box-shadow: 0 0 60px rgba(15, 15, 25, 0.2);
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
   }
   .admin-sidebar.open {
     transform: translateX(0);
@@ -1409,7 +1422,7 @@ body:has(.admin-login) {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(15, 15, 25, 0.4);
+    background: rgba(0, 0, 0, 0.6);
     z-index: 55;
     animation: admin-fade 0.2s ease;
   }

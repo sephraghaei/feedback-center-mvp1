@@ -19,10 +19,18 @@ function poolConfig(connectionString: string): PoolConfig {
   const url = new URL(connectionString);
   const host = url.hostname.toLowerCase();
   const isSupabase = host.endsWith(".supabase.co") || host.endsWith(".supabase.com");
-  if (!isSupabase) return { connectionString };
+  if (!isSupabase) return { connectionString, max: 10 };
 
   for (const name of SUPABASE_SSL_PARAMS) url.searchParams.delete(name);
-  return { connectionString: url.toString(), ssl: { ca: SUPABASE_CA } };
+  // The Supavisor session pooler caps clients at pool_size (15). Dev keeps more
+  // than one module realm, each with its own pool, so stay well under that.
+  return {
+    connectionString: url.toString(),
+    ssl: { ca: SUPABASE_CA },
+    max: 5,
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 8_000,
+  };
 }
 
 /**
@@ -36,7 +44,7 @@ export function getDb(): Database {
   }
 
   if (!globalForDb.__feedbackCenterDb) {
-    const pool = new Pool({ ...poolConfig(connectionString), max: 10 });
+    const pool = new Pool(poolConfig(connectionString));
     pool.on("error", (error) => {
       logger.error("db.pool.error", { message: "Unexpected Postgres pool error", error });
     });

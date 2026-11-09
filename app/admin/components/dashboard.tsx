@@ -6,16 +6,16 @@ import { toPersianDigits } from "@/lib/phone";
 import { Icon, type IconName } from "./bits";
 
 const METHOD_COLOR: Record<string, string> = {
-  phone: "#2563eb",
-  email: "#7c3aed",
-  clerk: "#0d9488",
+  phone: "#60a5fa",
+  email: "#a78bfa",
+  clerk: "#2dd4bf",
 };
 const METHOD_LABEL: Record<string, string> = {
   phone: "موبایل",
   email: "ایمیل",
   clerk: "Clerk",
 };
-const SEX_COLOR = ["#4f46e5", "#db2777", "#0d9488", "#d97706"];
+const SEX_COLOR = ["#60a5fa", "#f472b6", "#2dd4bf", "#fbbf24"];
 
 function fa(n: number): string {
   return toPersianDigits(String(n));
@@ -72,8 +72,8 @@ function SignupBars({ daily, range }: { daily: AdminStats["daily"]; range: numbe
     <svg className="bars-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="نمودار ثبت‌نام روزانه">
       <defs>
         <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#6366f1" />
-          <stop offset="100%" stopColor="#4f46e5" />
+          <stop offset="0%" stopColor="#f4f4f4" />
+          <stop offset="100%" stopColor="#7a7a7a" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75, 1].map((t) => (
@@ -83,7 +83,7 @@ function SignupBars({ daily, range }: { daily: AdminStats["daily"]; range: numbe
           x2={W}
           y1={padT + innerH - innerH * t}
           y2={padT + innerH - innerH * t}
-          stroke="#e6e6ea"
+          stroke="#242424"
           strokeWidth="1"
           strokeDasharray="3 4"
         />
@@ -102,7 +102,7 @@ function SignupBars({ daily, range }: { daily: AdminStats["daily"]; range: numbe
                 x={x + bw / 2}
                 y={H - 8}
                 fontSize="10"
-                fill="#8b8b96"
+                fill="#8a8a8a"
                 textAnchor="middle"
               >
                 {dateFmt.format(new Date(d.date))}
@@ -111,7 +111,7 @@ function SignupBars({ daily, range }: { daily: AdminStats["daily"]; range: numbe
           </g>
         );
       })}
-      <line x1="0" x2={W} y1={padT + innerH} y2={padT + innerH} stroke="#d5d5dd" strokeWidth="1" />
+      <line x1="0" x2={W} y1={padT + innerH} y2={padT + innerH} stroke="#2e2e2e" strokeWidth="1" />
     </svg>
   );
 }
@@ -125,7 +125,7 @@ function MethodDonut({ stats }: { stats: AdminStats }) {
   return (
     <div className="donut-wrap">
       <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="سهم روش‌های ورود">
-        <circle cx="75" cy="75" r={r} fill="none" stroke="#efeff2" strokeWidth="20" />
+        <circle cx="75" cy="75" r={r} fill="none" stroke="#1f1f1f" strokeWidth="20" />
         {total > 0
           ? stats.methods.map((m) => {
               const frac = m.count / total;
@@ -150,10 +150,10 @@ function MethodDonut({ stats }: { stats: AdminStats }) {
               return el;
             })
           : null}
-        <text x="75" y="72" textAnchor="middle" fontSize="24" fontWeight="800" fill="#16161a">
+        <text x="75" y="72" textAnchor="middle" fontSize="24" fontWeight="800" fill="#f4f4f4">
           {fa(total)}
         </text>
-        <text x="75" y="92" textAnchor="middle" fontSize="10" fill="#8b8b96">
+        <text x="75" y="92" textAnchor="middle" fontSize="10" fill="#8a8a8a">
           کاربر
         </text>
       </svg>
@@ -192,32 +192,32 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
           icon="users"
           label="کل کاربران"
           value={fa(stats.totalUsers)}
-          tint="#eef2ff"
-          tone="#4338ca"
+          tint="rgba(96,165,250,0.12)"
+          tone="#60a5fa"
           hint={<><strong>{fa(stats.newLast7)}</strong> کاربر جدید در ۷ روز گذشته</>}
         />
         <StatCard
           icon="check"
           label="پروفایل کامل"
           value={fa(stats.withProfile)}
-          tint="#e8f7ee"
-          tone="#16a34a"
+          tint="rgba(74,222,128,0.12)"
+          tone="#4ade80"
           hint={<>{fa(percent(stats.withProfile, stats.totalUsers))}٪ از کل کاربران</>}
         />
         <StatCard
           icon="chart"
           label="ثبت‌نام ۳۰ روز"
           value={fa(stats.newLast30)}
-          tint="#e8effd"
-          tone="#2563eb"
+          tint="rgba(167,139,250,0.12)"
+          tone="#a78bfa"
           hint="کاربران تازه در یک ماه گذشته"
         />
         <StatCard
           icon="user"
           label="میانگین سن"
           value={stats.averageAge === null ? "نامشخص" : fa(stats.averageAge)}
-          tint="#fdf3e3"
-          tone="#d97706"
+          tint="rgba(251,191,36,0.12)"
+          tone="#fbbf24"
           hint="از پروفایل‌هایی که سن دارند"
         />
       </div>
@@ -272,7 +272,7 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
               <span className="val">{fa(stats.withProfile)}</span>
             </div>
             <div className="sex-bar">
-              <div style={{ width: `${percent(stats.withProfile, stats.totalUsers)}%`, background: "#16a34a" }} />
+              <div style={{ width: `${percent(stats.withProfile, stats.totalUsers)}%`, background: "#4ade80" }} />
             </div>
           </div>
           <div className="sex-row">
@@ -281,7 +281,7 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
               <span className="val">{fa(stats.withoutProfile)}</span>
             </div>
             <div className="sex-bar">
-              <div style={{ width: `${percent(stats.withoutProfile, stats.totalUsers)}%`, background: "#d97706" }} />
+              <div style={{ width: `${percent(stats.withoutProfile, stats.totalUsers)}%`, background: "#fbbf24" }} />
             </div>
           </div>
         </div>

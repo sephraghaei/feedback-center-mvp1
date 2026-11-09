@@ -166,6 +166,12 @@ export type AdminStats = {
   sexes: { sex: string; count: number }[];
 };
 
+export async function getUserCount(): Promise<number> {
+  const db = getDb();
+  const rows = await db.select({ value: count() }).from(users);
+  return rows[0]?.value ?? 0;
+}
+
 export async function getAdminStats(): Promise<AdminStats> {
   const db = getDb();
   const now = Date.now();
