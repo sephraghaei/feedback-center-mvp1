@@ -39,6 +39,12 @@ Login works with a phone number through Kavenegar SMS or with an email through R
 
 Email and Google sign-in run through Clerk. `npx clerk init` writes development keys to `.env.local` (gitignored); in production set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` from the Clerk dashboard. The interface stays Persian and RTL through the `faIR` localization. Clerk users are linked to the same `users`/`profiles` tables by `clerk_id`, so the profile step and account card behave the same as phone login.
 
+## Admin panel
+
+`/admin` is a separate light themed, RTL panel with two sections: a stats dashboard and user management. It signs in with a password only, read from `ADMIN_PASSWORD`; there is no email, phone or username. Set `ADMIN_PASSWORD` in `.env` locally and in the Vercel dashboard for production. Leaving it empty disables the panel: `/admin` redirects to `/admin/login`, which explains that the variable is missing.
+
+The admin session is a signed `fc_admin` cookie (eight hours) separate from the user `fc_session`. Login attempts are rate limited per IP. User management lists the live `users` joined with `profiles` and supports search, method and profile filters, sorting, table/board/list views, pagination, create, edit, delete and bulk delete, with undo after destructive actions. The dashboard shows totals, profile completion, signup trend, login-method split and age/sex breakdowns, all computed from the database.
+
 ## Deployment
 
 The project deploys on Vercel. Vercel detects Next.js, so no build config is needed: it runs `next build` and serves the output.
@@ -54,6 +60,9 @@ DATABASE_URL
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 BETTER_AUTH_SECRET
+ADMIN_PASSWORD
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY
 OTP_LENGTH
 OTP_EXPIRES_IN_SECONDS
 OTP_ALLOWED_ATTEMPS
