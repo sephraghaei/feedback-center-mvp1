@@ -22,13 +22,15 @@ function poolConfig(connectionString: string): PoolConfig {
   if (!isSupabase) return { connectionString, max: 10 };
 
   for (const name of SUPABASE_SSL_PARAMS) url.searchParams.delete(name);
-  // The Supavisor session pooler caps clients at pool_size (15). Dev keeps more
-  // than one module realm, each with its own pool, so stay well under that.
+  // The Supavisor session pooler caps clients at pool_size (15) and binds one
+  // server connection per client for its whole life. Serverless instances freeze
+  // with their sockets still open, so pools accumulate across instances; keep a
+  // single connection per instance and let idle ones close quickly.
   return {
     connectionString: url.toString(),
     ssl: { ca: SUPABASE_CA },
-    max: 5,
-    idleTimeoutMillis: 10_000,
+    max: 1,
+    idleTimeoutMillis: 5_000,
     connectionTimeoutMillis: 8_000,
   };
 }
