@@ -43,7 +43,9 @@ export default async function Home() {
       <header className="site-nav">
         <div className="nav-inner">
           <Link href="/" className="nav-brand" aria-label="Feedback-center">
-            <span className="brand-triangle" aria-hidden="true" />
+            <span className="brand-mark" aria-hidden="true">
+              <span className="brand-triangle" />
+            </span>
             <span className="nav-name" dir="ltr">Feedback-center</span>
           </Link>
           <nav className="nav-links" aria-label="مسیرهای اصلی">
@@ -57,7 +59,9 @@ export default async function Home() {
       <main className="hero">
         <section className="hero-copy" aria-labelledby="site-title">
           <p className="eyebrow">مرکز بازخورد</p>
-          <h1 id="site-title" className="title" dir="ltr">Feedback-center</h1>
+          <h1 id="site-title" className="title" dir="ltr">
+            Feedback<span className="title-accent">-center</span>
+          </h1>
           <p className="lede">
             جایی ساده برای شنیدن نظر کاربران. با موبایل، ایمیل یا حساب گوگل وارد شو و
             پروفایلت را در چند ثانیه کامل کن.

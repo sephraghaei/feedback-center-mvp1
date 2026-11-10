@@ -451,6 +451,7 @@ export default function UserManagement() {
                 return (
                   <div className="board-col" key={m}>
                     <div className="board-col-head">
+                      <span className={`board-dot ${m}`} aria-hidden="true" />
                       <MethodBadge method={m} />
                       <span className="badge">{fa(items.length)}</span>
                     </div>

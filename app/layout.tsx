@@ -31,11 +31,11 @@ export default function RootLayout({
           localization={faIR}
           appearance={{
             variables: {
-              colorPrimary: "var(--ink)",
-              colorPrimaryForeground: "var(--btn-ink)",
+              colorPrimary: "var(--accent)",
+              colorPrimaryForeground: "var(--on-accent)",
               colorBackground: "var(--surface)",
               colorForeground: "var(--ink)",
-              colorMuted: "var(--wash)",
+              colorMuted: "var(--fog)",
               colorMutedForeground: "var(--ink-3)",
               colorInput: "var(--surface)",
               colorInputForeground: "var(--ink)",
@@ -43,9 +43,19 @@ export default function RootLayout({
               colorNeutral: "var(--ink)",
               colorShadow: "var(--ink)",
               colorSuccess: "var(--green)",
-              borderRadius: "0.375rem",
+              colorDanger: "var(--red)",
+              borderRadius: "0.75rem",
               fontFamily: '"Vazirmatn Variable", Vazirmatn, system-ui, sans-serif',
               fontSize: "0.875rem",
+            },
+            elements: {
+              card: {
+                border: "1px solid var(--hairline)",
+                boxShadow: "var(--shadow-card)",
+              },
+              footer: {
+                background: "var(--fog)",
+              },
             },
           }}
         >
