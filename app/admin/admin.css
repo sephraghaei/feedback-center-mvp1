@@ -5,6 +5,13 @@ body:has(.admin-login) {
   color-scheme: light;
 }
 
+:root[data-theme="dark"] body:has(.admin-shell),
+:root[data-theme="dark"] body:has(.admin-login) {
+  background: #000000;
+  color: #ededed;
+  color-scheme: dark;
+}
+
 .admin-shell,
 .admin-login {
   --bg: #fafafa;
@@ -21,15 +28,58 @@ body:has(.admin-login) {
   --accent: #171717;
   --accent-ink: #ffffff;
   --accent-soft: rgba(23, 23, 23, 0.05);
+  --accent-hover: #000000;
   --green: #297a3a;
   --green-soft: rgba(41, 122, 58, 0.08);
+  --green-line: rgba(41, 122, 58, 0.28);
   --danger: #171717;
   --danger-soft: #f5f5f5;
+  --mark: #000000;
+  --ring: rgba(0, 0, 0, 0.03);
+  --ring-inset: rgba(0, 0, 0, 0.06);
+  --scrim: rgba(23, 23, 23, 0.3);
+  --chart-1: #171717;
+  --chart-2: #4d4d4d;
+  --chart-3: #8f8f8f;
+  --chart-4: #c9c9c9;
   --radius: 6px;
   --shadow: 0 0 0 1px rgba(0, 0, 0, 0.03);
   direction: rtl;
   font-family: "Vazirmatn Variable", "Vazirmatn", system-ui, sans-serif;
   color: var(--ink);
+}
+
+:root[data-theme="dark"] .admin-shell,
+:root[data-theme="dark"] .admin-login {
+  --bg: #000000;
+  --surface: #0a0a0a;
+  --surface-2: #0d0d0d;
+  --surface-3: #161616;
+  --line: #202020;
+  --line-strong: #343434;
+  --ink: #ededed;
+  --ink-2: #a1a1a1;
+  --ink-3: #8f8f8f;
+  --ink-4: #737373;
+  --ink-5: #4d4d4d;
+  --accent: #ededed;
+  --accent-ink: #0a0a0a;
+  --accent-soft: rgba(237, 237, 237, 0.06);
+  --accent-hover: #ffffff;
+  --green: #3fb950;
+  --green-soft: rgba(63, 185, 80, 0.12);
+  --green-line: rgba(63, 185, 80, 0.4);
+  --danger: #ededed;
+  --danger-soft: #161616;
+  --mark: #ffffff;
+  --ring: rgba(255, 255, 255, 0.06);
+  --ring-inset: rgba(255, 255, 255, 0.09);
+  --scrim: rgba(0, 0, 0, 0.65);
+  --chart-1: #ededed;
+  --chart-2: #a1a1a1;
+  --chart-3: #666666;
+  --chart-4: #3f3f3f;
+  --shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .admin-shell ::selection,
@@ -56,7 +106,7 @@ body:has(.admin-login) {
 }
 .admin-shell ::-webkit-scrollbar-thumb:hover,
 .admin-login ::-webkit-scrollbar-thumb:hover {
-  background: #b3b3b3;
+  background: color-mix(in srgb, var(--ink) 35%, transparent);
   border: 3px solid transparent;
   background-clip: content-box;
 }
@@ -102,7 +152,7 @@ body:has(.admin-login) {
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  color: #000000;
+  color: var(--mark);
 }
 .brand-mark .brand-triangle {
   width: 14px;
@@ -342,8 +392,8 @@ body:has(.admin-login) {
   color: var(--accent-ink);
 }
 .btn-primary:hover:not(:disabled) {
-  background: #000000;
-  border-color: #000000;
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 .btn-ghost {
   background: transparent;
@@ -362,7 +412,7 @@ body:has(.admin-login) {
 }
 .btn-danger:hover:not(:disabled) {
   background: var(--ink);
-  color: #ffffff;
+  color: var(--accent-ink);
 }
 .btn-icon {
   padding: 7px;
@@ -377,7 +427,7 @@ body:has(.admin-login) {
 }
 .btn-icon.danger:hover:not(:disabled) {
   background: var(--ink);
-  color: #ffffff;
+  color: var(--accent-ink);
 }
 
 .check {
@@ -401,8 +451,8 @@ body:has(.admin-login) {
   content: "";
   width: 9px;
   height: 5px;
-  border-inline-start: 2px solid #ffffff;
-  border-bottom: 2px solid #ffffff;
+  border-inline-start: 2px solid var(--accent-ink);
+  border-bottom: 2px solid var(--accent-ink);
   transform: rotate(-45deg) translateY(-1px);
 }
 .check:indeterminate {
@@ -413,7 +463,7 @@ body:has(.admin-login) {
   content: "";
   width: 9px;
   height: 2px;
-  background: #ffffff;
+  background: var(--accent-ink);
 }
 
 /* ---------- Toolbar / filters ---------- */
@@ -461,7 +511,7 @@ body:has(.admin-login) {
 }
 .view-tab.active {
   background: var(--ink);
-  color: #ffffff;
+  color: var(--accent-ink);
 }
 .search-box {
   margin-inline-start: auto;
@@ -668,8 +718,24 @@ body:has(.admin-login) {
   flex-shrink: 0;
   letter-spacing: 0;
   user-select: none;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 0 0 1px var(--ring-inset);
 }
+.avatar-0 { background: linear-gradient(135deg, #f5f5f5, #d9d9d9); }
+.avatar-1 { background: linear-gradient(135deg, #efefef, #cfcfcf); }
+.avatar-2 { background: linear-gradient(135deg, #fafafa, #e2e2e2); }
+.avatar-3 { background: linear-gradient(135deg, #e8e8e8, #c9c9c9); }
+.avatar-4 { background: linear-gradient(135deg, #f2f2f2, #d4d4d4); }
+.avatar-5 { background: linear-gradient(135deg, #ededed, #dcdcdc); }
+.avatar-6 { background: linear-gradient(135deg, #f7f7f7, #cdcdcd); }
+.avatar-7 { background: linear-gradient(135deg, #e5e5e5, #d0d0d0); }
+:root[data-theme="dark"] .avatar-0 { background: linear-gradient(135deg, #1f1f1f, #2e2e2e); }
+:root[data-theme="dark"] .avatar-1 { background: linear-gradient(135deg, #161616, #282828); }
+:root[data-theme="dark"] .avatar-2 { background: linear-gradient(135deg, #222222, #303030); }
+:root[data-theme="dark"] .avatar-3 { background: linear-gradient(135deg, #191919, #2b2b2b); }
+:root[data-theme="dark"] .avatar-4 { background: linear-gradient(135deg, #1c1c1c, #313131); }
+:root[data-theme="dark"] .avatar-5 { background: linear-gradient(135deg, #141414, #262626); }
+:root[data-theme="dark"] .avatar-6 { background: linear-gradient(135deg, #212121, #323232); }
+:root[data-theme="dark"] .avatar-7 { background: linear-gradient(135deg, #181818, #2d2d2d); }
 
 .badge-method {
   display: inline-flex;
@@ -693,7 +759,7 @@ body:has(.admin-login) {
 .badge-method.clerk {
   background: var(--ink);
   border-color: var(--ink);
-  color: #ffffff;
+  color: var(--accent-ink);
 }
 .badge-method.unknown {
   background: transparent;
@@ -719,7 +785,7 @@ body:has(.admin-login) {
 }
 .pill.ok {
   color: var(--green);
-  border-color: rgba(41, 122, 58, 0.28);
+  border-color: var(--green-line);
 }
 .pill.ok .dot {
   background: var(--green);
@@ -896,7 +962,7 @@ body:has(.admin-login) {
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(23, 23, 23, 0.3);
+  background: var(--scrim);
   backdrop-filter: blur(4px);
   z-index: 80;
   animation: admin-fade 0.16s ease;
@@ -909,7 +975,7 @@ body:has(.admin-login) {
   width: min(440px, 100%);
   background: var(--surface);
   border-inline-end: 1px solid var(--line);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0 0 1px var(--ring);
   z-index: 81;
   display: flex;
   flex-direction: column;
@@ -1053,8 +1119,8 @@ body:has(.admin-login) {
 }
 .toast-action {
   border: 0;
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--accent-ink) 14%, transparent);
+  color: var(--accent-ink);
   border-radius: 4px;
   font-family: inherit;
   font-size: 0.78rem;
@@ -1067,7 +1133,7 @@ body:has(.admin-login) {
   transition: background 0.15s ease;
 }
 .toast-action:hover {
-  background: rgba(255, 255, 255, 0.24);
+  background: color-mix(in srgb, var(--accent-ink) 24%, transparent);
 }
 
 /* ---------- Dashboard ---------- */
@@ -1178,12 +1244,36 @@ body:has(.admin-login) {
 }
 .range-tab.active {
   background: var(--ink);
-  color: #ffffff;
+  color: var(--accent-ink);
 }
 .bars-svg {
   width: 100%;
   height: auto;
   display: block;
+}
+.chart-grid {
+  stroke: var(--line);
+}
+.chart-baseline {
+  stroke: var(--line-strong);
+}
+.chart-axis {
+  fill: var(--ink-4);
+}
+.donut-track {
+  stroke: var(--line);
+}
+.donut-total {
+  fill: var(--ink);
+}
+.donut-sub {
+  fill: var(--ink-4);
+}
+.bar-stop-top {
+  stop-color: var(--chart-1);
+}
+.bar-stop-bottom {
+  stop-color: var(--chart-3);
 }
 .donut-wrap {
   display: flex;
@@ -1251,10 +1341,22 @@ body:has(.admin-login) {
   display: grid;
   place-items: center;
   padding: 24px;
+  position: relative;
   background:
     radial-gradient(60rem 30rem at 85% -10%, rgba(23, 23, 23, 0.05), transparent 60%),
     radial-gradient(50rem 28rem at 10% 110%, rgba(23, 23, 23, 0.04), transparent 60%),
     var(--bg);
+}
+:root[data-theme="dark"] .admin-login {
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, rgba(255, 255, 255, 0.07), transparent 60%),
+    radial-gradient(50rem 28rem at 10% 110%, rgba(255, 255, 255, 0.05), transparent 60%),
+    var(--bg);
+}
+.admin-login > .theme-toggle {
+  position: absolute;
+  top: 18px;
+  inset-inline-end: 18px;
 }
 .login-card {
   width: 100%;
@@ -1287,7 +1389,7 @@ body:has(.admin-login) {
   display: grid;
   place-items: center;
   background: var(--surface-2);
-  color: #000000;
+  color: var(--mark);
   margin-bottom: 8px;
 }
 .login-logo .brand-triangle {
@@ -1416,7 +1518,7 @@ body:has(.admin-login) {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(23, 23, 23, 0.25);
+    background: var(--scrim);
     z-index: 55;
     animation: admin-fade 0.18s ease;
   }

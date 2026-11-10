@@ -2,6 +2,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import AuthFlow, { ClerkSignOutButton, LogoutButton } from "./components/auth-flow";
+import ThemeToggle from "./components/theme-toggle";
 import { OTP_LENGTH } from "@/lib/config";
 import { logger } from "@/lib/logger";
 import { SESSION_COOKIE, readSession } from "@/lib/session";
@@ -48,6 +49,7 @@ export default async function Home() {
           <nav className="nav-links" aria-label="مسیرهای اصلی">
             <a className="nav-link" href="#account">حساب کاربری</a>
             <Link className="nav-link solid" href="/admin/login">پنل مدیریت</Link>
+            <ThemeToggle />
           </nav>
         </div>
       </header>

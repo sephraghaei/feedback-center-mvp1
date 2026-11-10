@@ -17,24 +17,32 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{var t=localStorage.getItem("fc-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.dataset.theme=t;}catch(e){}',
+          }}
+        />
+      </head>
       <body>
         <ClerkProvider
           localization={faIR}
           appearance={{
             variables: {
-              colorPrimary: "#171717",
-              colorPrimaryForeground: "#ffffff",
-              colorBackground: "#ffffff",
-              colorForeground: "#171717",
-              colorMuted: "#f5f5f5",
-              colorMutedForeground: "#666666",
-              colorInput: "#ffffff",
-              colorInputForeground: "#171717",
-              colorBorder: "#ebebeb",
-              colorNeutral: "#171717",
-              colorShadow: "#171717",
-              colorSuccess: "#297a3a",
+              colorPrimary: "var(--ink)",
+              colorPrimaryForeground: "var(--btn-ink)",
+              colorBackground: "var(--surface)",
+              colorForeground: "var(--ink)",
+              colorMuted: "var(--wash)",
+              colorMutedForeground: "var(--ink-3)",
+              colorInput: "var(--surface)",
+              colorInputForeground: "var(--ink)",
+              colorBorder: "var(--hairline)",
+              colorNeutral: "var(--ink)",
+              colorShadow: "var(--ink)",
+              colorSuccess: "var(--green)",
               borderRadius: "0.375rem",
               fontFamily: '"Vazirmatn Variable", Vazirmatn, system-ui, sans-serif',
               fontSize: "0.875rem",

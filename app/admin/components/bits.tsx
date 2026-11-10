@@ -62,16 +62,7 @@ export function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
   );
 }
 
-const AVATAR_COLORS: [string, string][] = [
-  ["#f5f5f5", "#d9d9d9"],
-  ["#efefef", "#cfcfcf"],
-  ["#fafafa", "#e2e2e2"],
-  ["#e8e8e8", "#c9c9c9"],
-  ["#f2f2f2", "#d4d4d4"],
-  ["#ededed", "#dcdcdc"],
-  ["#f7f7f7", "#cdcdcd"],
-  ["#e5e5e5", "#d0d0d0"],
-];
+const AVATAR_VARIANTS = 8;
 
 function hash(value: string): number {
   let h = 0;
@@ -97,15 +88,14 @@ export function Avatar({
   label: string;
   size?: number;
 }) {
-  const [from, to] = AVATAR_COLORS[hash(seed) % AVATAR_COLORS.length];
+  const variant = hash(seed) % AVATAR_VARIANTS;
   const style: CSSProperties = {
     width: size,
     height: size,
-    background: `linear-gradient(135deg, ${from}, ${to})`,
     fontSize: Math.round(size * 0.36),
   };
   return (
-    <span className="avatar" style={style} aria-hidden="true">
+    <span className={`avatar avatar-${variant}`} style={style} aria-hidden="true">
       {initialsOf(label, seed)}
     </span>
   );

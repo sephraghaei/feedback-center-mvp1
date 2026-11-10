@@ -1,21 +1,21 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useState } from "react";
 import type { AdminStats } from "@/lib/admin-store";
 import { toPersianDigits } from "@/lib/phone";
 import { Icon, type IconName } from "./bits";
 
 const METHOD_COLOR: Record<string, string> = {
-  phone: "#171717",
-  email: "#666666",
-  clerk: "#b3b3b3",
+  phone: "var(--chart-1)",
+  email: "var(--chart-2)",
+  clerk: "var(--chart-3)",
 };
 const METHOD_LABEL: Record<string, string> = {
   phone: "موبایل",
   email: "ایمیل",
   clerk: "Clerk",
 };
-const SEX_COLOR = ["#171717", "#4d4d4d", "#8f8f8f", "#c9c9c9"];
+const SEX_COLOR = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)"];
 
 function fa(n: number): string {
   return toPersianDigits(String(n));
@@ -29,19 +29,14 @@ function StatCard({
   label,
   value,
   hint,
-  tint,
-  tone,
 }: {
   icon: IconName;
   label: string;
   value: string;
   hint: React.ReactNode;
-  tint: string;
-  tone: string;
 }) {
-  const style = { "--tint": tint, "--tone": tone, "--glow": tint } as CSSProperties;
   return (
-    <div className="stat-card" style={style}>
+    <div className="stat-card">
       <div className="stat-top">
         <span className="stat-icon">
           <Icon name={icon} size={19} />
@@ -72,18 +67,18 @@ function SignupBars({ daily, range }: { daily: AdminStats["daily"]; range: numbe
     <svg className="bars-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="نمودار ثبت‌نام روزانه">
       <defs>
         <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#171717" />
-          <stop offset="100%" stopColor="#8f8f8f" />
+          <stop offset="0%" className="bar-stop-top" />
+          <stop offset="100%" className="bar-stop-bottom" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75, 1].map((t) => (
         <line
           key={t}
+          className="chart-grid"
           x1="0"
           x2={W}
           y1={padT + innerH - innerH * t}
           y2={padT + innerH - innerH * t}
-          stroke="#ebebeb"
           strokeWidth="1"
           strokeDasharray="3 4"
         />
@@ -99,10 +94,10 @@ function SignupBars({ daily, range }: { daily: AdminStats["daily"]; range: numbe
             </rect>
             {i % labelEvery === 0 ? (
               <text
+                className="chart-axis"
                 x={x + bw / 2}
                 y={H - 8}
                 fontSize="10"
-                fill="#8f8f8f"
                 textAnchor="middle"
               >
                 {dateFmt.format(new Date(d.date))}
@@ -111,7 +106,7 @@ function SignupBars({ daily, range }: { daily: AdminStats["daily"]; range: numbe
           </g>
         );
       })}
-      <line x1="0" x2={W} y1={padT + innerH} y2={padT + innerH} stroke="#d4d4d4" strokeWidth="1" />
+      <line className="chart-baseline" x1="0" x2={W} y1={padT + innerH} y2={padT + innerH} strokeWidth="1" />
     </svg>
   );
 }
@@ -125,7 +120,7 @@ function MethodDonut({ stats }: { stats: AdminStats }) {
   return (
     <div className="donut-wrap">
       <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="سهم روش‌های ورود">
-        <circle cx="75" cy="75" r={r} fill="none" stroke="#ebebeb" strokeWidth="20" />
+        <circle className="donut-track" cx="75" cy="75" r={r} fill="none" strokeWidth="20" />
         {total > 0
           ? stats.methods.map((m) => {
               const frac = m.count / total;
@@ -137,7 +132,7 @@ function MethodDonut({ stats }: { stats: AdminStats }) {
                   cy="75"
                   r={r}
                   fill="none"
-                  stroke={METHOD_COLOR[m.method]}
+                  style={{ stroke: METHOD_COLOR[m.method] }}
                   strokeWidth="20"
                   strokeDasharray={`${dash} ${c - dash}`}
                   strokeDashoffset={-offset}
@@ -150,10 +145,10 @@ function MethodDonut({ stats }: { stats: AdminStats }) {
               return el;
             })
           : null}
-        <text x="75" y="72" textAnchor="middle" fontSize="24" fontWeight="500" fill="#171717">
+        <text className="donut-total" x="75" y="72" textAnchor="middle" fontSize="24" fontWeight="500">
           {fa(total)}
         </text>
-        <text x="75" y="92" textAnchor="middle" fontSize="10" fill="#8f8f8f">
+        <text className="donut-sub" x="75" y="92" textAnchor="middle" fontSize="10">
           کاربر
         </text>
       </svg>
@@ -192,32 +187,24 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
           icon="users"
           label="کل کاربران"
           value={fa(stats.totalUsers)}
-          tint="rgba(23,23,23,0.04)"
-          tone="#171717"
           hint={<><strong>{fa(stats.newLast7)}</strong> کاربر جدید در ۷ روز گذشته</>}
         />
         <StatCard
           icon="check"
           label="پروفایل کامل"
           value={fa(stats.withProfile)}
-          tint="rgba(23,23,23,0.04)"
-          tone="#171717"
           hint={<>{fa(percent(stats.withProfile, stats.totalUsers))}٪ از کل کاربران</>}
         />
         <StatCard
           icon="chart"
           label="ثبت‌نام ۳۰ روز"
           value={fa(stats.newLast30)}
-          tint="rgba(23,23,23,0.04)"
-          tone="#171717"
           hint="کاربران تازه در یک ماه گذشته"
         />
         <StatCard
           icon="user"
           label="میانگین سن"
           value={stats.averageAge === null ? "نامشخص" : fa(stats.averageAge)}
-          tint="rgba(23,23,23,0.04)"
-          tone="#171717"
           hint="از پروفایل‌هایی که سن دارند"
         />
       </div>
@@ -272,7 +259,7 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
               <span className="val">{fa(stats.withProfile)}</span>
             </div>
             <div className="sex-bar">
-              <div style={{ width: `${percent(stats.withProfile, stats.totalUsers)}%`, background: "#297a3a" }} />
+              <div style={{ width: `${percent(stats.withProfile, stats.totalUsers)}%`, background: "var(--green)" }} />
             </div>
           </div>
           <div className="sex-row">
@@ -281,7 +268,7 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
               <span className="val">{fa(stats.withoutProfile)}</span>
             </div>
             <div className="sex-bar">
-              <div style={{ width: `${percent(stats.withoutProfile, stats.totalUsers)}%`, background: "#a8a8a8" }} />
+              <div style={{ width: `${percent(stats.withoutProfile, stats.totalUsers)}%`, background: "var(--chart-3)" }} />
             </div>
           </div>
         </div>

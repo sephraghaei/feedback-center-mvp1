@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toPersianDigits } from "@/lib/phone";
 import { Icon } from "./bits";
+import ThemeToggle from "../../components/theme-toggle";
 
 export default function AdminShell({
   userCount,
@@ -107,6 +108,7 @@ export default function AdminShell({
             <span className="topbar-avatar">م</span>
             مدیر
           </span>
+          <ThemeToggle />
         </header>
 
         <main className="admin-content">{children}</main>
