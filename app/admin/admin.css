@@ -1,113 +1,55 @@
 body:has(.admin-shell),
 body:has(.admin-login) {
-  background: #08090a;
-  color: #ffffff;
-  color-scheme: dark;
-}
-
-:root[data-theme="light"] body:has(.admin-shell),
-:root[data-theme="light"] body:has(.admin-login) {
-  background: #ffffff;
-  color: #08090a;
+  background: #fafafa;
+  color: #171717;
   color-scheme: light;
 }
 
 .admin-shell,
 .admin-login {
-  --bg: #08090a;
-  --surface: #0f1011;
-  --surface-2: #161718;
-  --surface-3: #23252a;
-  --subtle: rgba(255, 255, 255, 0.02);
-  --pill-bg: rgba(255, 255, 255, 0.05);
-  --input-line: rgba(255, 255, 255, 0.08);
-  --line: #23252a;
-  --line-strong: #383b3f;
-  --ink: #ffffff;
-  --ink-2: #d0d6e0;
-  --ink-3: #8a8f98;
-  --ink-4: #62666d;
-  --ink-5: #4a4d54;
-  --accent: #e4f222;
-  --accent-text: #e4f222;
-  --accent-ink: #08090a;
-  --accent-soft: rgba(228, 242, 34, 0.09);
-  --accent-line: rgba(228, 242, 34, 0.26);
-  --accent-hover: #d3e00f;
-  --green: #27a644;
-  --green-soft: rgba(39, 166, 68, 0.12);
-  --green-line: rgba(39, 166, 68, 0.35);
-  --orange: #02b8cc;
-  --orange-ink: #5fd7e5;
-  --danger: #eb5757;
-  --danger-soft: rgba(235, 87, 87, 0.12);
-  --danger-line: rgba(235, 87, 87, 0.38);
-  --violet: #6366f1;
-  --violet-ink: #a5a7ff;
-  --violet-soft: rgba(99, 102, 241, 0.14);
-  --violet-line: rgba(99, 102, 241, 0.38);
-  --mark: #08090a;
-  --ring: rgba(228, 242, 34, 0.16);
-  --ring-inset: rgba(255, 255, 255, 0.06);
-  --scrim: rgba(8, 9, 10, 0.62);
-  --chart-1: #e4f222;
-  --chart-2: #6366f1;
-  --chart-3: #27a644;
-  --chart-4: #02b8cc;
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f5f5f5;
+  --surface-3: #ebebeb;
+  --subtle: #ffffff;
+  --pill-bg: #f5f5f5;
+  --input-line: #d4d4d4;
+  --line: #ebebeb;
+  --line-strong: #d4d4d4;
+  --ink: #171717;
+  --ink-2: #4d4d4d;
+  --ink-3: #666666;
+  --ink-4: #8f8f8f;
+  --ink-5: #c9c9c9;
+  --accent: #171717;
+  --accent-text: #171717;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(23, 23, 23, 0.05);
+  --accent-line: #d4d4d4;
+  --accent-hover: #000000;
+  --green: #297a3a;
+  --green-soft: #eaf5ec;
+  --green-line: #c3e3ca;
+  --danger: #b42318;
+  --danger-soft: #fef3f2;
+  --danger-line: #fecdca;
+  --ring: rgba(23, 23, 23, 0.12);
+  --ring-inset: rgba(0, 0, 0, 0.04);
+  --scrim: rgba(23, 23, 23, 0.32);
+  --chart-1: #171717;
+  --chart-2: #297a3a;
+  --chart-3: #8f8f8f;
+  --chart-4: #c9c9c9;
   --radius: 6px;
+  --radius-card: 6px;
+  --radius-band: 6px;
   --pill: 9999px;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --shadow: rgba(0, 0, 0, 0.4) 0 2px 4px 0;
-  --shadow-float: rgba(8, 9, 10, 0.6) 0 4px 32px 0;
+  --shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --shadow-float: 0 0 0 1px rgba(0, 0, 0, 0.08);
   direction: rtl;
   font-family: "Vazirmatn Variable", "Vazirmatn", system-ui, sans-serif;
   color: var(--ink);
-}
-
-:root[data-theme="light"] .admin-shell,
-:root[data-theme="light"] .admin-login {
-  --bg: #ffffff;
-  --surface: #fafafa;
-  --surface-2: #f4f4f5;
-  --surface-3: #ececee;
-  --subtle: rgba(8, 9, 10, 0.02);
-  --pill-bg: rgba(8, 9, 10, 0.04);
-  --input-line: rgba(8, 9, 10, 0.12);
-  --line: #e5e5e6;
-  --line-strong: #d0d6e0;
-  --ink: #08090a;
-  --ink-2: #23252a;
-  --ink-3: #62666d;
-  --ink-4: #8a8f98;
-  --ink-5: #a8abb2;
-  --accent: #e4f222;
-  --accent-text: #5c6800;
-  --accent-ink: #08090a;
-  --accent-soft: rgba(228, 242, 34, 0.22);
-  --accent-line: rgba(146, 160, 0, 0.4);
-  --accent-hover: #d3e00f;
-  --green: #1e9c3c;
-  --green-soft: rgba(39, 166, 68, 0.1);
-  --green-line: rgba(39, 166, 68, 0.35);
-  --orange: #0e93a3;
-  --orange-ink: #0b7180;
-  --danger: #d64545;
-  --danger-soft: rgba(214, 69, 69, 0.08);
-  --danger-line: rgba(214, 69, 69, 0.3);
-  --violet: #5b5ee8;
-  --violet-ink: #4b4ed8;
-  --violet-soft: rgba(91, 94, 232, 0.08);
-  --violet-line: rgba(91, 94, 232, 0.3);
-  --mark: #08090a;
-  --ring: rgba(146, 160, 0, 0.24);
-  --ring-inset: rgba(8, 9, 10, 0.06);
-  --scrim: rgba(8, 9, 10, 0.4);
-  --chart-1: #93a000;
-  --chart-2: #5b5ee8;
-  --chart-3: #1e9c3c;
-  --chart-4: #0e93a3;
-  --shadow: rgba(8, 9, 10, 0.06) 0 2px 4px 0;
-  --shadow-float: rgba(8, 9, 10, 0.12) 0 4px 32px 0;
 }
 
 .admin-shell ::selection,
@@ -175,21 +117,20 @@ body:has(.admin-login) {
   padding: 8px 8px 18px;
 }
 .brand-mark {
-  width: 26px;
-  height: 26px;
+  width: 16px;
+  height: 14px;
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  border-radius: 6px;
-  background: var(--accent);
-  color: var(--mark);
+  background: transparent;
+  color: var(--ink);
 }
 .brand-mark .brand-triangle {
-  width: 11px;
-  height: 10px;
+  width: 16px;
+  height: 14px;
 }
 .brand-name {
-  font-weight: 590;
+  font-weight: 500;
   font-size: 0.94rem;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -241,6 +182,7 @@ body:has(.admin-login) {
   margin-inline-start: auto;
   background: var(--surface-3);
   color: var(--ink-2);
+  border: 1px solid transparent;
   border-radius: var(--pill);
   font-size: 0.7rem;
   font-weight: 400;
@@ -248,8 +190,9 @@ body:has(.admin-login) {
   font-variant-numeric: tabular-nums;
 }
 .side-link.active .badge {
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  border: 1px solid var(--accent-line);
 }
 
 .side-footer {
@@ -375,10 +318,10 @@ body:has(.admin-login) {
 }
 .page-title {
   margin: 0;
-  font-size: 1.6rem;
-  font-weight: 590;
-  line-height: 1.15;
-  letter-spacing: -0.012em;
+  font-size: 1.55rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 .count-badge {
@@ -409,7 +352,7 @@ body:has(.admin-login) {
   border: 1px solid transparent;
   font-family: inherit;
   font-size: 0.82rem;
-  font-weight: 400;
+  font-weight: 500;
   padding: 8px 14px;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease,
@@ -424,10 +367,9 @@ body:has(.admin-login) {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-ink);
-  font-weight: 510;
-  letter-spacing: -0.011em;
-  box-shadow: rgba(0, 0, 0, 0.01) 0 5px 2px 0, rgba(0, 0, 0, 0.04) 0 3px 2px 0,
-    rgba(0, 0, 0, 0.07) 0 1px 1px 0, rgba(0, 0, 0, 0.08) 0 0 1px 0;
+  font-weight: 500;
+  letter-spacing: 0;
+  box-shadow: none;
 }
 .btn-primary:hover:not(:disabled) {
   background: var(--accent-hover);
@@ -447,7 +389,7 @@ body:has(.admin-login) {
   background: var(--danger-soft);
   border-color: var(--danger-line);
   color: var(--danger);
-  font-weight: 510;
+  font-weight: 500;
 }
 .btn-danger:hover:not(:disabled) {
   background: var(--danger);
@@ -475,7 +417,7 @@ body:has(.admin-login) {
   width: 16px;
   height: 16px;
   border: 1px solid var(--line-strong);
-  border-radius: 2px;
+  border-radius: 4px;
   background: var(--subtle);
   cursor: pointer;
   display: inline-grid;
@@ -511,7 +453,7 @@ body:has(.admin-login) {
 .panel {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   overflow: hidden;
 }
 .toolbar {
@@ -549,9 +491,10 @@ body:has(.admin-login) {
   color: var(--ink);
 }
 .view-tab.active {
-  background: var(--surface-3);
+  background: var(--surface);
   color: var(--ink);
   font-weight: 510;
+  box-shadow: 0 0 0 1px var(--line-strong);
 }
 .search-box {
   margin-inline-start: auto;
@@ -580,7 +523,8 @@ body:has(.admin-login) {
   transition: border-color 0.15s ease;
 }
 .search-box input:focus {
-  border-color: var(--ink-2);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--ring);
 }
 .search-box input::placeholder {
   color: var(--ink-4);
@@ -666,7 +610,7 @@ body:has(.admin-login) {
   background: var(--surface-2);
   color: var(--ink-3);
   font-size: 0.72rem;
-  font-weight: 400;
+  font-weight: 500;
   text-align: start;
   padding: 10px 14px;
   border-bottom: 1px solid var(--line);
@@ -777,19 +721,19 @@ body:has(.admin-login) {
   color: var(--ink-3);
 }
 .badge-method.phone {
-  background: var(--accent-soft);
-  border-color: var(--accent-line);
-  color: var(--accent-text);
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #ffffff;
 }
 .badge-method.email {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--ink-2);
+}
+.badge-method.clerk {
   background: var(--green-soft);
   border-color: var(--green-line);
   color: var(--green);
-}
-.badge-method.clerk {
-  background: var(--violet-soft);
-  border-color: var(--violet-line);
-  color: var(--violet-ink);
 }
 .badge-method.unknown {
   background: var(--pill-bg);
@@ -822,11 +766,12 @@ body:has(.admin-login) {
   background: var(--green);
 }
 .pill.warn {
-  color: var(--orange-ink);
-  background: color-mix(in srgb, var(--orange) 14%, transparent);
+  color: var(--ink-3);
+  background: var(--surface-2);
+  border-color: var(--line);
 }
 .pill.warn .dot {
-  background: var(--orange);
+  background: var(--ink-4);
 }
 
 .empty-state {
@@ -864,7 +809,7 @@ body:has(.admin-login) {
 .board-col {
   background: var(--surface-2);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   display: flex;
   flex-direction: column;
   min-height: 120px;
@@ -887,13 +832,13 @@ body:has(.admin-login) {
   background: var(--ink-5);
 }
 .board-dot.phone {
-  background: var(--accent);
+  background: var(--ink);
 }
 .board-dot.email {
   background: var(--green);
 }
 .board-dot.clerk {
-  background: var(--orange);
+  background: var(--ink-4);
 }
 .board-col-head .badge {
   margin-inline-start: auto;
@@ -1059,7 +1004,7 @@ body:has(.admin-login) {
 .drawer-title {
   margin: 0;
   font-size: 1rem;
-  font-weight: 590;
+  font-weight: 500;
 }
 .drawer-head .btn-icon {
   margin-inline-start: auto;
@@ -1101,7 +1046,8 @@ body:has(.admin-login) {
 }
 .field input:focus,
 .field select:focus {
-  border-color: var(--ink-2);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--ring);
 }
 .field input.ltr {
   direction: ltr;
@@ -1197,7 +1143,7 @@ body:has(.admin-login) {
 .stat-card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -1218,15 +1164,35 @@ body:has(.admin-login) {
   border: 1px solid var(--line);
   color: var(--ink-2);
 }
+.stat-card:nth-child(1) .stat-icon {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.stat-card:nth-child(2) .stat-icon {
+  background: var(--green-soft);
+  border-color: var(--green-line);
+  color: var(--green);
+}
+.stat-card:nth-child(3) .stat-icon {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--ink-2);
+}
+.stat-card:nth-child(4) .stat-icon {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--ink-4);
+}
 .stat-label {
   font-size: 0.76rem;
   font-weight: 400;
   color: var(--ink-3);
 }
 .stat-value {
-  font-size: 1.9rem;
-  font-weight: 590;
-  letter-spacing: -0.022em;
+  font-size: 1.85rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
   color: var(--ink);
@@ -1248,7 +1214,7 @@ body:has(.admin-login) {
 .chart-card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -1264,7 +1230,8 @@ body:has(.admin-login) {
 .chart-title {
   margin: 0;
   font-size: 0.92rem;
-  font-weight: 590;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 .chart-sub {
   font-size: 0.73rem;
@@ -1291,9 +1258,10 @@ body:has(.admin-login) {
   cursor: pointer;
 }
 .range-tab.active {
-  background: var(--surface-3);
+  background: var(--surface);
   color: var(--ink);
   font-weight: 510;
+  box-shadow: 0 0 0 1px var(--line-strong);
 }
 .bars-svg {
   width: 100%;
@@ -1322,7 +1290,7 @@ body:has(.admin-login) {
   stop-color: var(--chart-1);
 }
 .bar-stop-bottom {
-  stop-color: var(--chart-3);
+  stop-color: var(--chart-1);
 }
 .donut-wrap {
   display: flex;
@@ -1391,24 +1359,16 @@ body:has(.admin-login) {
   place-items: center;
   padding: 24px;
   position: relative;
-  background:
-    radial-gradient(60rem 30rem at 85% -10%, color-mix(in srgb, var(--ink-3) 8%, transparent), transparent 62%),
-    radial-gradient(50rem 28rem at 10% 110%, color-mix(in srgb, var(--ink-3) 6%, transparent), transparent 60%),
-    var(--bg);
-}
-.admin-login > .theme-toggle {
-  position: absolute;
-  top: 18px;
-  inset-inline-end: 18px;
+  background: var(--bg);
 }
 .login-card {
   width: 100%;
   max-width: 400px;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   box-shadow: var(--shadow-float);
-  padding: 24px;
+  padding: 28px 24px 24px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1425,24 +1385,24 @@ body:has(.admin-login) {
   }
 }
 .login-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius);
+  width: 24px;
+  height: 21px;
   display: grid;
   place-items: center;
-  background: var(--accent);
-  color: var(--mark);
-  margin-bottom: 8px;
+  background: transparent;
+  color: var(--ink);
+  margin-bottom: 10px;
 }
 .login-logo .brand-triangle {
-  width: 16px;
-  height: 14px;
+  width: 24px;
+  height: 21px;
 }
 .login-title {
   margin: 0;
   font-size: 1.3rem;
-  font-weight: 590;
-  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
   color: var(--ink);
 }
 .login-sub {
@@ -1483,7 +1443,8 @@ body:has(.admin-login) {
   transition: border-color 0.15s ease;
 }
 .password-wrap input:focus {
-  border-color: var(--ink-2);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--ring);
 }
 .eye-btn {
   position: absolute;

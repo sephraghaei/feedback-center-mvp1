@@ -19,24 +19,14 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning>
+    <html lang="fa" dir="rtl">
       <head>
         <style>{`
           :root {
-            --paper: #08090a; --surface: #0f1011; --hairline: #23252a; --ink: #ffffff;
-            --ink-3: #8a8f98; --accent: #e4f222; --on-accent: #08090a;
-          }
-          :root[data-theme="light"] {
-            --paper: #ffffff; --surface: #fafafa; --hairline: #e5e5e6; --ink: #08090a;
-            --ink-3: #62666d; --accent: #e4f222; --on-accent: #08090a;
+            --paper: #fafafa; --surface: #ffffff; --hairline: #ebebeb; --ink: #171717;
+            --ink-3: #666666; --accent: #171717; --on-accent: #ffffff;
           }
         `}</style>
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              'try{var t=localStorage.getItem("fc-theme");if(t!=="light"&&t!=="dark"){t="dark";}document.documentElement.dataset.theme=t;}catch(e){}',
-          }}
-        />
       </head>
       <body
         style={{
@@ -44,8 +34,7 @@ export default function GlobalError({
           minHeight: "100dvh",
           display: "grid",
           placeItems: "center",
-          background:
-            "radial-gradient(55% 45% at 50% 0%, rgba(138, 143, 152, 0.1) 0%, transparent 72%), var(--paper)",
+          background: "var(--paper)",
           color: "var(--ink)",
           fontFamily: '"Vazirmatn Variable", Vazirmatn, system-ui, sans-serif',
           textAlign: "center",
@@ -53,13 +42,24 @@ export default function GlobalError({
         }}
       >
         <main>
+          <span
+            aria-hidden="true"
+            style={{
+              display: "block",
+              width: "22px",
+              height: "19px",
+              margin: "0 auto 1rem",
+              background: "#000000",
+              clipPath: "polygon(50% 0, 100% 100%, 0 100%)",
+            }}
+          />
           <h1
             style={{
               margin: 0,
               fontSize: "2.125rem",
-              fontWeight: 590,
-              letterSpacing: "-0.022em",
-              lineHeight: 1.1,
+              fontWeight: 500,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.2,
             }}
           >
             مشکلی پیش آمد
@@ -78,8 +78,8 @@ export default function GlobalError({
               color: "var(--on-accent)",
               fontFamily: "inherit",
               fontSize: "0.875rem",
-              fontWeight: 510,
-              padding: "10px 16px",
+              fontWeight: 500,
+              padding: "10px 20px",
               cursor: "pointer",
             }}
           >
