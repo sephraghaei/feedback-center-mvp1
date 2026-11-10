@@ -39,7 +39,7 @@ export default function AdminShell({
       <aside className={`admin-sidebar ${open ? "open" : ""}`}>
         <div className="side-brand">
           <span className="brand-mark">
-            <Icon name="chart" size={20} />
+            <span className="brand-triangle" aria-hidden="true" />
           </span>
           <span>
             <span className="brand-name">Feedback-center</span>

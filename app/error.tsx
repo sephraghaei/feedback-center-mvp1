@@ -20,7 +20,7 @@ export default function Error({
 
   return (
     <main className="page">
-      <h1 className="title">مشکلی پیش آمد</h1>
+      <h1 className="error-title">مشکلی پیش آمد</h1>
       <p className="subtitle">یک خطای غیرمنتظره رخ داد. دوباره تلاش کن.</p>
       <button type="button" className="primary" style={{ maxWidth: "18rem" }} onClick={retry}>
         تلاش دوباره

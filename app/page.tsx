@@ -1,5 +1,6 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
+import Link from "next/link";
 import AuthFlow, { ClerkSignOutButton, LogoutButton } from "./components/auth-flow";
 import { OTP_LENGTH } from "@/lib/config";
 import { logger } from "@/lib/logger";
@@ -37,58 +38,104 @@ export default async function Home() {
   });
 
   return (
-    <main className="page">
-      <h1 className="title" dir="ltr">Feedback-center</h1>
+    <div className="shell">
+      <header className="site-nav">
+        <div className="nav-inner">
+          <Link href="/" className="nav-brand" aria-label="Feedback-center">
+            <span className="brand-triangle" aria-hidden="true" />
+            <span className="nav-name" dir="ltr">Feedback-center</span>
+          </Link>
+          <nav className="nav-links" aria-label="مسیرهای اصلی">
+            <a className="nav-link" href="#account">حساب کاربری</a>
+            <Link className="nav-link solid" href="/admin/login">پنل مدیریت</Link>
+          </nav>
+        </div>
+      </header>
 
-      {profile && (session || clerkUser) ? (
-        <section className="card" aria-label="حساب کاربری">
-          <p className="card-greeting">سلام، {profile.name} عزیز</p>
-          <p className="card-note">خوشحالیم که اینجایی.</p>
-
-          <dl className="details">
-            {session?.phone ? (
-              <div className="detail">
-                <dt>شماره موبایل</dt>
-                <dd className="mono">{toPersianDigits(session.phone)}</dd>
-              </div>
-            ) : null}
-            {session?.email ? (
-              <div className="detail">
-                <dt>ایمیل</dt>
-                <dd className="mono ltr">{session.email}</dd>
-              </div>
-            ) : null}
-            {clerkUser?.email ? (
-              <div className="detail">
-                <dt>ایمیل</dt>
-                <dd className="mono ltr">{clerkUser.email}</dd>
-              </div>
-            ) : null}
-            {profile.age ? (
-              <div className="detail">
-                <dt>سن</dt>
-                <dd>{toPersianDigits(String(profile.age))} سال</dd>
-              </div>
-            ) : null}
-            {profile.sex ? (
-              <div className="detail">
-                <dt>جنسیت</dt>
-                <dd>{profile.sex}</dd>
-              </div>
-            ) : null}
-            {profile.company ? (
-              <div className="detail">
-                <dt>نام شرکت</dt>
-                <dd>{profile.company}</dd>
-              </div>
-            ) : null}
-          </dl>
-
-          {session ? <LogoutButton /> : <ClerkSignOutButton />}
+      <main className="hero">
+        <section className="hero-copy" aria-labelledby="site-title">
+          <p className="eyebrow">مرکز بازخورد</p>
+          <h1 id="site-title" className="title" dir="ltr">Feedback-center</h1>
+          <p className="lede">
+            جایی ساده برای شنیدن نظر کاربران. با موبایل، ایمیل یا حساب گوگل وارد شو و
+            پروفایلت را در چند ثانیه کامل کن.
+          </p>
+          <ul className="checklist">
+            <li>ورود بدون رمز با کد یک‌بارمصرف پیامکی</li>
+            <li>ورود سریع با ایمیل یا حساب گوگل</li>
+            <li>پروفایل کوتاه، قابل ویرایش و بدون حواشی</li>
+          </ul>
         </section>
-      ) : (
-        <AuthFlow status={status} phone={session?.phone} codeLength={OTP_LENGTH} />
-      )}
-    </main>
+
+        <section id="account" className="entry" aria-label="حساب کاربری">
+          {profile && (session || clerkUser) ? (
+            <div className="card">
+              <p className="eyebrow">حساب کاربری</p>
+              <p className="card-greeting">سلام، {profile.name} عزیز</p>
+              <p className="card-note">خوشحالیم که اینجایی.</p>
+
+              <dl className="details">
+                {session?.phone ? (
+                  <div className="detail">
+                    <dt>شماره موبایل</dt>
+                    <dd className="mono">{toPersianDigits(session.phone)}</dd>
+                  </div>
+                ) : null}
+                {session?.email ? (
+                  <div className="detail">
+                    <dt>ایمیل</dt>
+                    <dd className="mono ltr">{session.email}</dd>
+                  </div>
+                ) : null}
+                {clerkUser?.email ? (
+                  <div className="detail">
+                    <dt>ایمیل</dt>
+                    <dd className="mono ltr">{clerkUser.email}</dd>
+                  </div>
+                ) : null}
+                {profile.age ? (
+                  <div className="detail">
+                    <dt>سن</dt>
+                    <dd>{toPersianDigits(String(profile.age))} سال</dd>
+                  </div>
+                ) : null}
+                {profile.sex ? (
+                  <div className="detail">
+                    <dt>جنسیت</dt>
+                    <dd>{profile.sex}</dd>
+                  </div>
+                ) : null}
+                {profile.company ? (
+                  <div className="detail">
+                    <dt>نام شرکت</dt>
+                    <dd>{profile.company}</dd>
+                  </div>
+                ) : null}
+              </dl>
+
+              {session ? <LogoutButton /> : <ClerkSignOutButton />}
+            </div>
+          ) : (
+            <div className="card entry-card">
+              <p className="eyebrow">ورود</p>
+              <h2 className="card-title">به حساب خودت برگرد</h2>
+              <p className="card-note">
+                شماره موبایلت را وارد کن تا کد ورود برایت پیامک شود، یا با ایمیل و
+                حساب گوگل وارد شو.
+              </p>
+              <AuthFlow status={status} phone={session?.phone} codeLength={OTP_LENGTH} />
+              <p className="entry-foot">
+                با ورود، پروفایلت ساخته می‌شود و هر وقت بخواهی می‌توانی آن را کامل کنی.
+              </p>
+            </div>
+          )}
+        </section>
+      </main>
+
+      <footer className="site-footer">
+        <span dir="ltr">Feedback-center</span>
+        <span>نسخه ۱٫۰٫۰</span>
+      </footer>
+    </div>
   );
 }

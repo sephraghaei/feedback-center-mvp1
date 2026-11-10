@@ -10,7 +10,7 @@ const appName = APP_NAME;
 
 export const metadata: Metadata = {
   title: appName,
-  description: "یک پروژه ساده و سیاه با فونت وزیرمتن",
+  description: "مرکز بازخورد ساده و شفاف برای شنیدن نظر کاربران",
 };
 
 export default function RootLayout({
@@ -23,9 +23,21 @@ export default function RootLayout({
           localization={faIR}
           appearance={{
             variables: {
-              colorPrimary: "#f4f4f4",
-              colorBackground: "#0b0b0b",
-              borderRadius: "0.75rem",
+              colorPrimary: "#171717",
+              colorPrimaryForeground: "#ffffff",
+              colorBackground: "#ffffff",
+              colorForeground: "#171717",
+              colorMuted: "#f5f5f5",
+              colorMutedForeground: "#666666",
+              colorInput: "#ffffff",
+              colorInputForeground: "#171717",
+              colorBorder: "#ebebeb",
+              colorNeutral: "#171717",
+              colorShadow: "#171717",
+              colorSuccess: "#297a3a",
+              borderRadius: "0.375rem",
+              fontFamily: '"Vazirmatn Variable", Vazirmatn, system-ui, sans-serif',
+              fontSize: "0.875rem",
             },
           }}
         >

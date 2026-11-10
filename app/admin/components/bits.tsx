@@ -63,14 +63,14 @@ export function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
 }
 
 const AVATAR_COLORS: [string, string][] = [
-  ["#f4f4f4", "#8a8a8a"],
-  ["#ffffff", "#a3a3a3"],
-  ["#d4d4d4", "#6a6a6a"],
-  ["#e8e8e8", "#9a9a9a"],
-  ["#c8c8c8", "#7a7a7a"],
-  ["#fafafa", "#b0b0b0"],
-  ["#dedede", "#888888"],
-  ["#f0f0f0", "#969696"],
+  ["#f5f5f5", "#d9d9d9"],
+  ["#efefef", "#cfcfcf"],
+  ["#fafafa", "#e2e2e2"],
+  ["#e8e8e8", "#c9c9c9"],
+  ["#f2f2f2", "#d4d4d4"],
+  ["#ededed", "#dcdcdc"],
+  ["#f7f7f7", "#cdcdcd"],
+  ["#e5e5e5", "#d0d0d0"],
 ];
 
 function hash(value: string): number {

@@ -35,7 +35,7 @@ export default function LoginForm({ configured }: { configured: boolean }) {
     <div className="admin-login">
       <form className="login-card" onSubmit={submit}>
         <span className="login-logo">
-          <Icon name="lock" size={24} />
+          <span className="brand-triangle" aria-hidden="true" />
         </span>
         <h1 className="login-title">ورود مدیر</h1>
         <p className="login-sub">

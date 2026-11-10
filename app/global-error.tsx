@@ -26,16 +26,18 @@ export default function GlobalError({
           minHeight: "100dvh",
           display: "grid",
           placeItems: "center",
-          background: "#000",
-          color: "#f4f4f4",
+          background: "#fafafa",
+          color: "#171717",
           fontFamily: '"Vazirmatn Variable", Vazirmatn, system-ui, sans-serif',
           textAlign: "center",
           padding: "2rem",
         }}
       >
         <main>
-          <h1 style={{ margin: 0, fontSize: "2rem" }}>مشکلی پیش آمد</h1>
-          <p style={{ color: "#8a8a8a", marginTop: "0.5rem" }}>
+          <h1 style={{ margin: 0, fontSize: "2rem", fontWeight: 500, letterSpacing: "-0.025em" }}>
+            مشکلی پیش آمد
+          </h1>
+          <p style={{ color: "#666666", marginTop: "0.5rem" }}>
             یک خطای غیرمنتظره رخ داد. دوباره تلاش کن.
           </p>
           <button
@@ -43,14 +45,14 @@ export default function GlobalError({
             onClick={retry}
             style={{
               marginTop: "1rem",
-              border: 0,
-              borderRadius: "0.85rem",
-              background: "#f4f4f4",
-              color: "#0a0a0a",
+              border: "1px solid #171717",
+              borderRadius: "6px",
+              background: "#171717",
+              color: "#ffffff",
               fontFamily: "inherit",
-              fontSize: "0.95rem",
-              fontWeight: 700,
-              padding: "0.85rem 1.25rem",
+              fontSize: "0.9rem",
+              fontWeight: 500,
+              padding: "0.72rem 1.25rem",
               cursor: "pointer",
             }}
           >

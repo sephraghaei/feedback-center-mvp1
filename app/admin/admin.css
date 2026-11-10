@@ -1,41 +1,32 @@
-/* Admin panel: matches the Feedback-center site (black surfaces, white actions,
-   Vazirmatn, RTL). Color is reserved for data: charts, status and method tones. */
-
 body:has(.admin-shell),
 body:has(.admin-login) {
-  background: #000;
-  color: #f4f4f4;
-  color-scheme: dark;
+  background: #fafafa;
+  color: #171717;
+  color-scheme: light;
 }
 
 .admin-shell,
 .admin-login {
-  --bg: #000;
-  --surface: #0b0b0b;
-  --surface-2: #121212;
-  --surface-3: #1a1a1a;
-  --line: #1f1f1f;
-  --line-strong: #2e2e2e;
-  --ink: #f4f4f4;
-  --ink-2: #b9b9b9;
-  --ink-3: #8a8a8a;
-  --accent: #f4f4f4;
-  --accent-ink: #0a0a0a;
-  --accent-soft: rgba(244, 244, 244, 0.08);
-  --green: #4ade80;
-  --green-soft: rgba(74, 222, 128, 0.12);
-  --red: #f87171;
-  --red-soft: rgba(248, 113, 113, 0.12);
-  --amber: #fbbf24;
-  --amber-soft: rgba(251, 191, 36, 0.12);
-  --blue: #60a5fa;
-  --blue-soft: rgba(96, 165, 250, 0.12);
-  --violet: #a78bfa;
-  --violet-soft: rgba(167, 139, 250, 0.12);
-  --teal: #2dd4bf;
-  --teal-soft: rgba(45, 212, 191, 0.12);
-  --radius: 12px;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.45);
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #fafafa;
+  --surface-3: #f5f5f5;
+  --line: #ebebeb;
+  --line-strong: #d4d4d4;
+  --ink: #171717;
+  --ink-2: #4d4d4d;
+  --ink-3: #666666;
+  --ink-4: #8f8f8f;
+  --ink-5: #c9c9c9;
+  --accent: #171717;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(23, 23, 23, 0.05);
+  --green: #297a3a;
+  --green-soft: rgba(41, 122, 58, 0.08);
+  --danger: #171717;
+  --danger-soft: #f5f5f5;
+  --radius: 6px;
+  --shadow: 0 0 0 1px rgba(0, 0, 0, 0.03);
   direction: rtl;
   font-family: "Vazirmatn Variable", "Vazirmatn", system-ui, sans-serif;
   color: var(--ink);
@@ -47,7 +38,6 @@ body:has(.admin-login) {
   color: var(--accent-ink);
 }
 
-/* Scrollbars in the panel's own language */
 .admin-shell ::-webkit-scrollbar,
 .admin-login ::-webkit-scrollbar {
   width: 10px;
@@ -66,7 +56,7 @@ body:has(.admin-login) {
 }
 .admin-shell ::-webkit-scrollbar-thumb:hover,
 .admin-login ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3a;
+  background: #b3b3b3;
   border: 3px solid transparent;
   background-clip: content-box;
 }
@@ -85,7 +75,7 @@ body:has(.admin-login) {
 }
 
 .admin-sidebar {
-  width: 268px;
+  width: 260px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -104,30 +94,29 @@ body:has(.admin-login) {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 8px 16px;
+  padding: 8px 8px 18px;
 }
 .brand-mark {
-  width: 36px;
-  height: 36px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  border-radius: 10px;
-  background: linear-gradient(180deg, #ffffff 30%, #8a8a8a 100%);
-  color: #0a0a0a;
+  color: #000000;
+}
+.brand-mark .brand-triangle {
+  width: 14px;
+  height: 13px;
 }
 .brand-name {
-  font-weight: 800;
-  font-size: 1rem;
+  font-weight: 500;
+  font-size: 0.95rem;
   letter-spacing: -0.01em;
-  background: linear-gradient(180deg, #ffffff 35%, #8a8a8a 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 .brand-sub {
   font-size: 0.7rem;
-  color: var(--ink-3);
+  color: var(--ink-4);
 }
 
 .side-section {
@@ -138,31 +127,31 @@ body:has(.admin-login) {
 }
 .side-label {
   font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--ink-3);
+  font-weight: 500;
+  color: var(--ink-4);
   padding: 8px 10px 6px;
 }
 .side-link {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 10px;
-  border-radius: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius);
   color: var(--ink-2);
   text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.87rem;
+  font-weight: 500;
   border: 1px solid transparent;
   transition: background 0.15s ease, color 0.15s ease;
 }
 .side-link:hover {
-  background: var(--surface-2);
+  background: var(--surface-3);
   color: var(--ink);
 }
 .side-link.active {
   background: var(--surface-3);
   color: var(--ink);
-  border-color: var(--line-strong);
+  border-color: var(--line);
 }
 .side-link .icon {
   flex-shrink: 0;
@@ -173,7 +162,7 @@ body:has(.admin-login) {
   color: var(--ink-2);
   border-radius: 999px;
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 500;
   padding: 2px 8px;
   font-variant-numeric: tabular-nums;
 }
@@ -192,7 +181,7 @@ body:has(.admin-login) {
 .side-card {
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: linear-gradient(160deg, rgba(244, 244, 244, 0.06), transparent 70%);
+  background: var(--bg);
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -200,14 +189,14 @@ body:has(.admin-login) {
 }
 .side-card p {
   margin: 0;
-  font-size: 0.75rem;
-  line-height: 1.7;
-  color: var(--ink-2);
+  font-size: 0.74rem;
+  line-height: 1.8;
+  color: var(--ink-3);
 }
 .side-version {
   text-align: center;
   font-size: 0.68rem;
-  color: var(--ink-3);
+  color: var(--ink-4);
 }
 
 .side-scrim {
@@ -228,11 +217,11 @@ body:has(.admin-login) {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  backdrop-filter: blur(8px);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--line);
-  padding: 12px 28px;
-  min-height: 56px;
+  padding: 12px 32px;
+  min-height: 64px;
 }
 .menu-btn {
   display: none;
@@ -241,7 +230,7 @@ body:has(.admin-login) {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   color: var(--ink-3);
   min-width: 0;
 }
@@ -254,13 +243,13 @@ body:has(.admin-login) {
 }
 .crumb .current {
   color: var(--ink);
-  font-weight: 700;
+  font-weight: 500;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 .crumb-sep {
-  color: var(--line-strong);
+  color: var(--ink-5);
 }
 .topbar-user {
   margin-inline-start: auto;
@@ -268,7 +257,7 @@ body:has(.admin-login) {
   align-items: center;
   gap: 8px;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--ink-2);
 }
 .topbar-avatar {
@@ -277,24 +266,25 @@ body:has(.admin-login) {
   border-radius: 999px;
   display: grid;
   place-items: center;
-  background: linear-gradient(180deg, #ffffff 30%, #8a8a8a 100%);
-  color: #0a0a0a;
-  font-size: 0.75rem;
-  font-weight: 800;
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 0.74rem;
+  font-weight: 600;
 }
 
 .admin-content {
-  padding: 28px 32px 48px;
+  padding: 36px 32px 56px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   min-width: 0;
 }
 
 .page-head {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 .page-title-row {
   display: flex;
@@ -304,28 +294,25 @@ body:has(.admin-login) {
 }
 .page-title {
   margin: 0;
-  font-size: 1.7rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  background: linear-gradient(180deg, #ffffff 35%, #8a8a8a 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-size: 1.65rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--ink);
 }
 .count-badge {
   background: var(--surface-3);
   color: var(--ink-2);
   border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  padding: 3px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 3px 10px;
   font-variant-numeric: tabular-nums;
 }
 .page-sub {
   margin: 0;
-  color: var(--ink-2);
-  font-size: 0.92rem;
-  line-height: 1.8;
+  color: var(--ink-3);
+  font-size: 0.9rem;
+  line-height: 1.85;
 }
 
 /* ---------- Buttons & inputs ---------- */
@@ -335,49 +322,51 @@ body:has(.admin-login) {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border-radius: 0.85rem;
+  border-radius: var(--radius);
   border: 1px solid transparent;
   font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: 9px 16px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  padding: 9px 14px;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
   text-decoration: none;
 }
-.btn:active:not(:disabled) {
-  transform: translateY(1px);
-}
 .btn:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 .btn-primary {
   background: var(--accent);
+  border-color: var(--accent);
   color: var(--accent-ink);
 }
 .btn-primary:hover:not(:disabled) {
-  opacity: 0.9;
+  background: #000000;
+  border-color: #000000;
 }
 .btn-ghost {
   background: transparent;
   border-color: var(--line);
-  color: var(--ink);
+  color: var(--ink-2);
 }
 .btn-ghost:hover:not(:disabled) {
-  border-color: #3a3a3a;
+  border-color: var(--ink);
+  color: var(--ink);
 }
 .btn-danger {
-  background: var(--red-soft);
-  color: var(--red);
-  border-color: rgba(248, 113, 113, 0.3);
+  background: transparent;
+  border-color: var(--ink);
+  color: var(--ink);
+  font-weight: 600;
 }
 .btn-danger:hover:not(:disabled) {
-  background: rgba(248, 113, 113, 0.2);
+  background: var(--ink);
+  color: #ffffff;
 }
 .btn-icon {
   padding: 7px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: transparent;
   border-color: transparent;
   color: var(--ink-3);
@@ -387,8 +376,8 @@ body:has(.admin-login) {
   color: var(--ink);
 }
 .btn-icon.danger:hover:not(:disabled) {
-  background: var(--red-soft);
-  color: var(--red);
+  background: var(--ink);
+  color: #ffffff;
 }
 
 .check {
@@ -396,8 +385,8 @@ body:has(.admin-login) {
   width: 17px;
   height: 17px;
   border: 1.5px solid var(--line-strong);
-  border-radius: 5px;
-  background: var(--surface-2);
+  border-radius: 4px;
+  background: var(--surface);
   cursor: pointer;
   display: inline-grid;
   place-items: center;
@@ -412,8 +401,8 @@ body:has(.admin-login) {
   content: "";
   width: 9px;
   height: 5px;
-  border-inline-start: 2px solid #0a0a0a;
-  border-bottom: 2px solid #0a0a0a;
+  border-inline-start: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
   transform: rotate(-45deg) translateY(-1px);
 }
 .check:indeterminate {
@@ -424,7 +413,7 @@ body:has(.admin-login) {
   content: "";
   width: 9px;
   height: 2px;
-  background: #0a0a0a;
+  background: #ffffff;
 }
 
 /* ---------- Toolbar / filters ---------- */
@@ -432,7 +421,7 @@ body:has(.admin-login) {
 .panel {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 1.25rem;
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
   overflow: hidden;
 }
@@ -448,7 +437,7 @@ body:has(.admin-login) {
   display: inline-flex;
   background: var(--surface-2);
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--radius);
   padding: 3px;
   gap: 2px;
 }
@@ -458,18 +447,21 @@ body:has(.admin-login) {
   gap: 6px;
   border: 0;
   background: transparent;
-  border-radius: 8px;
+  border-radius: 4px;
   font-family: inherit;
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--ink-2);
-  padding: 7px 14px;
+  padding: 6px 12px;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.view-tab.active {
-  background: var(--surface-3);
+.view-tab:hover {
   color: var(--ink);
+}
+.view-tab.active {
+  background: var(--ink);
+  color: #ffffff;
 }
 .search-box {
   margin-inline-start: auto;
@@ -482,27 +474,27 @@ body:has(.admin-login) {
 .search-box .icon {
   position: absolute;
   inset-inline-start: 11px;
-  color: var(--ink-3);
+  color: var(--ink-4);
   pointer-events: none;
 }
 .search-box input {
   width: 100%;
   border: 1px solid var(--line-strong);
-  border-radius: 0.75rem;
-  background: var(--surface-2);
+  border-radius: var(--radius);
+  background: var(--surface);
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   color: var(--ink);
   padding: 9px 36px 9px 12px;
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .search-box input:focus {
-  border-color: #6a6a6a;
-  box-shadow: 0 0 0 3px rgba(244, 244, 244, 0.1);
+  border-color: var(--ink);
+  box-shadow: 0 0 0 1px var(--ink);
 }
 .search-box input::placeholder {
-  color: #4d4d4d;
+  color: var(--ink-5);
 }
 
 .filters {
@@ -522,16 +514,16 @@ body:has(.admin-login) {
   background: var(--surface);
   border-radius: 999px;
   padding: 6px 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 500;
   color: var(--ink-2);
 }
 .filter-select select {
   border: 0;
   background: transparent;
   font-family: inherit;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.78rem;
+  font-weight: 500;
   color: var(--ink);
   outline: none;
   cursor: pointer;
@@ -544,11 +536,11 @@ body:has(.admin-login) {
   background-repeat: no-repeat;
 }
 .filter-select select option {
-  background: var(--surface-2);
+  background: var(--surface);
   color: var(--ink);
 }
 .filter-select.on {
-  border-color: #6a6a6a;
+  border-color: var(--ink);
   color: var(--ink);
   background: var(--surface-3);
 }
@@ -563,10 +555,10 @@ body:has(.admin-login) {
   align-items: center;
   gap: 10px;
   padding: 10px 16px;
-  background: var(--accent-soft);
-  border-bottom: 1px solid var(--line-strong);
+  background: var(--surface-3);
+  border-bottom: 1px solid var(--line);
   font-size: 0.82rem;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--ink);
 }
 
@@ -578,14 +570,14 @@ body:has(.admin-login) {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.87rem;
+  font-size: 0.86rem;
   min-width: 760px;
 }
 .admin-table thead th {
   background: var(--surface-2);
-  color: var(--ink-2);
-  font-size: 0.76rem;
-  font-weight: 700;
+  color: var(--ink-3);
+  font-size: 0.74rem;
+  font-weight: 500;
   text-align: start;
   padding: 11px 14px;
   border-bottom: 1px solid var(--line);
@@ -606,7 +598,7 @@ body:has(.admin-login) {
   color: var(--ink);
 }
 .th-sort .icon {
-  color: var(--ink-3);
+  color: var(--ink-4);
 }
 .th-sort.on {
   color: var(--ink);
@@ -626,7 +618,7 @@ body:has(.admin-login) {
   background: var(--surface-2);
 }
 .admin-table tbody tr.selected {
-  background: var(--accent-soft);
+  background: var(--surface-3);
 }
 .admin-table tbody tr:last-child td {
   border-bottom: 0;
@@ -638,7 +630,7 @@ body:has(.admin-login) {
   min-width: 0;
 }
 .cell-user .name {
-  font-weight: 700;
+  font-weight: 500;
   color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
@@ -646,7 +638,7 @@ body:has(.admin-login) {
 }
 .cell-user .sub {
   font-size: 0.72rem;
-  color: var(--ink-3);
+  color: var(--ink-4);
 }
 .cell-id {
   direction: ltr;
@@ -671,38 +663,41 @@ body:has(.admin-login) {
   border-radius: 999px;
   display: grid;
   place-items: center;
-  color: #0a0a0a;
-  font-weight: 800;
+  color: var(--ink);
+  font-weight: 600;
   flex-shrink: 0;
   letter-spacing: 0;
   user-select: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
 .badge-method {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  border: 1px solid var(--line);
   border-radius: 999px;
   font-size: 0.72rem;
-  font-weight: 700;
-  padding: 4px 10px;
+  font-weight: 500;
+  padding: 3px 10px;
   white-space: nowrap;
 }
 .badge-method.phone {
-  background: var(--blue-soft);
-  color: var(--blue);
+  background: var(--surface-3);
+  color: var(--ink);
 }
 .badge-method.email {
-  background: var(--violet-soft);
-  color: var(--violet);
+  background: var(--surface);
+  color: var(--ink-2);
 }
 .badge-method.clerk {
-  background: var(--teal-soft);
-  color: var(--teal);
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #ffffff;
 }
 .badge-method.unknown {
-  background: var(--surface-3);
-  color: var(--ink-3);
+  background: transparent;
+  color: var(--ink-4);
 }
 
 .pill {
@@ -710,29 +705,30 @@ body:has(.admin-login) {
   align-items: center;
   gap: 6px;
   border-radius: 999px;
-  border: 1px solid var(--line-strong);
-  background: var(--surface-2);
-  font-size: 0.74rem;
-  font-weight: 700;
-  padding: 4px 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 3px 10px;
   white-space: nowrap;
 }
 .pill .dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 999px;
 }
 .pill.ok {
   color: var(--green);
+  border-color: rgba(41, 122, 58, 0.28);
 }
 .pill.ok .dot {
   background: var(--green);
 }
 .pill.warn {
-  color: var(--amber);
+  color: var(--ink-3);
 }
 .pill.warn .dot {
-  background: var(--amber);
+  background: var(--ink-5);
 }
 
 .empty-state {
@@ -742,19 +738,20 @@ body:has(.admin-login) {
   gap: 10px;
   padding: 56px 24px;
   text-align: center;
-  color: var(--ink-3);
+  color: var(--ink-4);
 }
 .empty-state .icon {
-  color: var(--line-strong);
+  color: var(--ink-5);
 }
 .empty-state h3 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.98rem;
+  font-weight: 500;
   color: var(--ink-2);
 }
 .empty-state p {
   margin: 0;
-  font-size: 0.83rem;
+  font-size: 0.82rem;
   line-height: 1.8;
 }
 
@@ -769,7 +766,7 @@ body:has(.admin-login) {
 .board-col {
   background: var(--surface-2);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   display: flex;
   flex-direction: column;
   min-height: 120px;
@@ -779,14 +776,15 @@ body:has(.admin-login) {
   align-items: center;
   gap: 8px;
   padding: 12px 14px;
-  font-size: 0.8rem;
-  font-weight: 800;
+  font-size: 0.78rem;
+  font-weight: 500;
   color: var(--ink-2);
   border-bottom: 1px solid var(--line);
 }
 .board-col-head .badge {
   margin-inline-start: auto;
-  background: var(--surface-3);
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: 999px;
   font-size: 0.7rem;
   padding: 2px 8px;
@@ -801,7 +799,7 @@ body:has(.admin-login) {
 .board-card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--radius);
   padding: 10px 12px;
   display: flex;
   align-items: center;
@@ -812,15 +810,15 @@ body:has(.admin-login) {
   flex: 1;
 }
 .board-card .name {
-  font-weight: 700;
-  font-size: 0.84rem;
+  font-weight: 500;
+  font-size: 0.83rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .board-card .id {
   font-size: 0.7rem;
-  color: var(--ink-3);
+  color: var(--ink-4);
   direction: ltr;
   text-align: left;
   white-space: nowrap;
@@ -830,8 +828,8 @@ body:has(.admin-login) {
 .board-empty {
   padding: 18px;
   text-align: center;
-  font-size: 0.76rem;
-  color: var(--ink-3);
+  font-size: 0.75rem;
+  color: var(--ink-4);
 }
 
 .list-view {
@@ -857,12 +855,12 @@ body:has(.admin-login) {
   min-width: 0;
 }
 .list-row .name {
-  font-weight: 700;
-  font-size: 0.88rem;
+  font-weight: 500;
+  font-size: 0.87rem;
 }
 .list-row .id {
   font-size: 0.74rem;
-  color: var(--ink-3);
+  color: var(--ink-4);
   direction: ltr;
   text-align: left;
 }
@@ -879,8 +877,8 @@ body:has(.admin-login) {
   background: var(--surface-2);
 }
 .pager-info {
-  font-size: 0.8rem;
-  color: var(--ink-2);
+  font-size: 0.78rem;
+  color: var(--ink-3);
   font-variant-numeric: tabular-nums;
 }
 .pager-btns {
@@ -898,10 +896,10 @@ body:has(.admin-login) {
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(6px);
+  background: rgba(23, 23, 23, 0.3);
+  backdrop-filter: blur(4px);
   z-index: 80;
-  animation: admin-fade 0.18s ease;
+  animation: admin-fade 0.16s ease;
 }
 .drawer {
   position: fixed;
@@ -911,11 +909,11 @@ body:has(.admin-login) {
   width: min(440px, 100%);
   background: var(--surface);
   border-inline-end: 1px solid var(--line);
-  box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
   z-index: 81;
   display: flex;
   flex-direction: column;
-  animation: admin-slide 0.22s ease;
+  animation: admin-slide 0.2s ease;
 }
 @keyframes admin-slide {
   from {
@@ -942,8 +940,9 @@ body:has(.admin-login) {
 }
 .drawer-title {
   margin: 0;
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 .drawer-head .btn-icon {
   margin-inline-start: auto;
@@ -962,21 +961,21 @@ body:has(.admin-login) {
   gap: 6px;
 }
 .field label {
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.76rem;
+  font-weight: 500;
   color: var(--ink-2);
 }
 .field label .opt {
-  font-weight: 500;
-  color: var(--ink-3);
+  font-weight: 400;
+  color: var(--ink-4);
 }
 .field input,
 .field select {
   border: 1px solid var(--line-strong);
-  border-radius: 0.75rem;
-  background: var(--surface-2);
+  border-radius: var(--radius);
+  background: var(--surface);
   font-family: inherit;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: var(--ink);
   padding: 10px 12px;
   outline: none;
@@ -985,15 +984,15 @@ body:has(.admin-login) {
 }
 .field input:focus,
 .field select:focus {
-  border-color: #6a6a6a;
-  box-shadow: 0 0 0 3px rgba(244, 244, 244, 0.1);
+  border-color: var(--ink);
+  box-shadow: 0 0 0 1px var(--ink);
 }
 .field input.ltr {
   direction: ltr;
   text-align: left;
 }
 .field select option {
-  background: var(--surface-2);
+  background: var(--surface);
   color: var(--ink);
 }
 .field-row {
@@ -1003,11 +1002,12 @@ body:has(.admin-login) {
 }
 .form-error {
   margin: 0;
-  background: var(--red-soft);
-  color: var(--red);
-  border: 1px solid rgba(248, 113, 113, 0.3);
-  border-radius: 10px;
-  font-size: 0.8rem;
+  background: var(--surface-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-inline-start: 2px solid var(--ink);
+  border-radius: var(--radius);
+  font-size: 0.78rem;
   padding: 10px 12px;
   line-height: 1.7;
 }
@@ -1034,18 +1034,17 @@ body:has(.admin-login) {
   gap: 12px;
   background: var(--accent);
   color: var(--accent-ink);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 12px 16px;
-  font-size: 0.84rem;
-  font-weight: 600;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
-  animation: admin-toast 0.22s ease;
+  font-size: 0.82rem;
+  font-weight: 500;
+  animation: admin-toast 0.2s ease;
   max-width: calc(100vw - 48px);
 }
 @keyframes admin-toast {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -1054,18 +1053,21 @@ body:has(.admin-login) {
 }
 .toast-action {
   border: 0;
-  background: rgba(10, 10, 10, 0.12);
-  color: #0a0a0a;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-radius: 4px;
   font-family: inherit;
-  font-size: 0.8rem;
-  font-weight: 800;
-  padding: 7px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 6px 10px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   transition: background 0.15s ease;
 }
 .toast-action:hover {
-  background: rgba(10, 10, 10, 0.22);
+  background: rgba(255, 255, 255, 0.24);
 }
 
 /* ---------- Dashboard ---------- */
@@ -1078,26 +1080,12 @@ body:has(.admin-login) {
 .stat-card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 1.25rem;
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  position: relative;
-  overflow: hidden;
-}
-.stat-card::after {
-  content: "";
-  position: absolute;
-  inset-inline-end: -30px;
-  top: -30px;
-  width: 110px;
-  height: 110px;
-  border-radius: 999px;
-  background: var(--glow, var(--accent-soft));
-  filter: blur(6px);
-  pointer-events: none;
 }
 .stat-top {
   display: flex;
@@ -1105,33 +1093,35 @@ body:has(.admin-login) {
   gap: 10px;
 }
 .stat-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius);
   display: grid;
   place-items: center;
-  background: var(--tint, var(--accent-soft));
+  background: var(--surface-3);
+  border: 1px solid var(--line);
   color: var(--tone, var(--ink));
 }
 .stat-label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--ink-2);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-3);
 }
 .stat-value {
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: 1.9rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
+  color: var(--ink);
 }
 .stat-hint {
-  font-size: 0.74rem;
-  color: var(--ink-3);
+  font-size: 0.73rem;
+  color: var(--ink-4);
 }
 .stat-hint strong {
   color: var(--green);
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .charts-grid {
@@ -1142,12 +1132,12 @@ body:has(.admin-login) {
 .chart-card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 1.25rem;
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   min-width: 0;
 }
 .chart-head {
@@ -1158,36 +1148,37 @@ body:has(.admin-login) {
 }
 .chart-title {
   margin: 0;
-  font-size: 0.95rem;
-  font-weight: 800;
+  font-size: 0.94rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 .chart-sub {
-  font-size: 0.74rem;
-  color: var(--ink-3);
+  font-size: 0.73rem;
+  color: var(--ink-4);
 }
 .range-tabs {
   margin-inline-start: auto;
   display: inline-flex;
   background: var(--surface-2);
   border: 1px solid var(--line);
-  border-radius: 9px;
+  border-radius: var(--radius);
   padding: 2px;
   gap: 2px;
 }
 .range-tab {
   border: 0;
   background: transparent;
-  border-radius: 7px;
+  border-radius: 4px;
   font-family: inherit;
-  font-size: 0.74rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 500;
   color: var(--ink-2);
   padding: 5px 10px;
   cursor: pointer;
 }
 .range-tab.active {
-  background: var(--surface-3);
-  color: var(--ink);
+  background: var(--ink);
+  color: #ffffff;
 }
 .bars-svg {
   width: 100%;
@@ -1211,18 +1202,18 @@ body:has(.admin-login) {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8rem;
+  font-size: 0.79rem;
   color: var(--ink-2);
 }
 .legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
   flex-shrink: 0;
 }
 .legend-item .val {
   margin-inline-start: auto;
-  font-weight: 800;
+  font-weight: 500;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
@@ -1234,17 +1225,17 @@ body:has(.admin-login) {
 .sex-row .top {
   display: flex;
   justify-content: space-between;
-  font-size: 0.78rem;
+  font-size: 0.77rem;
   color: var(--ink-2);
 }
 .sex-row .top .val {
-  font-weight: 800;
+  font-weight: 500;
   color: var(--ink);
 }
 .sex-bar {
-  height: 8px;
+  height: 6px;
   border-radius: 999px;
-  background: var(--surface-3);
+  background: var(--line);
   overflow: hidden;
 }
 .sex-bar > div {
@@ -1261,8 +1252,8 @@ body:has(.admin-login) {
   place-items: center;
   padding: 24px;
   background:
-    radial-gradient(60rem 30rem at 85% -10%, rgba(244, 244, 244, 0.07), transparent 60%),
-    radial-gradient(50rem 28rem at 10% 110%, rgba(244, 244, 244, 0.05), transparent 60%),
+    radial-gradient(60rem 30rem at 85% -10%, rgba(23, 23, 23, 0.05), transparent 60%),
+    radial-gradient(50rem 28rem at 10% 110%, rgba(23, 23, 23, 0.04), transparent 60%),
     var(--bg);
 }
 .login-card {
@@ -1270,18 +1261,18 @@ body:has(.admin-login) {
   max-width: 400px;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 1.25rem;
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 32px 28px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  animation: admin-rise 0.3s ease;
+  animation: admin-rise 0.28s ease;
 }
 @keyframes admin-rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -1289,30 +1280,32 @@ body:has(.admin-login) {
   }
 }
 .login-logo {
-  width: 52px;
-  height: 52px;
-  border-radius: 15px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
   display: grid;
   place-items: center;
-  background: linear-gradient(180deg, #ffffff 30%, #8a8a8a 100%);
-  color: #0a0a0a;
+  background: var(--surface-2);
+  color: #000000;
   margin-bottom: 8px;
+}
+.login-logo .brand-triangle {
+  width: 17px;
+  height: 15px;
 }
 .login-title {
   margin: 0;
-  font-size: 1.4rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  background: linear-gradient(180deg, #ffffff 35%, #8a8a8a 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--ink);
 }
 .login-sub {
   margin: 0 0 12px;
-  color: var(--ink-2);
-  font-size: 0.86rem;
-  line-height: 1.8;
+  color: var(--ink-3);
+  font-size: 0.85rem;
+  line-height: 1.85;
 }
 .login-field {
   display: flex;
@@ -1321,8 +1314,8 @@ body:has(.admin-login) {
   margin-bottom: 6px;
 }
 .login-field label {
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.78rem;
+  font-weight: 500;
   color: var(--ink-2);
 }
 .password-wrap {
@@ -1333,10 +1326,10 @@ body:has(.admin-login) {
 .password-wrap input {
   width: 100%;
   border: 1px solid var(--line-strong);
-  border-radius: 0.85rem;
-  background: var(--surface-2);
+  border-radius: var(--radius);
+  background: var(--surface);
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.98rem;
   color: var(--ink);
   padding: 12px 44px 12px 14px;
   outline: none;
@@ -1346,46 +1339,47 @@ body:has(.admin-login) {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .password-wrap input:focus {
-  border-color: #6a6a6a;
-  box-shadow: 0 0 0 3px rgba(244, 244, 244, 0.1);
+  border-color: var(--ink);
+  box-shadow: 0 0 0 1px var(--ink);
 }
 .eye-btn {
   position: absolute;
   inset-inline-start: 8px;
   border: 0;
   background: transparent;
-  color: var(--ink-3);
+  color: var(--ink-4);
   cursor: pointer;
   padding: 6px;
-  border-radius: 8px;
+  border-radius: 4px;
   display: grid;
   place-items: center;
 }
 .eye-btn:hover {
   color: var(--ink);
-  background: var(--surface-2);
+  background: var(--surface-3);
 }
 .login-error {
   margin: 4px 0 0;
-  background: var(--red-soft);
-  color: var(--red);
-  border: 1px solid rgba(248, 113, 113, 0.3);
-  border-radius: 10px;
-  font-size: 0.8rem;
+  background: var(--surface-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-inline-start: 2px solid var(--ink);
+  border-radius: var(--radius);
+  font-size: 0.78rem;
   padding: 10px 12px;
   line-height: 1.7;
 }
 .login-note {
   margin: 10px 0 0;
   font-size: 0.72rem;
-  color: var(--ink-3);
+  color: var(--ink-4);
   line-height: 1.8;
   text-align: center;
 }
 .login-card .btn-primary {
   width: 100%;
   padding: 12px;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   margin-top: 6px;
 }
 
@@ -1412,8 +1406,8 @@ body:has(.admin-login) {
     inset-block: 0;
     right: 0;
     transform: translateX(100%);
-    transition: transform 0.24s ease;
-    box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
+    transition: transform 0.22s ease;
+    box-shadow: 0 0 0 1px var(--line);
   }
   .admin-sidebar.open {
     transform: translateX(0);
@@ -1422,12 +1416,12 @@ body:has(.admin-login) {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(23, 23, 23, 0.25);
     z-index: 55;
-    animation: admin-fade 0.2s ease;
+    animation: admin-fade 0.18s ease;
   }
   .admin-content {
-    padding: 20px 16px 40px;
+    padding: 24px 16px 44px;
   }
   .admin-topbar {
     padding: 12px 16px;
@@ -1447,7 +1441,7 @@ body:has(.admin-login) {
     grid-template-columns: 1fr;
   }
   .page-title {
-    font-size: 1.35rem;
+    font-size: 1.32rem;
   }
   .toast {
     inset-inline-start: 16px;
