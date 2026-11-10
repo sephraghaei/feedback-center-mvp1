@@ -23,18 +23,18 @@ export default function GlobalError({
       <head>
         <style>{`
           :root {
-            --paper: #fcfcfc; --wash: #f0f4fe; --ink: #020520; --ink-3: #374151;
-            --accent: #145aff; --on-accent: #ffffff; --accent-soft: #f0f4fe;
+            --paper: #08090a; --surface: #0f1011; --hairline: #23252a; --ink: #ffffff;
+            --ink-3: #8a8f98; --accent: #e4f222; --on-accent: #08090a;
           }
-          :root[data-theme="dark"] {
-            --paper: #05070f; --wash: #101a33; --ink: #f2f5ff; --ink-3: #a3adc6;
-            --accent: #3b82f6; --on-accent: #ffffff; --accent-soft: rgba(59, 130, 246, 0.16);
+          :root[data-theme="light"] {
+            --paper: #ffffff; --surface: #fafafa; --hairline: #e5e5e6; --ink: #08090a;
+            --ink-3: #62666d; --accent: #e4f222; --on-accent: #08090a;
           }
         `}</style>
         <script
           dangerouslySetInnerHTML={{
             __html:
-              'try{var t=localStorage.getItem("fc-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.dataset.theme=t;}catch(e){}',
+              'try{var t=localStorage.getItem("fc-theme");if(t!=="light"&&t!=="dark"){t="dark";}document.documentElement.dataset.theme=t;}catch(e){}',
           }}
         />
       </head>
@@ -45,7 +45,7 @@ export default function GlobalError({
           display: "grid",
           placeItems: "center",
           background:
-            "radial-gradient(60% 50% at 50% 0%, var(--wash) 0%, transparent 72%), var(--paper)",
+            "radial-gradient(55% 45% at 50% 0%, rgba(138, 143, 152, 0.1) 0%, transparent 72%), var(--paper)",
           color: "var(--ink)",
           fontFamily: '"Vazirmatn Variable", Vazirmatn, system-ui, sans-serif',
           textAlign: "center",
@@ -53,25 +53,33 @@ export default function GlobalError({
         }}
       >
         <main>
-          <h1 style={{ margin: 0, fontSize: "2rem", fontWeight: 600 }}>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: "2.125rem",
+              fontWeight: 590,
+              letterSpacing: "-0.022em",
+              lineHeight: 1.1,
+            }}
+          >
             مشکلی پیش آمد
           </h1>
-          <p style={{ color: "var(--ink-3)", marginTop: "0.5rem" }}>
+          <p style={{ color: "var(--ink-3)", marginTop: "0.6rem", fontSize: "0.9rem" }}>
             یک خطای غیرمنتظره رخ داد. دوباره تلاش کن.
           </p>
           <button
             type="button"
             onClick={retry}
             style={{
-              marginTop: "1rem",
+              marginTop: "1.25rem",
               border: "1px solid var(--accent)",
-              borderRadius: "9999px",
+              borderRadius: "6px",
               background: "var(--accent)",
               color: "var(--on-accent)",
               fontFamily: "inherit",
-              fontSize: "0.9rem",
-              fontWeight: 600,
-              padding: "0.72rem 1.4rem",
+              fontSize: "0.875rem",
+              fontWeight: 510,
+              padding: "10px 16px",
               cursor: "pointer",
             }}
           >
