@@ -18,6 +18,22 @@ export default function Error({
     });
   }, [error]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    if (root.dataset.theme) return;
+    let next = "light";
+    try {
+      const stored = localStorage.getItem("fc-theme");
+      next =
+        stored === "dark" || stored === "light"
+          ? stored
+          : window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+    } catch {}
+    root.dataset.theme = next;
+  }, []);
+
   return (
     <main className="page">
       <span className="error-triangle" aria-hidden="true" />

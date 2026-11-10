@@ -21,10 +21,22 @@ export default function GlobalError({
   return (
     <html lang="fa" dir="rtl">
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{var t=localStorage.getItem("fc-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.dataset.theme=t;}catch(e){}',
+          }}
+        />
         <style>{`
           :root {
+            color-scheme: light;
             --paper: #fafafa; --surface: #ffffff; --hairline: #ebebeb; --ink: #171717;
-            --ink-3: #666666; --accent: #171717; --on-accent: #ffffff;
+            --ink-3: #666666; --accent: #171717; --on-accent: #ffffff; --mark: #000000;
+          }
+          :root[data-theme="dark"] {
+            color-scheme: dark;
+            --paper: #0a0a0a; --surface: #111111; --hairline: #262626; --ink: #ededed;
+            --ink-3: #a1a1a1; --accent: #ededed; --on-accent: #0a0a0a; --mark: #ededed;
           }
         `}</style>
       </head>
@@ -49,7 +61,7 @@ export default function GlobalError({
               width: "22px",
               height: "19px",
               margin: "0 auto 1rem",
-              background: "#000000",
+              background: "var(--mark)",
               clipPath: "polygon(50% 0, 100% 100%, 0 100%)",
             }}
           />

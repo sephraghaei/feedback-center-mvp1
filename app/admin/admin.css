@@ -2,7 +2,12 @@ body:has(.admin-shell),
 body:has(.admin-login) {
   background: #fafafa;
   color: #171717;
-  color-scheme: light;
+}
+
+:root[data-theme="dark"] body:has(.admin-shell),
+:root[data-theme="dark"] body:has(.admin-login) {
+  background: #0a0a0a;
+  color: #ededed;
 }
 
 .admin-shell,
@@ -33,6 +38,7 @@ body:has(.admin-login) {
   --danger: #b42318;
   --danger-soft: #fef3f2;
   --danger-line: #fecdca;
+  --danger-ink: #ffffff;
   --ring: rgba(23, 23, 23, 0.12);
   --ring-inset: rgba(0, 0, 0, 0.04);
   --scrim: rgba(23, 23, 23, 0.32);
@@ -50,6 +56,46 @@ body:has(.admin-login) {
   direction: rtl;
   font-family: "Vazirmatn Variable", "Vazirmatn", system-ui, sans-serif;
   color: var(--ink);
+}
+
+:root[data-theme="dark"] .admin-shell,
+:root[data-theme="dark"] .admin-login {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface-2: #171717;
+  --surface-3: #1f1f1f;
+  --subtle: #0f0f0f;
+  --pill-bg: #171717;
+  --input-line: #333333;
+  --line: #262626;
+  --line-strong: #3d3d3d;
+  --ink: #ededed;
+  --ink-2: #b4b4b4;
+  --ink-3: #a1a1a1;
+  --ink-4: #8f8f8f;
+  --ink-5: #6b6b6b;
+  --accent: #ededed;
+  --accent-text: #ededed;
+  --accent-ink: #0a0a0a;
+  --accent-soft: rgba(255, 255, 255, 0.06);
+  --accent-line: #3d3d3d;
+  --accent-hover: #ffffff;
+  --green: #4ade80;
+  --green-soft: rgba(74, 222, 128, 0.12);
+  --green-line: rgba(74, 222, 128, 0.3);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+  --danger-line: rgba(248, 113, 113, 0.32);
+  --danger-ink: #0a0a0a;
+  --ring: rgba(255, 255, 255, 0.16);
+  --ring-inset: rgba(255, 255, 255, 0.06);
+  --scrim: rgba(0, 0, 0, 0.65);
+  --chart-1: #ededed;
+  --chart-2: #4ade80;
+  --chart-3: #8f8f8f;
+  --chart-4: #525252;
+  --shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-float: 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 .admin-shell ::selection,
@@ -394,7 +440,7 @@ body:has(.admin-login) {
 .btn-danger:hover:not(:disabled) {
   background: var(--danger);
   border-color: var(--danger);
-  color: #ffffff;
+  color: var(--danger-ink);
 }
 .btn-icon {
   padding: 7px;
@@ -723,7 +769,7 @@ body:has(.admin-login) {
 .badge-method.phone {
   background: var(--ink);
   border-color: var(--ink);
-  color: #ffffff;
+  color: var(--accent-ink);
 }
 .badge-method.email {
   background: var(--surface-2);
@@ -1360,6 +1406,11 @@ body:has(.admin-login) {
   padding: 24px;
   position: relative;
   background: var(--bg);
+}
+.admin-login .theme-toggle {
+  position: absolute;
+  top: 18px;
+  inset-inline-end: 18px;
 }
 .login-card {
   width: 100%;

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toPersianDigits } from "@/lib/phone";
+import ThemeToggle from "../../components/theme-toggle";
 import { Icon } from "./bits";
 
 export default function AdminShell({
@@ -107,6 +108,7 @@ export default function AdminShell({
             <span className="topbar-avatar">م</span>
             مدیر
           </span>
+          <ThemeToggle />
         </header>
 
         <main className="admin-content">{children}</main>

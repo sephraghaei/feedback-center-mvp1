@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import ThemeToggle from "../../components/theme-toggle";
 import { Icon } from "./bits";
 
 export default function LoginForm({ configured }: { configured: boolean }) {
@@ -33,6 +34,7 @@ export default function LoginForm({ configured }: { configured: boolean }) {
 
   return (
     <div className="admin-login">
+      <ThemeToggle />
       <form className="login-card" onSubmit={submit}>
         <span className="login-logo">
           <span className="brand-triangle" aria-hidden="true" />
