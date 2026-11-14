@@ -6,7 +6,7 @@ import { faDate } from "@/lib/feedback/labels";
 import { listChangelog } from "@/lib/feedback/changelog";
 
 export const metadata: Metadata = {
-  title: "تغییرات | Feedback-center",
+  title: "تغییرات | وسا",
   description: "هر نسخه چه چیزی را حل کرد و کدام بازخوردها به انتشار رسیدند.",
 };
 

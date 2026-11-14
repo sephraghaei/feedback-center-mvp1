@@ -5,7 +5,7 @@ import ChangelogForm from "../../components/changelog-form";
 import { resolveableFeedback, listChangelog } from "@/lib/feedback/changelog";
 import { faDate } from "@/lib/feedback/labels";
 
-export const metadata: Metadata = { title: "تغییرات | Feedback-center" };
+export const metadata: Metadata = { title: "تغییرات | وسا" };
 
 export default async function AdminChangelogPage() {
   const [entries, candidates] = await Promise.all([listChangelog(50), resolveableFeedback()]);

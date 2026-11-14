@@ -8,7 +8,7 @@ import { listMyPosts } from "@/lib/feedback/posts";
 import { requireViewer } from "@/lib/feedback/viewer";
 
 export const metadata: Metadata = {
-  title: "درخواست‌های من | Feedback-center",
+  title: "درخواست‌های من | وسا",
   description: "همه بازخوردها و درخواست‌های پشتیبانی خودت، با وضعیت به‌روز.",
 };
 

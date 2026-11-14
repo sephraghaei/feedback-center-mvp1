@@ -19,8 +19,8 @@ type Params = { id: string };
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { id } = await params;
   const post = await getPostDetail(id, { isAdmin: false });
-  if (!post) return { title: "بازخورد پیدا نشد | Feedback-center" };
-  return { title: `${post.title} | Feedback-center` };
+  if (!post) return { title: "بازخورد پیدا نشد | وسا" };
+  return { title: `${post.title} | وسا` };
 }
 
 function fileSize(bytes: number): string {

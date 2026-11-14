@@ -8,7 +8,7 @@ import { ROADMAP_STATUSES, listRoadmap } from "@/lib/feedback/posts";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
 
 export const metadata: Metadata = {
-  title: "نقشه راه | Feedback-center",
+  title: "نقشه راه | وسا",
   description: "ستون‌های نقشه راه: برنامه‌ریزی شده، در حال انجام و منتشر شده.",
 };
 

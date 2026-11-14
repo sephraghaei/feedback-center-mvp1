@@ -56,11 +56,9 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
   return (
     <header className="site-nav">
       <div className="nav-inner">
-        <Link href="/" className="nav-brand" aria-label="Feedback-center">
+        <Link href="/" className="nav-brand" aria-label="وسا">
           <BrandMark className="nav-mark" />
-          <span className="nav-name" dir="ltr">
-            Feedback-center
-          </span>
+          <span className="nav-name">وسا</span>
         </Link>
 
         <nav className={`fb-nav ${open ? "open" : ""}`} aria-label="بخش‌های بازخورد">

@@ -1,15 +1,13 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { faIR } from "@clerk/localizations";
 import type { Metadata } from "next";
+import "@fontsource-variable/noto-kufi-arabic";
 import "@fontsource-variable/vazirmatn";
-import { APP_NAME } from "@/lib/config";
 import ClientLogger from "./components/client-logger";
 import "./globals.css";
 
-const appName = APP_NAME;
-
 export const metadata: Metadata = {
-  title: appName,
+  title: "وسا",
   description: "مرکز بازخورد ساده و شفاف برای شنیدن نظر کاربران",
 };
 

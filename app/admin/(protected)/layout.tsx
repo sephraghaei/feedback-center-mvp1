@@ -4,7 +4,7 @@ import { countFeedback, countOpenSupport } from "@/lib/feedback/posts";
 import AdminShell from "../components/admin-shell";
 import "../admin.css";
 
-export const metadata = { title: "پنل مدیریت | Feedback-center" };
+export const metadata = { title: "پنل مدیریت | وسا" };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   await requireAdmin();

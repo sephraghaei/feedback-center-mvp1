@@ -6,7 +6,7 @@ import { CATEGORY_LABELS, STATUS_LABELS, faDate, faNumber } from "@/lib/feedback
 import { listFeedbackForAdmin } from "@/lib/feedback/posts";
 import { toPersianDigits } from "@/lib/phone";
 
-export const metadata: Metadata = { title: "مدیریت بازخوردها | Feedback-center" };
+export const metadata: Metadata = { title: "مدیریت بازخوردها | وسا" };
 
 export default async function AdminPostsPage() {
   const posts = await listFeedbackForAdmin();

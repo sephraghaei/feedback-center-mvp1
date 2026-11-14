@@ -50,6 +50,7 @@
     #00e5ff 100%
   );
   --gradient-solar: linear-gradient(90deg, #ffdc30 0%, #38a2ff 100%);
+  --font-brand: "Noto Kufi Arabic Variable", "Vazirmatn Variable", "Vazirmatn", system-ui, sans-serif;
 }
 
 :root[data-theme="dark"] {
@@ -177,9 +178,11 @@ a {
 }
 
 .nav-name {
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-family: var(--font-brand);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1;
 }
 
 .nav-links {
@@ -720,6 +723,12 @@ a {
   gap: 8px;
   font-weight: 500;
   color: var(--ink);
+}
+
+.footer-name {
+  font-family: var(--font-brand);
+  font-weight: 600;
+  font-size: 0.82rem;
 }
 
 .footer-mark {

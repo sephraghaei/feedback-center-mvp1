@@ -2836,10 +2836,6 @@ a.fb-product-name:hover {
     flex-shrink: 0;
   }
 
-  .site-nav .nav-name {
-    display: none;
-  }
-
   .fb-nav {
     top: 58px;
   }

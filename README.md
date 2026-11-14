@@ -1,6 +1,6 @@
-# Feedback-Center
+# وسا
 
-A Next.js feedback center, RTL and Persian, with Vazirmatn as the main font. Guests read the feed, the roadmap and the changelog. Signed in customers post feedback or a private support request, upload images and PDFs, and vote. Admins triage posts and publish changelog entries. Login runs through phone OTP, email OTP or Clerk. The feedback details are in [docs/feedback.md](docs/feedback.md).
+A Next.js feedback center, RTL and Persian, with Vazirmatn as the main font and Noto Kufi Arabic for the wordmark. Guests read the feed, the roadmap and the changelog. Signed in customers post feedback or a private support request, upload images and PDFs, and vote. Admins triage posts and publish changelog entries. Login runs through phone OTP, email OTP or Clerk. The feedback details are in [docs/feedback.md](docs/feedback.md).
 
 ## Stack
 
@@ -59,7 +59,6 @@ The project deploys on Vercel. Vercel detects Next.js, so no build config is nee
 3. Add the environment variables in Project Settings, then Environment Variables. Use the same names as `.env.example`:
 
 ```
-NEXT_PUBLIC_NAME
 BETTER_AUTH_URL
 DATABASE_URL
 NEXT_PUBLIC_SUPABASE_URL

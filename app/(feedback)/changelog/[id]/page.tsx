@@ -7,7 +7,7 @@ import { getChangelogEntry } from "@/lib/feedback/changelog";
 import { CATEGORY_LABELS, faDate } from "@/lib/feedback/labels";
 
 export const metadata: Metadata = {
-  title: "ورودی تغییرات | Feedback-center",
+  title: "ورودی تغییرات | وسا",
 };
 
 export default async function ChangelogEntryPage({ params }: { params: Promise<{ id: string }> }) {

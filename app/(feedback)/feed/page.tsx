@@ -9,7 +9,7 @@ import { FEEDBACK_CATEGORIES, FEEDBACK_STATUSES, listFeed } from "@/lib/feedback
 import { getViewer } from "@/lib/feedback/viewer";
 
 export const metadata: Metadata = {
-  title: "بازخوردها | Feedback-center",
+  title: "بازخوردها | وسا",
   description: "بازخورد محصول را بخوان، رای بده و مسیر رسیدنش به نقشه راه را ببین.",
 };
 

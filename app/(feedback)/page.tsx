@@ -16,7 +16,7 @@ import { getProfile } from "@/lib/user-store";
 import { OTP_LENGTH } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "مرکز بازخورد | Feedback-center",
+  title: "مرکز بازخورد | وسا",
   description: "بازخورد کاربران، نقشه راه و تغییرات منتشر شده در یک جا، شفاف و بدون واسطه.",
 };
 

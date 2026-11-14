@@ -6,7 +6,7 @@ import { STATUS_LABELS, faDate } from "@/lib/feedback/labels";
 import { SUPPORT_STATUSES, excerpt, listSupportRequests } from "@/lib/feedback/posts";
 import { toPersianDigits } from "@/lib/phone";
 
-export const metadata: Metadata = { title: "صندوق پشتیبانی | Feedback-center" };
+export const metadata: Metadata = { title: "صندوق پشتیبانی | وسا" };
 
 type Search = { status?: string };
 

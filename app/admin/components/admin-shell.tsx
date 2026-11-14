@@ -64,7 +64,7 @@ export default function AdminShell({
         <div className="side-brand">
           <BrandMark className="brand-mark" />
           <span>
-            <span className="brand-name">Feedback-center</span>
+            <span className="brand-name">وسا</span>
             <br />
             <span className="brand-sub">پنل مدیریت</span>
           </span>

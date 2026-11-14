@@ -22,7 +22,7 @@ export default async function FeedbackLayout({ children }: { children: React.Rea
       <footer className="site-footer">
         <span className="footer-brand">
           <BrandMark className="footer-mark" simple />
-          <span dir="ltr">Feedback-center</span>
+          <span className="footer-name">وسا</span>
         </span>
         <span>بازخورد، نقشه راه و تغییرات در یک جا</span>
       </footer>
