@@ -5,6 +5,7 @@ import AuthFlow from "@/app/components/auth-flow";
 import BrandMark from "@/app/components/brand-mark";
 import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-buttons";
 import ComposerButton from "@/app/components/feedback/composer-button";
+import CountUp from "@/app/components/feedback/count-up";
 import { HeroCommentScene, HeroTicker } from "@/app/components/feedback/hero-community";
 import PostCard from "@/app/components/feedback/post-card";
 import { CATEGORY_LABELS, STATUS_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
@@ -58,6 +59,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           <span className="fb-aura-glow" />
           <span className="fb-aura-grid" />
         </div>
+        <span className="fb-hero-cursor" aria-hidden="true" />
         <div className="fb-hero-inner">
           <p className="fb-eyebrow fb-eyebrow-chip">
             <BrandMark className="eyebrow-mark" simple />
@@ -82,11 +84,15 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           </div>
           <ul className="fb-hero-stats">
             <li>
-              <strong>{faNumber(feedbackCount)}</strong>
+              <strong>
+                <CountUp value={feedbackCount} />
+              </strong>
               <span>بازخورد ثبت‌شده</span>
             </li>
             <li>
-              <strong>{faNumber(shipped)}</strong>
+              <strong>
+                <CountUp value={shipped} />
+              </strong>
               <span>رسیده به انتشار</span>
             </li>
             <li>
@@ -182,7 +188,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               {group.items.length > 0 ? (
                 <>
                   {group.items.slice(0, 3).map((post) => (
-                    <article key={post.id} className="fb-mini">
+                    <article key={post.id} className="fb-mini" data-spotlight>
                       <Link href={`/p/${post.id}`} className="fb-mini-title">
                         {post.title}
                       </Link>
@@ -222,7 +228,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         {entries.length > 0 ? (
           <div className="fb-entry-list">
             {entries.map((entry) => (
-              <article key={entry.id} className="fb-entry-row">
+              <article key={entry.id} className="fb-entry-row" data-spotlight>
                 <Link href={`/changelog/${entry.id}`}>{entry.title}</Link>
                 <time dateTime={entry.publishedAt.toISOString()}>{faDate(entry.publishedAt)}</time>
               </article>

@@ -74,10 +74,45 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
               {link.label}
             </Link>
           ))}
+          {!viewer ? (
+            <Link
+              href="/?next=/feed#account"
+              className="fb-nav-link fb-nav-login"
+              onClick={() => setOpen(false)}
+            >
+              ورود به حساب
+            </Link>
+          ) : null}
         </nav>
 
         <div className="fb-nav-actions">
           <ThemeToggle />
+          <button
+            type="button"
+            className="fb-tour-btn"
+            onClick={() => {
+              setOpen(false);
+              window.dispatchEvent(new Event("fc:start-tour"));
+            }}
+            aria-label="آموزش سریع سایت"
+            title="آموزش سریع"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M15.5 8.5l-1.9 5.1-5.1 1.9 1.9-5.1z" />
+            </svg>
+            <span>آموزش</span>
+          </button>
           {admin ? (
             <Link href="/admin" className="fb-link">
               پنل مدیر
@@ -128,7 +163,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
               ) : null}
             </div>
           ) : (
-            <Link href="/?next=/feed#account" className="fb-link">
+            <Link href="/?next=/feed#account" className="fb-link fb-login-inline">
               ورود
             </Link>
           )}

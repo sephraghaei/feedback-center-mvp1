@@ -2,6 +2,7 @@ import Link from "next/link";
 import { excerpt, type PostSummary } from "@/lib/feedback/posts";
 import { CATEGORY_LABELS, TYPE_LABELS, faDate } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
+import ProductTag from "./product-tag";
 import StatusChip from "./status-chip";
 import VoteButton from "./vote-button";
 
@@ -22,7 +23,7 @@ export default function PostCard({
   const href = `/p/${post.id}`;
 
   return (
-    <article className="fb-card">
+    <article className="fb-card" data-spotlight>
       {cover ? (
         <Link href={href} aria-label={post.title}>
           <img className="fb-cover" src={cover} alt="" loading="lazy" />
@@ -30,6 +31,12 @@ export default function PostCard({
       ) : null}
 
       <div className="fb-card-body">
+        {post.product ? (
+          <div className="fb-card-product">
+            <ProductTag product={post.product} />
+          </div>
+        ) : null}
+
         <div className="fb-card-top">
           {showType ? <span className="fb-chip">{TYPE_LABELS[post.type] ?? post.type}</span> : null}
           {post.category ? <span className="fb-chip">{CATEGORY_LABELS[post.category] ?? post.category}</span> : null}

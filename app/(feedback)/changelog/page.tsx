@@ -37,7 +37,7 @@ export default async function ChangelogPage() {
 
       {entries.length > 0 ? (
         entries.map((entry) => (
-          <article key={entry.id} className="fb-entry">
+          <article key={entry.id} className="fb-entry" data-spotlight>
             <p className="fb-entry-date">{faDate(entry.publishedAt)}</p>
             <h2 className="fb-entry-title">
               <Link href={`/changelog/${entry.id}`}>{entry.title}</Link>

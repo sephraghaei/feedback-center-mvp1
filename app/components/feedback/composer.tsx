@@ -45,6 +45,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
   const [type, setType] = useState<"feedback" | "support">("feedback");
   const [category, setCategory] = useState("feature");
   const [product, setProduct] = useState("");
+  const [productError, setProductError] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [preview, setPreview] = useState(false);
@@ -82,6 +83,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
     setType("feedback");
     setCategory("feature");
     setProduct("");
+    setProductError(null);
     setTitle("");
     setBody("");
     setPreview(false);
@@ -206,11 +208,16 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
     const cleanTitle = title.trim();
     const cleanBody = body.trim();
-    const parsedProduct = parseProduct(product);
-    if (!parsedProduct.ok) {
-      setError(parsedProduct.message);
+    if (!product.trim()) {
+      setProductError("نام محصول یا آدرس سایت را بنویس تا مشخص شود بازخورد برای کجاست.");
       return;
     }
+    const parsedProduct = parseProduct(product);
+    if (!parsedProduct.ok || !parsedProduct.value) {
+      setProductError(parsedProduct.ok ? "نام محصول یا آدرس سایت را بنویس." : parsedProduct.message);
+      return;
+    }
+    setProductError(null);
     if (cleanTitle.length < 3 || cleanTitle.length > 140) {
       setError("عنوان باید بین ۳ تا ۱۴۰ نویسه باشد.");
       return;
@@ -260,7 +267,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
   return (
     <div
-      className="backdrop"
+      className="backdrop fb-composer-backdrop"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) close();
@@ -292,7 +299,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
             </div>
           </div>
         ) : (
-          <form className="fb-form" onSubmit={submit}>
+          <form className="fb-form" onSubmit={submit} noValidate>
             <div className="fb-seg" role="tablist" aria-label="نوع نوشته">
               <button
                 type="button"
@@ -338,21 +345,30 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
             )}
 
             <label className="label" htmlFor="composer-product">
-              نام محصول یا آدرس سایت <span className="optional">(اختیاری)</span>
+              نام محصول یا آدرس سایت <span className="required">الزامی</span>
             </label>
             <input
               id="composer-product"
               className="input"
               value={product}
               maxLength={MAX_PRODUCT_LENGTH}
-              onChange={(event) => setProduct(event.target.value)}
+              aria-required="true"
+              aria-invalid={productError ? true : undefined}
+              aria-describedby={productError ? "composer-product-error" : "composer-product-hint"}
+              onChange={(event) => {
+                setProduct(event.target.value);
+                if (productError) setProductError(null);
+              }}
               placeholder="مثلا: فروشگاه من یا example.com"
             />
-            <p className="field-hint" style={{ marginTop: 0 }}>
-              {type === "feedback"
-                ? "اگر این بازخورد به محصول یا سایت مشخصی مربوط است، اسم یا آدرسش را بنویس."
-                : "اگر درخواستت به محصول یا سایت مشخصی مربوط است، اسم یا آدرسش را بنویس."}
+            <p id="composer-product-hint" className="field-hint" style={{ marginTop: 0 }}>
+              بازخورد به همین محصول وصل می‌شود و بالای کارتش نشان داده می‌شود.
             </p>
+            {productError ? (
+              <p id="composer-product-error" className="field-error">
+                {productError}
+              </p>
+            ) : null}
 
             <label className="label" htmlFor="composer-post-title">
               عنوان

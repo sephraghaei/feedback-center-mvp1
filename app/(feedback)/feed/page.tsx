@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import BrandMark from "@/app/components/brand-mark";
 import ComposerButton from "@/app/components/feedback/composer-button";
+import CountUp from "@/app/components/feedback/count-up";
 import PostCard from "@/app/components/feedback/post-card";
 import { CATEGORY_LABELS, STATUS_LABELS, faNumber } from "@/lib/feedback/labels";
 import { FEEDBACK_CATEGORIES, FEEDBACK_STATUSES, listFeed } from "@/lib/feedback/posts";
@@ -58,7 +59,10 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         </div>
         <ul className="fb-hero-stats">
           <li>
-            <strong>{faNumber(posts.length)}</strong> بازخورد در این نما
+            <strong>
+              <CountUp value={posts.length} />
+            </strong>{" "}
+            بازخورد در این نما
           </li>
           <li>بدون نیاز به حساب</li>
         </ul>

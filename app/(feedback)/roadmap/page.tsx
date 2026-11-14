@@ -61,7 +61,7 @@ export default async function RoadmapPage() {
             </p>
             {group.items.length > 0 ? (
               group.items.map((post) => (
-                <article key={post.id} className="fb-mini">
+                <article key={post.id} className="fb-mini" data-spotlight>
                   <Link href={`/p/${post.id}`} className="fb-mini-title">
                     {post.title}
                   </Link>

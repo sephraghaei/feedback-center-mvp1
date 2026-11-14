@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, ne, sql } from "drizzle-orm";
 import { getDb } from "../db";
 import {
   attachments,
@@ -130,6 +130,8 @@ export function excerpt(body: string): string {
 export async function listFeed(options: {
   category?: string;
   status?: string;
+  product?: string | null;
+  excludeId?: string;
   viewerId?: string;
   limit?: number;
 }): Promise<PostSummary[]> {
@@ -148,6 +150,8 @@ export async function listFeed(options: {
         options.status && (FEEDBACK_STATUSES as readonly string[]).includes(options.status)
           ? eq(posts.status, options.status)
           : undefined,
+        options.product ? eq(posts.product, options.product) : undefined,
+        options.excludeId ? ne(posts.id, options.excludeId) : undefined,
       ),
     )
     .orderBy(desc(posts.createdAt))
@@ -304,6 +308,7 @@ export async function createPost(input: {
   const body = cleanBody(input.body);
   const product = parseProduct(input.product);
   if (!product.ok) throw new PostError(product.message);
+  if (!product.value) throw new PostError("نام محصول یا آدرس سایت را بنویس.");
 
   let category: string | null = null;
   if (input.type === "feedback") {
