@@ -5,13 +5,25 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toPersianDigits } from "@/lib/phone";
 import ThemeToggle from "../../components/theme-toggle";
-import { Icon } from "./bits";
+import { Icon, type IconName } from "./bits";
+
+type NavItem = {
+  href: string;
+  label: string;
+  icon: IconName;
+  exact?: boolean;
+  badge?: number;
+};
 
 export default function AdminShell({
   userCount,
+  openSupport,
+  feedbackCount,
   children,
 }: {
   userCount: number;
+  openSupport: number;
+  feedbackCount: number;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -19,8 +31,18 @@ export default function AdminShell({
   const [open, setOpen] = useState(false);
   const [leaving, setLeaving] = useState(false);
 
-  const isUsers = pathname.startsWith("/admin/users");
-  const current = isUsers ? "مدیریت کاربران" : "داشبورد";
+  const items: NavItem[] = [
+    { href: "/admin", label: "داشبورد", icon: "dashboard", exact: true },
+    { href: "/admin/inbox", label: "صندوق پشتیبانی", icon: "mail", badge: openSupport },
+    { href: "/admin/posts", label: "مدیریت بازخوردها", icon: "list", badge: feedbackCount },
+    { href: "/admin/changelog", label: "تغییرات", icon: "calendar" },
+    { href: "/admin/users", label: "مدیریت کاربران", icon: "users", badge: userCount },
+  ];
+
+  const active =
+    items.find((item) =>
+      item.exact ? pathname === item.href : pathname.startsWith(item.href),
+    ) ?? items[0];
 
   async function logout() {
     setLeaving(true);
@@ -51,23 +73,20 @@ export default function AdminShell({
 
         <nav className="side-section" aria-label="بخش‌های پنل">
           <p className="side-label">کلی</p>
-          <Link
-            href="/admin"
-            className={`side-link ${!isUsers ? "active" : ""}`}
-            onClick={() => setOpen(false)}
-          >
-            <Icon name="dashboard" />
-            داشبورد
-          </Link>
-          <Link
-            href="/admin/users"
-            className={`side-link ${isUsers ? "active" : ""}`}
-            onClick={() => setOpen(false)}
-          >
-            <Icon name="users" />
-            مدیریت کاربران
-            <span className="badge">{toPersianDigits(String(userCount))}</span>
-          </Link>
+          {items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`side-link ${active.href === item.href ? "active" : ""}`}
+              onClick={() => setOpen(false)}
+            >
+              <Icon name={item.icon} />
+              {item.label}
+              {typeof item.badge === "number" && item.badge > 0 ? (
+                <span className="badge">{toPersianDigits(String(item.badge))}</span>
+              ) : null}
+            </Link>
+          ))}
         </nav>
 
         <div className="side-footer">
@@ -100,8 +119,8 @@ export default function AdminShell({
             <Link href="/admin">پنل مدیریت</Link>
             <span className="crumb-sep">/</span>
             <span className="current">
-              <Icon name={isUsers ? "users" : "dashboard"} size={15} />
-              {current}
+              <Icon name={active.icon} size={15} />
+              {active.label}
             </span>
           </nav>
           <span className="topbar-user">

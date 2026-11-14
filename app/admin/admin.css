@@ -740,6 +740,29 @@ body:has(.admin-login) {
   justify-content: flex-end;
 }
 
+.post-cell {
+  min-width: 0;
+  max-width: 420px;
+}
+
+.post-cell .post-title {
+  display: block;
+  font-weight: 510;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-cell .post-sub {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--ink-4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .avatar {
   border-radius: 999px;
   display: grid;
@@ -1078,7 +1101,8 @@ body:has(.admin-login) {
   color: var(--ink-4);
 }
 .field input,
-.field select {
+.field select,
+.field textarea {
   border: 1px solid var(--input-line);
   border-radius: var(--radius);
   background: var(--subtle);
@@ -1090,8 +1114,26 @@ body:has(.admin-login) {
   transition: border-color 0.15s ease;
   width: 100%;
 }
+.field textarea {
+  min-height: 96px;
+  resize: vertical;
+  line-height: 1.9;
+}
+.field input.check {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  background: var(--subtle);
+}
+.field input.check:checked,
+.field input.check:indeterminate {
+  background: var(--accent);
+  border-color: var(--accent);
+}
 .field input:focus,
-.field select:focus {
+.field select:focus,
+.field textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--ring);
 }

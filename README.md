@@ -1,6 +1,6 @@
 # Feedback-Center
 
-A minimal black themed Next.js app, RTL and Persian, with Vazirmatn as the main font. The home page shows a centered `Hello` with a three step login flow: phone number, a Kavenegar OTP, then a short profile.
+A Next.js feedback center, RTL and Persian, with Vazirmatn as the main font. Guests read the feed, the roadmap and the changelog. Signed in customers post feedback or a private support request, upload images and PDFs, and vote. Admins triage posts and publish changelog entries. Login runs through phone OTP, email OTP or Clerk. The feedback details are in [docs/feedback.md](docs/feedback.md).
 
 ## Stack
 
@@ -16,10 +16,11 @@ cp .env.example .env
 # set DATABASE_URL in .env
 npm install
 npm run migrate
+npm run seed
 npm run dev
 ```
 
-Open http://localhost:3000. Node 22 is required. After changing `lib/db/schema.ts`, run `npm run db:generate` to create a new SQL migration and `npm run migrate` to apply it.
+Open http://localhost:3000. Node 22 is required. After changing `lib/db/schema.ts`, run `npm run db:generate` to create a new SQL migration and `npm run migrate` to apply it. `npm run seed` fills demo feedback, support requests, votes and one changelog entry; it only replaces its own demo rows, see [docs/feedback.md](docs/feedback.md).
 
 ## Environment
 
@@ -39,11 +40,15 @@ Login works with a phone number through Kavenegar SMS or with an email through R
 
 Email and Google sign-in run through Clerk. `npx clerk init` writes development keys to `.env.local` (gitignored); in production set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` from the Clerk dashboard. The interface stays Persian and RTL through the `faIR` localization. Clerk users are linked to the same `users`/`profiles` tables by `clerk_id`, so the profile step and account card behave the same as phone login.
 
+Feedback attachments are stored in Supabase Storage. Set `SUPABASE_SERVICE_ROLE_KEY` from Supabase Project Settings, then API to enable uploads; it is server only and must never be a `NEXT_PUBLIC_*` variable. The app creates the public `post-media` bucket on first upload. Without the key the rest of the site works, but the composer answers that storage is not configured on the server. Files are limited to 5 per post, 10 MB each, images and PDF.
+
 ## Admin panel
 
-`/admin` is a separate light themed, RTL panel with two sections: a stats dashboard and user management. It signs in with a password only, read from `ADMIN_PASSWORD`; there is no email, phone or username. Set `ADMIN_PASSWORD` in `.env` locally and in the Vercel dashboard for production. Leaving it empty disables the panel: `/admin` redirects to `/admin/login`, which explains that the variable is missing.
+`/admin` is a separate RTL panel with four sections: a stats dashboard, the support inbox, feedback moderation and the changelog publisher. It signs in with a password only, read from `ADMIN_PASSWORD`; there is no email, phone or username. Set `ADMIN_PASSWORD` in `.env` locally and in the Vercel dashboard for production. Leaving it empty disables the panel: `/admin` redirects to `/admin/login`, which explains that the variable is missing.
 
 The admin session is a signed `fc_admin` cookie (eight hours) separate from the user `fc_session`. Login attempts are rate limited per IP. User management lists the live `users` joined with `profiles` and supports search, method and profile filters, sorting, table/board/list views, pagination, create, edit, delete and bulk delete, with undo after destructive actions. The dashboard shows totals, profile completion, signup trend, login-method split and age/sex breakdowns, all computed from the database.
+
+The feedback sections use the admin password plus `users.role = 'admin'` on the signed in customer account. Change a role by hand in the database. The inbox answers and closes support requests; moderation moves feedback between `new`, `planned`, `in_progress` and `shipped`, hides or deletes posts; publishing a changelog entry marks its linked feedback as shipped. See [docs/feedback.md](docs/feedback.md).
 
 ## Deployment
 
@@ -59,6 +64,7 @@ BETTER_AUTH_URL
 DATABASE_URL
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+SUPABASE_SERVICE_ROLE_KEY
 BETTER_AUTH_SECRET
 ADMIN_PASSWORD
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY

@@ -37,10 +37,12 @@ export default function AuthFlow({
   status,
   phone,
   codeLength,
+  nextPath,
 }: {
   status: Status;
   phone?: string;
   codeLength: number;
+  nextPath?: string;
 }) {
   const router = useRouter();
   const { isSignedIn } = useAuth();
@@ -67,8 +69,12 @@ export default function AuthFlow({
     if (!isSignedIn) return;
     setOpen(false);
     reset();
+    if (nextPath) {
+      router.push(nextPath);
+      return;
+    }
     router.refresh();
-  }, [isSignedIn, router]);
+  }, [isSignedIn, router, nextPath]);
 
   useEffect(() => {
     if (step !== 2 || resendIn <= 0) return;
@@ -130,6 +136,10 @@ export default function AuthFlow({
     if (phoneNumber) window.localStorage.setItem(LAST_PHONE_KEY, phoneNumber);
     setOpen(false);
     reset();
+    if (nextPath) {
+      router.push(nextPath);
+      return;
+    }
     router.refresh();
   }
 

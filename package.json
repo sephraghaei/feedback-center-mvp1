@@ -7,6 +7,7 @@
     "build": "next build",
     "db:generate": "drizzle-kit generate",
     "migrate": "tsx scripts/migrate.ts",
+    "seed": "tsx scripts/seed-feedback.ts",
     "build:cf": "NODE_OPTIONS=--max-old-space-size=2048 opennextjs-cloudflare build",
     "preview": "npm run build:cf && opennextjs-cloudflare preview",
     "deploy": "npm run migrate && npm run build:cf && opennextjs-cloudflare deploy"
@@ -21,7 +22,8 @@
     "next": "^16.4.3",
     "pg": "^8.23.1",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.20.14",
