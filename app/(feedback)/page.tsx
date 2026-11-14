@@ -5,6 +5,7 @@ import AuthFlow from "@/app/components/auth-flow";
 import BrandMark from "@/app/components/brand-mark";
 import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-buttons";
 import ComposerButton from "@/app/components/feedback/composer-button";
+import { HeroCommentScene, HeroTicker } from "@/app/components/feedback/hero-community";
 import PostCard from "@/app/components/feedback/post-card";
 import { CATEGORY_LABELS, STATUS_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { listChangelog } from "@/lib/feedback/changelog";
@@ -93,7 +94,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               <span>می‌تونی بازخوردها و نقشه راه رو ببینی</span>
             </li>
           </ul>
+          <HeroTicker />
         </div>
+        <HeroCommentScene />
       </section>
 
       <ol className="fb-steps-list" aria-label="مسیر یک بازخورد">
