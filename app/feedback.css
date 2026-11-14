@@ -1397,6 +1397,7 @@
 .fb-home .fb-hero-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
   gap: 10px;
   width: min(100%, 44rem);
   margin-top: 1.4rem;
@@ -1666,7 +1667,7 @@
   .fb-steps-list {
     grid-template-columns: 1fr;
     gap: 16px;
-    width: min(100%, 22rem);
+    width: min(100%, 24rem);
   }
 
   .fb-steps-list::before {
@@ -1687,6 +1688,56 @@
 
   .fb-step-body {
     flex: 1;
+  }
+}
+
+@media (max-width: 560px) {
+  .fb-home .fb-hero {
+    padding-top: 26px;
+    padding-bottom: 30px;
+  }
+
+  .fb-home .fb-lede {
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  .fb-home .fb-hero-actions .fb-btn {
+    white-space: nowrap;
+  }
+
+  .fb-home .fb-hero .fb-hero-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(100%, 24rem);
+    gap: 8px;
+  }
+
+  .fb-home .fb-hero .fb-hero-actions > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .fb-home .fb-hero .fb-hero-actions .fb-btn {
+    padding-inline: 0.6rem;
+  }
+
+  .fb-home .fb-hero-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(100%, 24rem);
+    margin-top: 1.15rem;
+  }
+
+  .fb-home .fb-hero-stats li:last-child {
+    grid-column: 1 / -1;
+    padding-block: 0.7rem;
+  }
+
+  .fb-home .fb-section {
+    margin-top: 46px;
+  }
+
+  .fb-steps-list {
+    margin-top: 30px;
   }
 }
 
@@ -1765,6 +1816,48 @@
 
   .fb-card-foot {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-nav .nav-inner {
+    height: 58px;
+    gap: 8px;
+  }
+
+  .site-nav .nav-brand {
+    flex-shrink: 0;
+  }
+
+  .site-nav .nav-name {
+    display: none;
+  }
+
+  .fb-nav {
+    top: 58px;
+  }
+
+  .fb-nav-actions {
+    gap: 6px;
+  }
+
+  .fb-nav-actions .fb-link {
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .fb-compose-btn {
+    flex-shrink: 0;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .fb-menu {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
   }
 }
 
