@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import AuthFlow, { ClerkSignOutButton, LogoutButton } from "@/app/components/auth-flow";
+import AuthFlow from "@/app/components/auth-flow";
+import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-buttons";
 import ComposerButton from "@/app/components/feedback/composer-button";
 import PostCard from "@/app/components/feedback/post-card";
 import { CATEGORY_LABELS, STATUS_LABELS, faDate, faNumber } from "@/lib/feedback/labels";

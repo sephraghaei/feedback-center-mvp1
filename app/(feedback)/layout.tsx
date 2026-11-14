@@ -5,7 +5,9 @@ import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
 
 export default async function FeedbackLayout({ children }: { children: React.ReactNode }) {
   const [viewer, admin] = await Promise.all([getViewer(), isAdminRequest()]);
-  const headerViewer = viewer ? { name: viewer.name, role: viewer.role } : null;
+  const headerViewer = viewer
+    ? { name: viewer.name, role: viewer.role, method: viewer.method }
+    : null;
 
   return (
     <div className="fb-shell">

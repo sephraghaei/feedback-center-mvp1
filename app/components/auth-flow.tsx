@@ -1,6 +1,6 @@
 "use client";
 
-import { SignInButton, useAuth, useClerk } from "@clerk/nextjs";
+import { SignInButton, useAuth } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
@@ -477,57 +477,5 @@ export default function AuthFlow({
           )
         : null}
     </>
-  );
-}
-
-export function LogoutButton() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
-  async function logout() {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/auth/logout", { method: "POST" });
-      if (!response.ok) {
-        throw new Error(`Logout failed with status ${response.status}`);
-      }
-      clientLogger.info("ui.auth.logout");
-      router.refresh();
-    } catch (issue) {
-      clientLogger.error("ui.auth.logout_failed", { error: issue });
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <button type="button" className="ghost" onClick={logout} disabled={loading}>
-      {loading ? "در حال خروج..." : "خروج از حساب"}
-    </button>
-  );
-}
-
-export function ClerkSignOutButton() {
-  const router = useRouter();
-  const { signOut } = useClerk();
-  const [loading, setLoading] = useState(false);
-
-  async function logout() {
-    setLoading(true);
-    try {
-      await signOut();
-      clientLogger.info("ui.auth.clerk_logout");
-      router.refresh();
-    } catch (issue) {
-      clientLogger.error("ui.auth.clerk_logout_failed", { error: issue });
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <button type="button" className="ghost" onClick={logout} disabled={loading}>
-      {loading ? "در حال خروج..." : "خروج از حساب"}
-    </button>
   );
 }
