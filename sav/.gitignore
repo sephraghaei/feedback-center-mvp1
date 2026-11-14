@@ -1,0 +1,5 @@
+.env.local
+.env
+.db-password
+.next
+node_modules
