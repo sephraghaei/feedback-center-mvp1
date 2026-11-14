@@ -1,12 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { addComment, setCommentVote, type CommentView } from "@/lib/feedback/comments";
 import {
   PostError,
   answerSupport,
   createChangelogEntry,
   createPost,
   movePost,
+  removeOwnPost,
   removePost,
   setPostHidden,
   toggleUpvote,
@@ -70,6 +72,63 @@ export async function toggleUpvoteAction(
     revalidatePath("/roadmap");
     revalidatePath(`/p/${postId}`);
     return { ok: true, ...state };
+  } catch (error) {
+    return { ok: false, error: message(error) };
+  }
+}
+
+export async function addCommentAction(
+  postId: string,
+  body: string,
+): Promise<{ ok: true; comment: CommentView } | { ok: false; error: string; signIn?: boolean }> {
+  const viewer = await getViewer();
+  if (!viewer) return { ok: false, error: "برای نوشتن کامنت اول وارد حسابت شو.", signIn: true };
+
+  try {
+    const comment = await addComment({
+      postId,
+      authorId: viewer.userId,
+      authorName: viewer.name,
+      body,
+    });
+    revalidatePath(`/p/${postId}`);
+    return { ok: true, comment };
+  } catch (error) {
+    return { ok: false, error: message(error) };
+  }
+}
+
+export async function voteCommentAction(
+  commentId: string,
+  value: number,
+): Promise<
+  { ok: true; score: number; myVote: number } | { ok: false; error: string; signIn?: boolean }
+> {
+  const viewer = await getViewer();
+  if (!viewer) return { ok: false, error: "برای رای دادن به کامنت اول وارد حسابت شو.", signIn: true };
+
+  try {
+    const state = await setCommentVote(commentId, viewer.userId, value);
+    revalidatePath(`/p/${state.postId}`);
+    return { ok: true, score: state.score, myVote: state.myVote };
+  } catch (error) {
+    return { ok: false, error: message(error) };
+  }
+}
+
+export async function deleteOwnPostAction(
+  postId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const viewer = await getViewer();
+  if (!viewer) return { ok: false, error: "برای حذف بازخورد اول وارد حسابت شو." };
+
+  try {
+    await removeOwnPost(postId, viewer.userId);
+    revalidatePath("/feed");
+    revalidatePath("/roadmap");
+    revalidatePath("/requests");
+    revalidatePath("/admin/posts");
+    return { ok: true };
   } catch (error) {
     return { ok: false, error: message(error) };
   }

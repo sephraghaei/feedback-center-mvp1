@@ -1,0 +1,42 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { deleteOwnPostAction } from "@/app/feedback-actions";
+
+export default function PostOwnerActions({ postId }: { postId: string }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function remove() {
+    if (busy) return;
+    if (!window.confirm("این بازخورد با همه کامنت‌هایش برای همیشه حذف شود؟")) return;
+
+    setBusy(true);
+    setError(null);
+    const result = await deleteOwnPostAction(postId);
+    setBusy(false);
+
+    if (result.ok) {
+      router.push("/feed");
+      router.refresh();
+      return;
+    }
+
+    setError(result.error);
+  }
+
+  return (
+    <div className="fb-owner-actions">
+      <button type="button" className="fb-btn fb-btn-danger fb-btn-sm" onClick={remove} disabled={busy}>
+        {busy ? "در حال حذف..." : "حذف بازخورد"}
+      </button>
+      {error ? (
+        <span className="field-hint" style={{ color: "var(--red)" }}>
+          {error}
+        </span>
+      ) : null}
+    </div>
+  );
+}

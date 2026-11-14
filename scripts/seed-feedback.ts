@@ -7,6 +7,8 @@
 import {
   changelogEntries,
   changelogPosts,
+  commentVotes,
+  comments,
   posts,
   profiles,
   upvotes,
@@ -184,6 +186,72 @@ async function main(): Promise<void> {
     { postId: thumbnailPost, userId: sepideh.id },
     { postId: thumbnailPost, userId: reza.id },
     { postId: mobilePost, userId: admin.id },
+  ]);
+
+  const insertedComments = await db
+    .insert(comments)
+    .values([
+      {
+        postId: mobilePost,
+        authorId: sara.id,
+        body: "همین مشکل را در آیفون هم دارم. وقتی کیبورد باز است، نوار پایین فرم کامل پنهان می‌شود.",
+        createdAt: daysAgo(8),
+      },
+      {
+        postId: mobilePost,
+        authorId: sepideh.id,
+        body: "روی اندروید هم دکمه زیر کیبورد می‌رود، فقط با درگ کردن صفحه درست می‌شود.",
+        createdAt: daysAgo(6),
+      },
+      {
+        postId: myRequestsPost,
+        authorId: admin.id,
+        body: "این را در نوبت گذاشتیم. تا آن موقع می‌توانی درخواست‌های باز را از صفحه درخواست‌های من ببینی.",
+        createdAt: daysAgo(11),
+      },
+      {
+        postId: myRequestsPost,
+        authorId: reza.id,
+        body: "صفحه درخواست‌ها هست، اما وضعیت‌ها به‌روز نیست. همان چیزی که اینجا نوشته شده را می‌خواهم.",
+        createdAt: daysAgo(10),
+      },
+      {
+        postId: thumbnailPost,
+        authorId: sepideh.id,
+        body: "تصویر کوچک بهتر از لینک است، اما برای فایل‌های بزرگ هم یک پیش‌نمایش بگذارید.",
+        createdAt: daysAgo(4),
+      },
+    ])
+    .returning({ id: comments.id, body: comments.body });
+
+  function commentOf(body: string): string {
+    const row = insertedComments.find((comment) => comment.body === body);
+    if (!row) throw new Error(`seed_comment_missing:${body}`);
+    return row.id;
+  }
+
+  const iosComment = commentOf(
+    "همین مشکل را در آیفون هم دارم. وقتی کیبورد باز است، نوار پایین فرم کامل پنهان می‌شود.",
+  );
+  const androidComment = commentOf(
+    "روی اندروید هم دکمه زیر کیبورد می‌رود، فقط با درگ کردن صفحه درست می‌شود.",
+  );
+  const trackedComment = commentOf(
+    "این را در نوبت گذاشتیم. تا آن موقع می‌توانی درخواست‌های باز را از صفحه درخواست‌های من ببینی.",
+  );
+  const thumbnailComment = commentOf(
+    "تصویر کوچک بهتر از لینک است، اما برای فایل‌های بزرگ هم یک پیش‌نمایش بگذارید.",
+  );
+
+  await db.insert(commentVotes).values([
+    { commentId: iosComment, userId: reza.id, value: 1 },
+    { commentId: iosComment, userId: sepideh.id, value: 1 },
+    { commentId: iosComment, userId: admin.id, value: 1 },
+    { commentId: androidComment, userId: sara.id, value: 1 },
+    { commentId: trackedComment, userId: sepideh.id, value: 1 },
+    { commentId: trackedComment, userId: reza.id, value: 1 },
+    { commentId: thumbnailComment, userId: sara.id, value: 1 },
+    { commentId: thumbnailComment, userId: reza.id, value: -1 },
   ]);
 
   const [entry] = await db

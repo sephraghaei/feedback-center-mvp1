@@ -43,6 +43,13 @@
       "when": 1794679651231,
       "tag": "0005_thin_edwin_jarvis",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794686353062,
+      "tag": "0006_yellow_mephisto",
+      "breakpoints": true
     }
   ]
 }

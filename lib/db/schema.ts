@@ -123,6 +123,45 @@ export const upvotes = pgTable(
   ],
 );
 
+export const comments = pgTable(
+  "comments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    authorId: uuid("author_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("comments_post_idx").on(table.postId, table.createdAt),
+    index("comments_author_idx").on(table.authorId),
+    check("comments_body_check", sql`char_length(${table.body}) between 2 and 2000`),
+  ],
+);
+
+export const commentVotes = pgTable(
+  "comment_votes",
+  {
+    commentId: uuid("comment_id")
+      .notNull()
+      .references(() => comments.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    value: integer("value").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({ name: "comment_votes_pkey", columns: [table.commentId, table.userId] }),
+    index("comment_votes_user_idx").on(table.userId),
+    check("comment_votes_value_check", sql`${table.value} in (-1, 1)`),
+  ],
+);
+
 export const changelogEntries = pgTable("changelog_entries", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: text("title").notNull(),
@@ -152,4 +191,6 @@ export type ProfileRow = typeof profiles.$inferSelect;
 export type VerificationRow = typeof verifications.$inferSelect;
 export type PostRow = typeof posts.$inferSelect;
 export type AttachmentRow = typeof attachments.$inferSelect;
+export type CommentRow = typeof comments.$inferSelect;
+export type CommentVoteRow = typeof commentVotes.$inferSelect;
 export type ChangelogEntryRow = typeof changelogEntries.$inferSelect;

@@ -431,6 +431,17 @@ export async function removePost(postId: string): Promise<void> {
   await getDb().delete(posts).where(eq(posts.id, postId));
 }
 
+export async function removeOwnPost(postId: string, authorId: string): Promise<void> {
+  if (!isUuid(postId)) throw new PostError("شناسه بازخورد معتبر نیست.");
+
+  const deleted = await getDb()
+    .delete(posts)
+    .where(and(eq(posts.id, postId), eq(posts.authorId, authorId)))
+    .returning({ id: posts.id });
+
+  if (deleted.length === 0) throw new PostError("این بازخورد پیدا نشد یا مال تو نیست.");
+}
+
 export async function answerSupport(
   postId: string,
   reply: string,
