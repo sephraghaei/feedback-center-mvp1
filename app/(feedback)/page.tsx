@@ -51,35 +51,49 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
   const shipped = groups.find((group) => group.status === "shipped")?.items.length ?? 0;
 
   return (
-    <>
+    <div className="fb-home">
       <section className="fb-hero">
-        <p className="fb-eyebrow">
-          <BrandMark className="eyebrow-mark" simple />
-          مرکز بازخورد
-        </p>
-        <h1 className="fb-title">بازخورد کاربران را ساده بشنو.</h1>
-        <p className="fb-lede">
-          هر نظر و درخواست یک مسیر روشن دارد: از فید بازخوردها تا نقشه راه و تغییرات منتشر
-          شده. خواندن برای همه آزاد است؛ نوشتن و رای دادن فقط یک حساب می‌خواهد.
-        </p>
-        <div className="fb-hero-actions">
-          <ComposerButton className="fb-btn fb-btn-primary">ثبت بازخورد</ComposerButton>
-          <Link href="/feed" className="fb-btn">
-            فید بازخوردها
-          </Link>
-          <Link href="/roadmap" className="fb-btn fb-btn-ghost">
-            نقشه راه
-          </Link>
+        <div className="fb-hero-aura" aria-hidden="true">
+          <span className="fb-aura-glow" />
+          <span className="fb-aura-grid" />
         </div>
-        <ul className="fb-hero-stats">
-          <li>
-            <strong>{faNumber(feedbackCount)}</strong> بازخورد ثبت شده
-          </li>
-          <li>
-            <strong>{faNumber(shipped)}</strong> رسیده به انتشار
-          </li>
-          <li>خواندن بدون حساب</li>
-        </ul>
+        <div className="fb-hero-inner">
+          <p className="fb-eyebrow fb-eyebrow-chip">
+            <BrandMark className="eyebrow-mark" simple />
+            <span>مرکز بازخورد</span>
+            <span className="fb-live-dot" aria-hidden="true" />
+          </p>
+          <h1 className="fb-title">
+            بازخورد کاربران را <span className="fb-title-mark">ساده بشنو</span>.
+          </h1>
+          <p className="fb-lede">
+            هر نظر و درخواست یک مسیر روشن دارد: از فید بازخوردها تا نقشه راه و تغییرات منتشر
+            شده. خواندن برای همه آزاد است؛ نوشتن و رای دادن فقط یک حساب می‌خواهد.
+          </p>
+          <div className="fb-hero-actions">
+            <ComposerButton className="fb-btn fb-btn-primary">ثبت بازخورد</ComposerButton>
+            <Link href="/feed" className="fb-btn">
+              فید بازخوردها
+            </Link>
+            <Link href="/roadmap" className="fb-btn fb-btn-ghost">
+              نقشه راه
+            </Link>
+          </div>
+          <ul className="fb-hero-stats">
+            <li>
+              <strong>{faNumber(feedbackCount)}</strong>
+              <span>بازخورد ثبت شده</span>
+            </li>
+            <li>
+              <strong>{faNumber(shipped)}</strong>
+              <span>رسیده به انتشار</span>
+            </li>
+            <li>
+              <strong>بدون حساب</strong>
+              <span>خواندن فید و نقشه راه</span>
+            </li>
+          </ul>
+        </div>
       </section>
 
       <section className="fb-section" aria-labelledby="recent-title">
@@ -240,6 +254,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           </div>
         )}
       </section>
-    </>
+    </div>
   );
 }
