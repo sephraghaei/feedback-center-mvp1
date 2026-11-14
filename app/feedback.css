@@ -1130,6 +1130,19 @@
   justify-content: flex-start;
 }
 
+/* Auth screen */
+
+.backdrop.auth-screen {
+  z-index: 80;
+  background: var(--paper);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.backdrop.auth-screen .auth-panel {
+  padding: 2.1rem 1.6rem 1.6rem;
+}
+
 @media (max-width: 900px) {
   .fb-grid {
     grid-template-columns: 1fr;

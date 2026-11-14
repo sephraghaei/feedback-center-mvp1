@@ -2,6 +2,7 @@
 
 import { SignInButton, useAuth, useClerk } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { clientLogger } from "@/lib/client-logger";
 import { SEX_OPTIONS } from "@/lib/profile";
@@ -90,9 +91,12 @@ export default function AuthFlow({
     document.addEventListener("keydown", onKeyDown);
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const shell = document.querySelector<HTMLElement>(".fb-shell");
+    shell?.setAttribute("inert", "");
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previous;
+      shell?.removeAttribute("inert");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, loading]);
@@ -103,6 +107,12 @@ export default function AuthFlow({
     if (step === 2) codeRef.current?.focus();
     if (step === 3) nameRef.current?.focus();
   }, [open, step]);
+
+  useEffect(() => {
+    if (status !== "guest" || !nextPath) return;
+    openModal();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, nextPath]);
 
   function reset() {
     setError(null);
@@ -219,233 +229,253 @@ export default function AuthFlow({
         {label}
       </button>
 
-      {open ? (
-        <div
-          className="backdrop"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) close();
-          }}
-        >
-          <div className="modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
-            <button
-              type="button"
-              className="modal-close"
-              onClick={close}
-              aria-label="بستن"
-              disabled={loading}
+      {open
+        ? createPortal(
+            <div
+              className="backdrop auth-screen"
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) close();
+              }}
             >
-              بستن
-            </button>
-
-            <p className="steps" aria-live="polite">
-              مرحله {toPersianDigits(String(step))} از {toPersianDigits("3")}
-            </p>
-
-            {step === 1 ? (
-              <form className="modal-body" onSubmit={submitPhone}>
-                <h2 id="auth-title" className="modal-title">
-                  خوش آمدی
-                </h2>
-                <p className="modal-hint">شماره موبایلت را وارد کن تا کد ورود برایت پیامک شود.</p>
-
-                <label className="label" htmlFor="phone">
-                  شماره موبایل
-                </label>
-                <input
-                  id="phone"
-                  ref={phoneRef}
-                  className="input ltr"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="09123456789"
-                  value={phoneInput}
-                  onChange={(event) => setPhoneInput(event.target.value)}
+              <div
+                className="modal auth-panel"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="auth-title"
+              >
+                <button
+                  type="button"
+                  className="modal-close"
+                  onClick={close}
+                  aria-label="بستن"
                   disabled={loading}
-                  required
-                />
-                <p className="field-hint">با ۰۹ شروع می‌شود و ۱۱ رقم دارد.</p>
-
-                {error ? <p className="error">{error}</p> : null}
-
-                <button type="submit" className="primary" disabled={loading}>
-                  {loading ? "در حال ارسال کد..." : "دریافت کد ورود"}
+                >
+                  بستن
                 </button>
 
-                <p className="divider">
-                  <span>یا</span>
+                <p className="steps" aria-live="polite">
+                  مرحله {toPersianDigits(String(step))} از {toPersianDigits("3")}
                 </p>
 
-                <SignInButton mode="modal">
-                  <button type="button" className="ghost full" disabled={loading}>
-                    ورود با ایمیل
-                  </button>
-                </SignInButton>
-                <SignInButton mode="modal">
-                  <button type="button" className="ghost full" disabled={loading}>
-                    ورود با حساب گوگل
-                  </button>
-                </SignInButton>
-              </form>
-            ) : null}
+                {step === 1 ? (
+                  <form className="modal-body" onSubmit={submitPhone}>
+                    <h2 id="auth-title" className="modal-title">
+                      خوش آمدی
+                    </h2>
+                    <p className="modal-hint">
+                      شماره موبایلت را وارد کن تا کد ورود برایت پیامک شود.
+                    </p>
 
-            {step === 2 ? (
-              <form className="modal-body" onSubmit={submitCode}>
-                <h2 id="auth-title" className="modal-title">
-                  کد ورود
-                </h2>
-                <p className="modal-hint">
-                  کد {toPersianDigits(String(codeLength))} رقمی را برای{" "}
-                  <span className="mono">{maskPhone(activePhone)}</span> فرستادیم.
-                </p>
-
-                {devCode ? (
-                  <p className="dev-code">
-                    حالت توسعه: پیامک تنظیم نشده، کد تو{" "}
-                    <span className="mono">{toPersianDigits(devCode)}</span> است.
-                  </p>
-                ) : null}
-
-                <label className="label" htmlFor="code">
-                  کد ورود
-                </label>
-                <input
-                  id="code"
-                  ref={codeRef}
-                  className="input otp-input ltr"
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  maxLength={codeLength}
-                  placeholder={"-".repeat(codeLength)}
-                  value={code}
-                  onChange={(event) =>
-                    setCode(
-                      event.target.value
-                        .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
-                        .replace(/\D/g, "")
-                        .slice(0, codeLength),
-                    )
-                  }
-                  disabled={loading}
-                  required
-                />
-
-                {error ? <p className="error">{error}</p> : null}
-
-                <button type="submit" className="primary" disabled={loading || code.length < codeLength}>
-                  {loading ? "در حال بررسی..." : "تایید و ادامه"}
-                </button>
-
-                <div className="row">
-                  <button
-                    type="button"
-                    className="ghost"
-                    onClick={() => setStep(1)}
-                    disabled={loading}
-                  >
-                    ویرایش شماره
-                  </button>
-                  <button
-                    type="button"
-                    className="ghost"
-                    onClick={() => requestOtp({ phone: activePhone })}
-                    disabled={loading || resendIn > 0}
-                  >
-                    {resendIn > 0 ? `ارسال دوباره تا ${toPersianDigits(String(resendIn))} ثانیه` : "ارسال دوباره کد"}
-                  </button>
-                </div>
-              </form>
-            ) : null}
-
-            {step === 3 ? (
-              <form className="modal-body" onSubmit={submitProfile}>
-                <h2 id="auth-title" className="modal-title">
-                  کمی از خودت بگو
-                </h2>
-                <p className="modal-hint">
-                  فقط اسم لازم است، بقیه موارد اختیاری‌اند و بعدا هم می‌شود کاملشان کرد.
-                </p>
-
-                <label className="label" htmlFor="name">
-                  نام
-                </label>
-                <input
-                  id="name"
-                  ref={nameRef}
-                  className="input"
-                  type="text"
-                  autoComplete="name"
-                  maxLength={60}
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  disabled={loading}
-                  required
-                />
-
-                <div className="grid">
-                  <div>
-                    <label className="label" htmlFor="age">
-                      سن <span className="optional">(اختیاری)</span>
+                    <label className="label" htmlFor="phone">
+                      شماره موبایل
                     </label>
                     <input
-                      id="age"
+                      id="phone"
+                      ref={phoneRef}
                       className="input ltr"
-                      type="number"
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      placeholder="09123456789"
+                      value={phoneInput}
+                      onChange={(event) => setPhoneInput(event.target.value)}
+                      disabled={loading}
+                      required
+                    />
+                    <p className="field-hint">با ۰۹ شروع می‌شود و ۱۱ رقم دارد.</p>
+
+                    {error ? <p className="error">{error}</p> : null}
+
+                    <button type="submit" className="primary" disabled={loading}>
+                      {loading ? "در حال ارسال کد..." : "دریافت کد ورود"}
+                    </button>
+
+                    <p className="divider">
+                      <span>یا</span>
+                    </p>
+
+                    <SignInButton mode="modal">
+                      <button type="button" className="ghost full" disabled={loading}>
+                        ورود با ایمیل
+                      </button>
+                    </SignInButton>
+                    <SignInButton mode="modal">
+                      <button type="button" className="ghost full" disabled={loading}>
+                        ورود با حساب گوگل
+                      </button>
+                    </SignInButton>
+                  </form>
+                ) : null}
+
+                {step === 2 ? (
+                  <form className="modal-body" onSubmit={submitCode}>
+                    <h2 id="auth-title" className="modal-title">
+                      کد ورود
+                    </h2>
+                    <p className="modal-hint">
+                      کد {toPersianDigits(String(codeLength))} رقمی را برای{" "}
+                      <span className="mono">{maskPhone(activePhone)}</span> فرستادیم.
+                    </p>
+
+                    {devCode ? (
+                      <p className="dev-code">
+                        حالت توسعه: پیامک تنظیم نشده، کد تو{" "}
+                        <span className="mono">{toPersianDigits(devCode)}</span> است.
+                      </p>
+                    ) : null}
+
+                    <label className="label" htmlFor="code">
+                      کد ورود
+                    </label>
+                    <input
+                      id="code"
+                      ref={codeRef}
+                      className="input otp-input ltr"
+                      type="text"
                       inputMode="numeric"
-                      min={5}
-                      max={120}
-                      value={age}
-                      onChange={(event) => setAge(event.target.value)}
+                      autoComplete="one-time-code"
+                      maxLength={codeLength}
+                      placeholder={"-".repeat(codeLength)}
+                      value={code}
+                      onChange={(event) =>
+                        setCode(
+                          event.target.value
+                            .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
+                            .replace(/\D/g, "")
+                            .slice(0, codeLength),
+                        )
+                      }
+                      disabled={loading}
+                      required
+                    />
+
+                    {error ? <p className="error">{error}</p> : null}
+
+                    <button
+                      type="submit"
+                      className="primary"
+                      disabled={loading || code.length < codeLength}
+                    >
+                      {loading ? "در حال بررسی..." : "تایید و ادامه"}
+                    </button>
+
+                    <div className="row">
+                      <button
+                        type="button"
+                        className="ghost"
+                        onClick={() => setStep(1)}
+                        disabled={loading}
+                      >
+                        ویرایش شماره
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost"
+                        onClick={() => requestOtp({ phone: activePhone })}
+                        disabled={loading || resendIn > 0}
+                      >
+                        {resendIn > 0
+                          ? `ارسال دوباره تا ${toPersianDigits(String(resendIn))} ثانیه`
+                          : "ارسال دوباره کد"}
+                      </button>
+                    </div>
+                  </form>
+                ) : null}
+
+                {step === 3 ? (
+                  <form className="modal-body" onSubmit={submitProfile}>
+                    <h2 id="auth-title" className="modal-title">
+                      کمی از خودت بگو
+                    </h2>
+                    <p className="modal-hint">
+                      فقط اسم لازم است، بقیه موارد اختیاری‌اند و بعدا هم می‌شود کاملشان کرد.
+                    </p>
+
+                    <label className="label" htmlFor="name">
+                      نام
+                    </label>
+                    <input
+                      id="name"
+                      ref={nameRef}
+                      className="input"
+                      type="text"
+                      autoComplete="name"
+                      maxLength={60}
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      disabled={loading}
+                      required
+                    />
+
+                    <div className="grid">
+                      <div>
+                        <label className="label" htmlFor="age">
+                          سن <span className="optional">(اختیاری)</span>
+                        </label>
+                        <input
+                          id="age"
+                          className="input ltr"
+                          type="number"
+                          inputMode="numeric"
+                          min={5}
+                          max={120}
+                          value={age}
+                          onChange={(event) => setAge(event.target.value)}
+                          disabled={loading}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="label" htmlFor="sex">
+                          جنسیت <span className="optional">(اختیاری)</span>
+                        </label>
+                        <select
+                          id="sex"
+                          className="input"
+                          value={sex}
+                          onChange={(event) => setSex(event.target.value)}
+                          disabled={loading}
+                        >
+                          <option value="">انتخاب نکن</option>
+                          {SEX_OPTIONS.map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <label className="label" htmlFor="company">
+                      نام شرکت <span className="optional">(اختیاری)</span>
+                    </label>
+                    <input
+                      id="company"
+                      className="input"
+                      type="text"
+                      autoComplete="organization"
+                      maxLength={80}
+                      value={company}
+                      onChange={(event) => setCompany(event.target.value)}
                       disabled={loading}
                     />
-                  </div>
 
-                  <div>
-                    <label className="label" htmlFor="sex">
-                      جنسیت <span className="optional">(اختیاری)</span>
-                    </label>
-                    <select
-                      id="sex"
-                      className="input"
-                      value={sex}
-                      onChange={(event) => setSex(event.target.value)}
-                      disabled={loading}
+                    {error ? <p className="error">{error}</p> : null}
+
+                    <button
+                      type="submit"
+                      className="primary"
+                      disabled={loading || name.trim().length < 2}
                     >
-                      <option value="">انتخاب نکن</option>
-                      {SEX_OPTIONS.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <label className="label" htmlFor="company">
-                  نام شرکت <span className="optional">(اختیاری)</span>
-                </label>
-                <input
-                  id="company"
-                  className="input"
-                  type="text"
-                  autoComplete="organization"
-                  maxLength={80}
-                  value={company}
-                  onChange={(event) => setCompany(event.target.value)}
-                  disabled={loading}
-                />
-
-                {error ? <p className="error">{error}</p> : null}
-
-                <button type="submit" className="primary" disabled={loading || name.trim().length < 2}>
-                  {loading ? "در حال ذخیره..." : "ذخیره و ورود"}
-                </button>
-              </form>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
+                      {loading ? "در حال ذخیره..." : "ذخیره و ورود"}
+                    </button>
+                  </form>
+                ) : null}
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 }
