@@ -163,17 +163,10 @@ body:has(.admin-login) {
   padding: 8px 8px 18px;
 }
 .brand-mark {
-  width: 16px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  background: transparent;
   color: var(--ink);
-}
-.brand-mark .brand-triangle {
-  width: 16px;
-  height: 14px;
 }
 .brand-name {
   font-weight: 500;
@@ -1478,17 +1471,10 @@ body:has(.admin-login) {
   }
 }
 .login-logo {
-  width: 24px;
-  height: 21px;
-  display: grid;
-  place-items: center;
-  background: transparent;
+  width: 27px;
+  height: 27px;
   color: var(--ink);
   margin-bottom: 10px;
-}
-.login-logo .brand-triangle {
-  width: 24px;
-  height: 21px;
 }
 .login-title {
   margin: 0;

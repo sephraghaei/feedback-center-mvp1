@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import AuthFlow from "@/app/components/auth-flow";
+import BrandMark from "@/app/components/brand-mark";
 import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-buttons";
 import ComposerButton from "@/app/components/feedback/composer-button";
 import PostCard from "@/app/components/feedback/post-card";
@@ -53,7 +54,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
     <>
       <section className="fb-hero">
         <p className="fb-eyebrow">
-          <span className="eyebrow-mark" aria-hidden="true" />
+          <BrandMark className="eyebrow-mark" simple />
           مرکز بازخورد
         </p>
         <h1 className="fb-title">بازخورد کاربران را ساده بشنو.</h1>
@@ -198,7 +199,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         {viewer ? (
           <div className="fb-account">
             <p className="fb-eyebrow">
-              <span className="eyebrow-mark" aria-hidden="true" />
+              <BrandMark className="eyebrow-mark" simple />
               خوش آمدی
             </p>
             <p className="fb-account-greeting">سلام، {viewer.name} عزیز</p>

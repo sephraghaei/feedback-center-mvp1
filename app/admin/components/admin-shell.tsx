@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toPersianDigits } from "@/lib/phone";
+import BrandMark from "../../components/brand-mark";
 import ThemeToggle from "../../components/theme-toggle";
 import { Icon, type IconName } from "./bits";
 
@@ -61,9 +62,7 @@ export default function AdminShell({
 
       <aside className={`admin-sidebar ${open ? "open" : ""}`}>
         <div className="side-brand">
-          <span className="brand-mark">
-            <span className="brand-triangle" aria-hidden="true" />
-          </span>
+          <BrandMark className="brand-mark" />
           <span>
             <span className="brand-name">Feedback-center</span>
             <br />

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import BrandMark from "../brand-mark";
 import { ClerkSignOutButton, LogoutButton } from "../logout-buttons";
 import ThemeToggle from "../theme-toggle";
 
@@ -56,7 +57,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
     <header className="site-nav">
       <div className="nav-inner">
         <Link href="/" className="nav-brand" aria-label="Feedback-center">
-          <span className="brand-triangle" aria-hidden="true" />
+          <BrandMark className="nav-mark" />
           <span className="nav-name" dir="ltr">
             Feedback-center
           </span>

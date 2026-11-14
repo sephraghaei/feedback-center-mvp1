@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import BrandMark from "../../components/brand-mark";
 import ThemeToggle from "../../components/theme-toggle";
 import { Icon } from "./bits";
 
@@ -36,9 +37,7 @@ export default function LoginForm({ configured }: { configured: boolean }) {
     <div className="admin-login">
       <ThemeToggle />
       <form className="login-card" onSubmit={submit}>
-        <span className="login-logo">
-          <span className="brand-triangle" aria-hidden="true" />
-        </span>
+        <BrandMark className="login-logo" />
         <h1 className="login-title">ورود مدیر</h1>
         <p className="login-sub">
           برای ورود به پنل مدیریت فقط رمز عبور را وارد کن. بدون ایمیل، بدون شماره و بدون نام کاربری.

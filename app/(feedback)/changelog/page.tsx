@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import BrandMark from "@/app/components/brand-mark";
 import Markdown from "@/app/components/feedback/markdown";
 import { faDate } from "@/lib/feedback/labels";
 import { listChangelog } from "@/lib/feedback/changelog";
@@ -16,7 +17,7 @@ export default async function ChangelogPage() {
     <>
       <section className="fb-hero">
         <p className="fb-eyebrow">
-          <span className="eyebrow-mark" aria-hidden="true" />
+          <BrandMark className="eyebrow-mark" simple />
           تغییرات
         </p>
         <h1 className="fb-title">آنچه ساخته شد، با تاریخ و پیوند</h1>

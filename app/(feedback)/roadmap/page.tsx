@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import BrandMark from "@/app/components/brand-mark";
 import ComposerButton from "@/app/components/feedback/composer-button";
 import MoveMenu from "@/app/components/feedback/move-menu";
 import { CATEGORY_LABELS, STATUS_LABELS, faNumber } from "@/lib/feedback/labels";
@@ -29,7 +30,7 @@ export default async function RoadmapPage() {
     <>
       <section className="fb-hero">
         <p className="fb-eyebrow">
-          <span className="eyebrow-mark" aria-hidden="true" />
+          <BrandMark className="eyebrow-mark" simple />
           نقشه راه
         </p>
         <h1 className="fb-title">از درخواست تا انتشار، یک مسیر روشن</h1>

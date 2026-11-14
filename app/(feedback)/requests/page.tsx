@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import BrandMark from "@/app/components/brand-mark";
 import ComposerButton from "@/app/components/feedback/composer-button";
 import PostCard from "@/app/components/feedback/post-card";
 import { faNumber } from "@/lib/feedback/labels";
@@ -23,7 +24,7 @@ export default async function RequestsPage() {
     <>
       <section className="fb-hero">
         <p className="fb-eyebrow">
-          <span className="eyebrow-mark" aria-hidden="true" />
+          <BrandMark className="eyebrow-mark" simple />
           درخواست‌های من
         </p>
         <h1 className="fb-title">هر چه فرستادی، یک جا</h1>

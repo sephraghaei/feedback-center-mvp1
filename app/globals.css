@@ -169,12 +169,11 @@ a {
   color: var(--ink);
 }
 
-.brand-triangle {
-  width: 13px;
-  height: 12px;
+.nav-mark {
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
-  background: var(--mark);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  color: var(--mark);
 }
 
 .nav-name {
@@ -296,12 +295,10 @@ a {
 }
 
 .eyebrow-mark {
-  width: 0;
-  height: 0;
+  width: 12px;
+  height: 12px;
   flex-shrink: 0;
-  border-inline-start: 4px solid transparent;
-  border-inline-end: 4px solid transparent;
-  border-bottom: 7px solid var(--mark);
+  color: var(--mark);
 }
 
 .title {
@@ -353,20 +350,6 @@ a {
   color: var(--green);
   font-weight: 700;
   font-size: 0.78rem;
-}
-
-.hero-glyph {
-  display: grid;
-  place-items: center;
-  align-self: center;
-}
-
-.hero-triangle {
-  display: block;
-  width: 52px;
-  height: 46px;
-  background: var(--mark);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
 }
 
 .hero-terminal {
@@ -739,12 +722,11 @@ a {
   color: var(--ink);
 }
 
-.footer-triangle {
-  width: 10px;
-  height: 9px;
+.footer-mark {
+  width: 13px;
+  height: 13px;
   flex-shrink: 0;
-  background: var(--mark);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  color: var(--mark);
 }
 
 /* Clerk pages */
@@ -779,11 +761,10 @@ a {
   line-height: 1.2;
 }
 
-.error-triangle {
-  width: 22px;
-  height: 19px;
-  background: var(--mark);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+.error-mark {
+  width: 30px;
+  height: 30px;
+  color: var(--mark);
 }
 
 .subtitle {
@@ -1105,10 +1086,6 @@ select.input {
 @media (max-width: 1080px) {
   .hero {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
-
-  .hero-glyph {
-    display: none;
   }
 }
 

@@ -1,4 +1,5 @@
 import "../feedback.css";
+import BrandMark from "@/app/components/brand-mark";
 import Composer from "@/app/components/feedback/composer";
 import FeedbackHeader from "@/app/components/feedback/feedback-header";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
@@ -16,7 +17,7 @@ export default async function FeedbackLayout({ children }: { children: React.Rea
       <main className="fb-main">{children}</main>
       <footer className="site-footer">
         <span className="footer-brand">
-          <span className="footer-triangle" aria-hidden="true" />
+          <BrandMark className="footer-mark" simple />
           <span dir="ltr">Feedback-center</span>
         </span>
         <span>بازخورد، نقشه راه و تغییرات در یک جا</span>
