@@ -61,6 +61,7 @@ export const posts = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     type: text("type").notNull(),
     category: text("category"),
+    product: text("product"),
     title: text("title").notNull(),
     body: text("body").notNull(),
     coverPath: text("cover_path"),

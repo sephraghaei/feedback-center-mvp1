@@ -10,6 +10,7 @@ import {
   users,
 } from "../db/schema";
 import { ALLOWED_TYPES } from "./storage";
+import { parseProduct } from "./product";
 import {
   FEEDBACK_CATEGORIES,
   FEEDBACK_STATUSES,
@@ -35,6 +36,7 @@ export type PostSummary = {
   id: string;
   type: string;
   category: string | null;
+  product: string | null;
   title: string;
   body: string;
   coverPath: string | null;
@@ -96,6 +98,7 @@ function summarySelect(viewerId?: string) {
     id: posts.id,
     type: posts.type,
     category: posts.category,
+    product: posts.product,
     title: posts.title,
     body: posts.body,
     coverPath: posts.coverPath,
@@ -291,6 +294,7 @@ export async function createPost(input: {
   authorId: string;
   type: "feedback" | "support";
   category?: string | null;
+  product?: string | null;
   title: string;
   body: string;
   attachments: AttachmentInput[];
@@ -298,6 +302,8 @@ export async function createPost(input: {
 }): Promise<string> {
   const title = cleanTitle(input.title);
   const body = cleanBody(input.body);
+  const product = parseProduct(input.product);
+  if (!product.ok) throw new PostError(product.message);
 
   let category: string | null = null;
   if (input.type === "feedback") {
@@ -329,6 +335,7 @@ export async function createPost(input: {
         authorId: input.authorId,
         type: input.type,
         category,
+        product: product.value,
         title,
         body,
         coverPath: cover,

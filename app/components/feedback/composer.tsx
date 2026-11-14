@@ -10,6 +10,7 @@ import {
   MAX_FILE_BYTES,
 } from "@/lib/feedback/constants";
 import { CATEGORY_LABELS } from "@/lib/feedback/labels";
+import { MAX_PRODUCT_LENGTH, parseProduct } from "@/lib/feedback/product";
 import { mediaUrl } from "@/lib/feedback/media";
 import Markdown from "./markdown";
 
@@ -43,6 +44,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<"feedback" | "support">("feedback");
   const [category, setCategory] = useState("feature");
+  const [product, setProduct] = useState("");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [preview, setPreview] = useState(false);
@@ -79,6 +81,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
   function resetDraft() {
     setType("feedback");
     setCategory("feature");
+    setProduct("");
     setTitle("");
     setBody("");
     setPreview(false);
@@ -203,6 +206,11 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
     const cleanTitle = title.trim();
     const cleanBody = body.trim();
+    const parsedProduct = parseProduct(product);
+    if (!parsedProduct.ok) {
+      setError(parsedProduct.message);
+      return;
+    }
     if (cleanTitle.length < 3 || cleanTitle.length > 140) {
       setError("عنوان باید بین ۳ تا ۱۴۰ نویسه باشد.");
       return;
@@ -224,6 +232,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
     const result = await createPostAction({
       type,
       category: type === "feedback" ? category : null,
+      product: parsedProduct.value,
       title: cleanTitle,
       body: cleanBody,
       attachments,
@@ -328,11 +337,28 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
               </label>
             )}
 
-            <label className="label" htmlFor="composer-title">
+            <label className="label" htmlFor="composer-product">
+              نام محصول یا آدرس سایت <span className="optional">(اختیاری)</span>
+            </label>
+            <input
+              id="composer-product"
+              className="input"
+              value={product}
+              maxLength={MAX_PRODUCT_LENGTH}
+              onChange={(event) => setProduct(event.target.value)}
+              placeholder="مثلا: فروشگاه من یا example.com"
+            />
+            <p className="field-hint" style={{ marginTop: 0 }}>
+              {type === "feedback"
+                ? "اگر این بازخورد به محصول یا سایت مشخصی مربوط است، اسم یا آدرسش را بنویس."
+                : "اگر درخواستت به محصول یا سایت مشخصی مربوط است، اسم یا آدرسش را بنویس."}
+            </p>
+
+            <label className="label" htmlFor="composer-post-title">
               عنوان
             </label>
             <input
-              id="composer-title"
+              id="composer-post-title"
               className="input"
               value={title}
               maxLength={140}

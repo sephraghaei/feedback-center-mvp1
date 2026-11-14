@@ -24,6 +24,7 @@ function message(error: unknown): string {
 export async function createPostAction(input: {
   type: string;
   category?: string | null;
+  product?: string | null;
   title: string;
   body: string;
   attachments: AttachmentInput[];
@@ -42,6 +43,7 @@ export async function createPostAction(input: {
       authorId: viewer.userId,
       type: input.type,
       category: input.category,
+      product: input.product,
       title: input.title,
       body: input.body,
       attachments: Array.isArray(input.attachments) ? input.attachments : [],

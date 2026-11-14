@@ -673,6 +673,32 @@
   font-weight: 500;
 }
 
+.fb-source {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+
+.fb-source-label {
+  border: 1px solid var(--hairline);
+  border-radius: var(--pill);
+  background: var(--wash);
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  color: var(--ink-3);
+}
+
+.fb-source a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  word-break: break-all;
+}
+
 .fb-cover-wide {
   display: block;
   width: 100%;

@@ -8,6 +8,7 @@ import VoteButton from "@/app/components/feedback/vote-button";
 import MoveMenu from "@/app/components/feedback/move-menu";
 import { CATEGORY_LABELS, TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
+import { productContext } from "@/lib/feedback/product";
 import { getPostDetail, isUuid } from "@/lib/feedback/posts";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
 
@@ -37,6 +38,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
   const cover = post.coverPath ? mediaUrl(post.coverPath) : "";
   const isSupport = post.type === "support";
   const showVote = !isSupport && !post.hidden;
+  const source = productContext(post.product);
 
   return (
     <div className="fb-detail">
@@ -74,6 +76,19 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             </>
           ) : null}
         </div>
+
+        {source ? (
+          <p className="fb-source">
+            <span className="fb-source-label">محصول یا سایت</span>
+            {source.href ? (
+              <a href={source.href} target="_blank" rel="noopener noreferrer" dir="ltr">
+                {source.label}
+              </a>
+            ) : (
+              <span dir="auto">{source.label}</span>
+            )}
+          </p>
+        ) : null}
       </div>
 
       {cover ? <img className="fb-cover-wide" src={cover} alt="" /> : null}

@@ -113,6 +113,12 @@ export default async function AdminInboxPage({ searchParams }: { searchParams: P
                     </span>
                   </>
                 ) : null}
+                {row.product ? (
+                  <>
+                    {" · "}
+                    <span dir="auto">{row.product}</span>
+                  </>
+                ) : null}
               </p>
 
               <p style={{ margin: "10px 0 0", fontSize: "0.84rem", color: "var(--ink-2)", lineHeight: 1.9 }}>

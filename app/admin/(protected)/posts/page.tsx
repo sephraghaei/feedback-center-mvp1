@@ -55,6 +55,11 @@ export default async function AdminPostsPage() {
                         </Link>
                       </span>
                       <span className="post-sub">{post.authorName ?? "کاربر"}</span>
+                      {post.product ? (
+                        <span className="post-sub" dir="auto">
+                          محصول یا سایت: {post.product}
+                        </span>
+                      ) : null}
                     </div>
                   </td>
                   <td style={{ whiteSpace: "nowrap" }}>
