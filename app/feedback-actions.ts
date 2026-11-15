@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { addComment, setCommentVote, type CommentView } from "@/lib/feedback/comments";
+import { addComment, removeOwnComment, setCommentVote, type CommentView } from "@/lib/feedback/comments";
 import {
   PostError,
   answerSupport,
@@ -113,6 +113,21 @@ export async function voteCommentAction(
     const state = await setCommentVote(commentId, viewer.userId, value);
     revalidatePath(`/p/${state.postId}`);
     return { ok: true, score: state.score, myVote: state.myVote };
+  } catch (error) {
+    return { ok: false, error: message(error) };
+  }
+}
+
+export async function deleteOwnCommentAction(
+  commentId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const viewer = await getViewer();
+  if (!viewer) return { ok: false, error: "برای حذف کامنت اول وارد حسابت شو." };
+
+  try {
+    const { postId } = await removeOwnComment(commentId, viewer.userId);
+    revalidatePath(`/p/${postId}`);
+    return { ok: true };
   } catch (error) {
     return { ok: false, error: message(error) };
   }

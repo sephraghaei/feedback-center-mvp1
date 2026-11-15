@@ -680,8 +680,8 @@
   max-width: 60rem;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 18rem;
-  gap: 30px;
+  grid-template-columns: minmax(0, 1fr) 16rem;
+  gap: 46px;
   align-items: start;
 }
 
@@ -714,73 +714,94 @@
 .fb-detail-head {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+}
+
+.fb-detail-head .fb-card-top {
+  gap: 0;
+}
+
+.fb-detail-head .fb-card-top .fb-chip,
+.fb-detail-head .fb-card-top .fb-chip:not([class*="tone-"]) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 0.74rem;
+  font-weight: 500;
+}
+
+.fb-detail-head .fb-card-top .fb-chip.tone-done {
+  color: var(--green);
+}
+
+.fb-detail-head .fb-card-top .fb-chip.tone-progress {
+  color: var(--accent);
+}
+
+.fb-detail-head .fb-card-top .fb-chip + .fb-chip::before {
+  content: "·";
+  margin-inline: 7px;
+  color: var(--ink-4);
 }
 
 .fb-product-banner {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: baseline;
+  gap: 7px;
   min-width: 0;
-  padding: 10px 12px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
 }
 
 .fb-product-icon {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
+  align-self: center;
   flex-shrink: 0;
-  border: 1px solid var(--hairline);
-  border-radius: var(--pill);
-  background: var(--wash);
-  color: var(--ink);
+  color: var(--ink-4);
 }
 
 .fb-product-text {
   display: flex;
-  flex-direction: column;
-  gap: 1px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px;
   min-width: 0;
 }
 
 .fb-product-label {
-  font-size: 0.66rem;
-  font-weight: 500;
+  font-size: 0.74rem;
+  font-weight: 400;
   color: var(--ink-4);
 }
 
 .fb-product-name {
-  font-size: 0.92rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  line-height: 1.6;
-  color: var(--ink);
+  line-height: 1.7;
+  color: var(--ink-2);
   overflow-wrap: anywhere;
 }
 
-a.fb-product-name:hover {
+a.fb-product-name {
   text-decoration: underline;
+  text-decoration-color: var(--hairline-strong);
   text-underline-offset: 3px;
 }
 
+a.fb-product-name:hover {
+  color: var(--ink);
+}
+
 .fb-product-open {
-  display: grid;
+  display: inline-grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  align-self: center;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
-  margin-inline-start: auto;
-  border: 1px solid var(--hairline);
-  border-radius: var(--pill);
-  color: var(--ink-3);
+  border-radius: var(--radius);
+  color: var(--ink-4);
 }
 
 .fb-product-open:hover {
-  border-color: var(--hairline-strong);
   background: var(--wash);
   color: var(--ink);
 }
@@ -834,12 +855,8 @@ a.fb-product-name:hover {
 }
 
 .fb-detail-panel {
-  margin-top: 20px;
-  padding: clamp(16px, 2.4vw, 24px);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
+  margin-top: 30px;
+  padding: 0;
 }
 
 .fb-detail-panel-head {
@@ -847,20 +864,20 @@ a.fb-product-name:hover {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 8px;
 }
 
 .fb-detail-panel-head h2 {
   margin: 0;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--ink-3);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--ink-4);
 }
 
 .fb-detail-panel .fb-prose {
-  font-size: 0.94rem;
+  font-size: 0.98rem;
+  line-height: 2.1;
+  color: var(--ink);
 }
 
 .fb-detail-related {
@@ -890,31 +907,32 @@ a.fb-product-name:hover {
 }
 
 .fb-related-list {
-  display: grid;
-  gap: 8px;
+  margin-top: 2px;
 }
 
 .fb-related-row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 12px;
-  padding: 11px 13px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--ink);
+  padding: 11px 0;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink-2);
   text-decoration: none;
 }
 
 .fb-related-row:hover {
-  border-color: var(--hairline-strong);
-  background: var(--wash);
+  color: var(--ink);
+}
+
+.fb-related-row:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .fb-related-row strong {
   flex: 1;
   min-width: 0;
-  font-size: 0.84rem;
+  font-size: 0.86rem;
   font-weight: 500;
   line-height: 1.7;
 }
@@ -932,22 +950,23 @@ a.fb-product-name:hover {
   position: sticky;
   top: 88px;
   display: grid;
-  gap: 12px;
+  gap: 26px;
 }
 
 .fb-side-card {
-  padding: 16px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
+  padding: 0;
+}
+
+.fb-side-card + .fb-side-card {
+  padding-top: 22px;
+  border-top: 1px solid var(--hairline);
 }
 
 .fb-side-title {
-  margin: 0 0 12px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--ink-3);
+  margin: 0 0 10px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--ink-4);
 }
 
 .fb-track {
@@ -1010,12 +1029,9 @@ a.fb-product-name:hover {
 
 .fb-track-here {
   margin-inline-start: 2px;
-  padding: 0.08rem 0.45rem;
-  border: 1px solid var(--hairline);
-  border-radius: var(--pill);
-  font-size: 0.62rem;
+  font-size: 0.64rem;
   font-weight: 500;
-  color: var(--ink-3);
+  color: var(--accent);
 }
 
 .fb-side-cta p {
@@ -1026,7 +1042,7 @@ a.fb-product-name:hover {
 }
 
 .fb-side-cta .fb-btn {
-  width: 100%;
+  width: auto;
   margin-top: 12px;
 }
 
@@ -1035,7 +1051,6 @@ a.fb-product-name:hover {
   width: 100%;
   max-height: 420px;
   object-fit: cover;
-  border: 1px solid var(--hairline);
   border-radius: var(--radius-card);
   margin-top: 18px;
   background: var(--wash);
@@ -1158,17 +1173,11 @@ a.fb-product-name:hover {
   }
 
   .fb-product-banner {
-    padding: 9px 10px;
-    gap: 8px;
-  }
-
-  .fb-product-icon {
-    width: 28px;
-    height: 28px;
+    gap: 6px;
   }
 
   .fb-product-name {
-    font-size: 0.86rem;
+    font-size: 0.78rem;
   }
 
   .fb-detail-title {
@@ -1188,18 +1197,16 @@ a.fb-product-name:hover {
   }
 
   .fb-detail-panel {
-    margin-top: 16px;
-    padding: 14px;
+    margin-top: 22px;
   }
 
   .fb-detail-panel-head {
-    margin-bottom: 10px;
-    padding-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .fb-detail-panel .fb-prose {
-    font-size: 0.88rem;
-    line-height: 1.95;
+    font-size: 0.9rem;
+    line-height: 2;
   }
 
   .fb-detail-related {
@@ -1208,7 +1215,7 @@ a.fb-product-name:hover {
   }
 
   .fb-related-row {
-    padding: 10px 11px;
+    padding-block: 10px;
   }
 
   .fb-related-row strong {
@@ -1228,20 +1235,18 @@ a.fb-product-name:hover {
 .fb-attachments {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0;
   margin-top: 24px;
 }
 
 .fb-attachment {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  font-size: 0.82rem;
-  background: var(--surface);
+  border-bottom: 1px solid var(--hairline);
+  padding: 10px 0;
+  font-size: 0.84rem;
 }
 
 .fb-attachment span {
@@ -1255,16 +1260,13 @@ a.fb-product-name:hover {
 }
 
 .fb-note {
-  margin-top: 20px;
-  border: 1px solid var(--hairline);
-  border-inline-start-width: 2px;
-  border-inline-start-color: var(--ink);
-  border-radius: var(--radius);
-  background: var(--wash);
-  padding: 13px 16px;
+  margin-top: 22px;
+  border-inline-start: 2px solid var(--hairline-strong);
+  padding-inline-start: 14px;
+  padding-block: 2px;
   font-size: 0.84rem;
   line-height: 1.9;
-  color: var(--ink-2);
+  color: var(--ink-3);
 }
 
 .fb-note a {
@@ -1274,11 +1276,10 @@ a.fb-product-name:hover {
 }
 
 .fb-reply {
-  margin-top: 18px;
-  border: 1px solid var(--green-soft);
-  background: var(--green-soft);
-  border-radius: var(--radius-card);
-  padding: 16px;
+  margin-top: 22px;
+  border-inline-start: 2px solid var(--green);
+  padding-inline-start: 14px;
+  padding-block: 2px;
 }
 
 .fb-reply h3 {
@@ -1315,24 +1316,21 @@ a.fb-product-name:hover {
 }
 
 .fb-comment-form {
-  margin-top: 14px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  padding: 12px;
+  margin-top: 12px;
+  border-bottom: 1px solid var(--hairline);
+  padding: 0 0 6px;
   transition: border-color 0.15s ease;
 }
 
 .fb-comment-form:focus-within {
   border-color: var(--accent-line);
-  box-shadow: 0 0 0 3px var(--ring);
 }
 
 .fb-comment-input {
   border: 0;
   background: transparent;
-  padding: 2px 2px 8px;
-  min-height: 84px;
+  padding: 6px 0;
+  min-height: 70px;
   resize: vertical;
   font-size: 0.86rem;
   line-height: 1.9;
@@ -1350,7 +1348,6 @@ a.fb-product-name:hover {
   flex-wrap: wrap;
   gap: 8px;
   padding-top: 8px;
-  border-top: 1px solid var(--hairline);
 }
 
 .fb-comment-hint {
@@ -1364,11 +1361,8 @@ a.fb-product-name:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
-  border: 1px dashed var(--hairline-strong);
-  border-radius: var(--radius-card);
-  background: var(--wash);
-  padding: 16px;
+  gap: 8px;
+  padding: 0;
 }
 
 .fb-comment-guest p {
@@ -1384,11 +1378,8 @@ a.fb-product-name:hover {
 
 .fb-comment-empty {
   margin-top: 16px;
-  border: 1px dashed var(--hairline);
-  border-radius: var(--radius);
-  padding: 18px;
-  text-align: center;
-  font-size: 0.82rem;
+  padding: 0;
+  font-size: 0.84rem;
   color: var(--ink-4);
 }
 
@@ -1486,6 +1477,27 @@ a.fb-product-name:hover {
   color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.fb-comment-delete-btn {
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-4);
+  font-family: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.fb-comment-delete-btn:hover:not(:disabled) {
+  color: var(--red);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fb-comment-delete-btn:disabled {
+  cursor: progress;
+  opacity: 0.65;
 }
 
 .fb-comment-replies {
@@ -1600,7 +1612,7 @@ a.fb-product-name:hover {
   }
 
   .fb-comment-form {
-    padding: 10px;
+    padding: 0 0 6px;
   }
 
   .fb-comment-input {
@@ -3799,14 +3811,11 @@ a.fb-product-name:hover {
   }
 
   .fb-related-row {
-    transition:
-      transform 0.18s ease,
-      border-color 0.18s ease,
-      background 0.18s ease;
+    transition: color 0.18s ease;
   }
 
-  .fb-related-row:hover {
-    transform: translateY(-1px);
+  .fb-related-row:hover strong {
+    color: var(--ink);
   }
 
   @media (hover: none) {
@@ -3826,8 +3835,7 @@ a.fb-product-name:hover {
 
     .fb-card:active,
     .fb-mini:active,
-    .fb-entry-row:active,
-    .fb-related-row:active {
+    .fb-entry-row:active {
       transform: scale(0.985);
     }
 

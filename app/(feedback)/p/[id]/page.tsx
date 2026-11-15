@@ -189,6 +189,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           postAuthorId={post.authorId}
           comments={comments}
           signedIn={Boolean(viewer)}
+          viewerId={viewer?.userId ?? null}
           nextPath={`/p/${post.id}`}
           locked={post.hidden}
         />

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
-import { addCommentAction, voteCommentAction } from "@/app/feedback-actions";
+import { addCommentAction, deleteOwnCommentAction, voteCommentAction } from "@/app/feedback-actions";
 import type { CommentView } from "@/lib/feedback/comments";
 import { faDate, faNumber } from "@/lib/feedback/labels";
 import EmojiPicker from "./emoji-picker";
@@ -85,16 +85,22 @@ function CommentRow({
   postAuthorId,
   pending,
   compact,
+  canDelete,
+  deleting,
   onVote,
   onReply,
+  onDelete,
   footer,
 }: {
   item: CommentView;
   postAuthorId: string;
   pending: boolean;
   compact?: boolean;
+  canDelete?: boolean;
+  deleting?: boolean;
   onVote: (item: CommentView, value: 1 | -1) => void;
   onReply?: () => void;
+  onDelete?: () => void;
   footer?: ReactNode;
 }) {
   return (
@@ -166,6 +172,18 @@ function CommentRow({
               پاسخ
             </button>
           ) : null}
+          {canDelete && onDelete ? (
+            <button
+              type="button"
+              className="fb-comment-delete-btn"
+              onClick={onDelete}
+              disabled={deleting}
+              aria-label="حذف این کامنت"
+              title="حذف کامنت"
+            >
+              {deleting ? "در حال حذف..." : "حذف"}
+            </button>
+          ) : null}
         </div>
         {footer}
       </div>
@@ -178,6 +196,7 @@ export default function CommentSection({
   postAuthorId,
   comments,
   signedIn,
+  viewerId,
   nextPath,
   locked,
 }: {
@@ -185,6 +204,7 @@ export default function CommentSection({
   postAuthorId: string;
   comments: CommentView[];
   signedIn: boolean;
+  viewerId: string | null;
   nextPath: string;
   locked: boolean;
 }) {
@@ -199,6 +219,7 @@ export default function CommentSection({
   const [replySending, setReplySending] = useState(false);
   const [replyError, setReplyError] = useState<string | null>(null);
   const [pendingVote, setPendingVote] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   function signIn() {
     router.push(`/?next=${encodeURIComponent(nextPath)}#account`);
@@ -299,6 +320,27 @@ export default function CommentSection({
     patch(item.id, { score: result.score, myVote: result.myVote });
   }
 
+  async function remove(item: CommentView) {
+    if (deletingId) return;
+    const confirmText = item.parentId
+      ? "این پاسخ برای همیشه حذف شود؟"
+      : "این کامنت و پاسخ‌های خودت برای همیشه حذف شوند؟";
+    if (!window.confirm(confirmText)) return;
+
+    setActionError(null);
+    setDeletingId(item.id);
+    const result = await deleteOwnCommentAction(item.id);
+    setDeletingId(null);
+
+    if (!result.ok) {
+      setActionError(result.error);
+      return;
+    }
+
+    setItems((prev) => prev.filter((row) => row.id !== item.id && row.parentId !== item.id));
+    setReplyingTo((current) => (current === item.id ? null : current));
+  }
+
   const roots = items
     .filter((item) => !item.parentId)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -356,7 +398,10 @@ export default function CommentSection({
                   item={item}
                   postAuthorId={postAuthorId}
                   pending={pendingVote === item.id}
+                  canDelete={Boolean(viewerId) && item.authorId === viewerId}
+                  deleting={deletingId === item.id}
                   onVote={vote}
+                  onDelete={() => void remove(item)}
                   onReply={locked ? undefined : () => beginReply(item)}
                   footer={
                     replyingTo === item.id ? (
@@ -384,7 +429,10 @@ export default function CommentSection({
                           postAuthorId={postAuthorId}
                           pending={pendingVote === reply.id}
                           compact
+                          canDelete={Boolean(viewerId) && reply.authorId === viewerId}
+                          deleting={deletingId === reply.id}
                           onVote={vote}
+                          onDelete={() => void remove(reply)}
                         />
                       </li>
                     ))}

@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, ne, sql } from "drizzle-orm";
 import { getDb } from "../db";
 import { commentVotes, comments, posts, profiles, users } from "../db/schema";
 import { PostError, isUuid } from "./posts";
@@ -121,6 +121,35 @@ export async function addComment(input: {
     score: 0,
     myVote: 0,
   };
+}
+
+export async function removeOwnComment(
+  commentId: string,
+  userId: string,
+): Promise<{ postId: string }> {
+  if (!isUuid(commentId)) throw new PostError("شناسه کامنت معتبر نیست.");
+
+  const db = getDb();
+  const [row] = await db
+    .select({ postId: comments.postId, authorId: comments.authorId, parentId: comments.parentId })
+    .from(comments)
+    .where(eq(comments.id, commentId))
+    .limit(1);
+
+  if (!row) throw new PostError("این کامنت پیدا نشد.");
+  if (row.authorId !== userId) throw new PostError("فقط کامنت خودت رو می‌تونی حذف کنی.");
+
+  if (!row.parentId) {
+    const [otherReply] = await db
+      .select({ id: comments.id })
+      .from(comments)
+      .where(and(eq(comments.parentId, commentId), ne(comments.authorId, userId)))
+      .limit(1);
+    if (otherReply) throw new PostError("این کامنت پاسخ دارد و حذف نمی‌شه.");
+  }
+
+  await db.delete(comments).where(eq(comments.id, commentId));
+  return { postId: row.postId };
 }
 
 export async function setCommentVote(
