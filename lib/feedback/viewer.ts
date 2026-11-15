@@ -6,6 +6,7 @@ import { cache } from "react";
 import { getAdminSession } from "../admin-auth";
 import { getDb } from "../db";
 import { profiles, users } from "../db/schema";
+import { toPersianDigits } from "../phone";
 import { SESSION_COOKIE, readSession } from "../session";
 import { ensureUserByClerkId } from "../user-store";
 
@@ -14,7 +15,23 @@ export type Viewer = {
   name: string;
   role: "customer" | "admin";
   method: "phone" | "email" | "clerk";
+  avatarPath: string | null;
+  bio: string | null;
+  joinedAt: Date;
+  contact: string | null;
 };
+
+function maskContact(phone: string | null, email: string | null): string | null {
+  if (phone) {
+    const digits = toPersianDigits(phone);
+    return digits.length >= 8 ? `${digits.slice(0, 4)} *** ${digits.slice(-4)}` : digits;
+  }
+  if (email) {
+    const [local, domain] = email.split("@");
+    if (domain) return `${toPersianDigits(local.slice(0, 2))}***@${domain}`;
+  }
+  return null;
+}
 
 export const getViewer = cache(async (): Promise<Viewer | null> => {
   const store = await cookies();
@@ -34,7 +51,15 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
   if (!userId) return null;
 
   const [row] = await getDb()
-    .select({ role: users.role, email: users.email, name: profiles.name })
+    .select({
+      role: users.role,
+      email: users.email,
+      phone: users.phone,
+      joinedAt: users.createdAt,
+      name: profiles.name,
+      bio: profiles.bio,
+      avatarPath: profiles.avatarPath,
+    })
     .from(users)
     .leftJoin(profiles, eq(profiles.userId, users.id))
     .where(eq(users.id, userId))
@@ -49,6 +74,10 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
     name: row.name ?? fallback,
     role: row.role === "admin" ? "admin" : "customer",
     method,
+    avatarPath: row.avatarPath ?? null,
+    bio: row.bio ?? null,
+    joinedAt: row.joinedAt,
+    contact: maskContact(row.phone, row.email),
   };
 });
 

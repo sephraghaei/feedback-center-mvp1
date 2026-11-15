@@ -16,6 +16,8 @@ function rowToProfile(row: ProfileRow): Profile {
     ...(row.age !== null ? { age: row.age } : {}),
     ...(row.sex !== null ? { sex: row.sex } : {}),
     ...(row.company !== null ? { company: row.company } : {}),
+    bio: row.bio,
+    avatarPath: row.avatarPath,
   };
 }
 
@@ -67,28 +69,41 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   return row ? rowToProfile(row) : null;
 }
 
-export async function saveProfile(userId: string, profile: Profile): Promise<void> {
-  const values = {
-    userId,
+export async function saveProfile(
+  userId: string,
+  profile: Partial<Profile> & { name: string },
+): Promise<void> {
+  const values: typeof profiles.$inferInsert = { userId, name: profile.name };
+  const set: Partial<typeof profiles.$inferInsert> = {
     name: profile.name,
-    age: profile.age ?? null,
-    sex: profile.sex ?? null,
-    company: profile.company ?? null,
+    updatedAt: new Date(),
   };
+
+  if ("age" in profile) {
+    values.age = profile.age ?? null;
+    set.age = values.age;
+  }
+  if ("sex" in profile) {
+    values.sex = profile.sex ?? null;
+    set.sex = values.sex;
+  }
+  if ("company" in profile) {
+    values.company = profile.company ?? null;
+    set.company = values.company;
+  }
+  if ("bio" in profile) {
+    values.bio = profile.bio ?? null;
+    set.bio = values.bio;
+  }
+  if ("avatarPath" in profile) {
+    values.avatarPath = profile.avatarPath ?? null;
+    set.avatarPath = values.avatarPath;
+  }
 
   await getDb()
     .insert(profiles)
     .values(values)
-    .onConflictDoUpdate({
-      target: profiles.userId,
-      set: {
-        name: values.name,
-        age: values.age,
-        sex: values.sex,
-        company: values.company,
-        updatedAt: new Date(),
-      },
-    });
+    .onConflictDoUpdate({ target: profiles.userId, set });
 }
 
 /**

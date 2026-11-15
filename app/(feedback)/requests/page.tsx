@@ -34,6 +34,9 @@ export default async function RequestsPage() {
         </p>
         <div className="fb-hero-actions">
           <ComposerButton className="fb-btn fb-btn-primary">ثبت درخواست تازه</ComposerButton>
+          <Link href="/profile" className="fb-btn">
+            پروفایل من
+          </Link>
           <Link href="/feed" className="fb-btn fb-btn-ghost">
             همه فید‌بک‌ها
           </Link>

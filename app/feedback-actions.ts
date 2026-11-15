@@ -15,12 +15,44 @@ import {
   type AttachmentInput,
 } from "@/lib/feedback/posts";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
+import { deleteObject } from "@/lib/feedback/storage";
+import { validateProfile } from "@/lib/profile";
+import { getProfile, saveProfile } from "@/lib/user-store";
 
 type Result = { ok: true } | { ok: false; error: string };
 
 function message(error: unknown): string {
   if (error instanceof PostError) return error.message;
   return "انجام این کار ممکن نشد. دوباره تلاش کن.";
+}
+
+export async function saveProfileAction(input: unknown): Promise<Result> {
+  const viewer = await getViewer();
+  if (!viewer) return { ok: false, error: "برای ویرایش پروفایل اول وارد حسابت شو." };
+
+  const result = validateProfile(input);
+  if ("error" in result) return { ok: false, error: result.error };
+
+  const profile = result.profile;
+  if (profile.avatarPath && !profile.avatarPath.startsWith(`avatars/${viewer.userId}/`)) {
+    return { ok: false, error: "عکس پروفایل معتبر نیست." };
+  }
+
+  try {
+    const previous = await getProfile(viewer.userId);
+    await saveProfile(viewer.userId, profile);
+    if (
+      previous?.avatarPath &&
+      previous.avatarPath !== profile.avatarPath &&
+      previous.avatarPath.startsWith(`avatars/${viewer.userId}/`)
+    ) {
+      await deleteObject(previous.avatarPath);
+    }
+    revalidatePath("/", "layout");
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: message(error) };
+  }
 }
 
 export async function createPostAction(input: {
@@ -90,6 +122,7 @@ export async function addCommentAction(
       postId,
       authorId: viewer.userId,
       authorName: viewer.name,
+      authorAvatarPath: viewer.avatarPath,
       body,
       parentId,
     });

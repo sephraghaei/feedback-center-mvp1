@@ -9,6 +9,7 @@ import CountUp from "@/app/components/feedback/count-up";
 import { HeroCommentScene, HeroTicker } from "@/app/components/feedback/hero-community";
 import HomeStory from "@/app/components/feedback/home-story";
 import PostCard from "@/app/components/feedback/post-card";
+import RotatingWord from "@/app/components/feedback/rotating-word";
 import { CATEGORY_LABELS, STATUS_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { listChangelog } from "@/lib/feedback/changelog";
 import { ROADMAP_STATUSES, countFeedback, listFeed, listRoadmap } from "@/lib/feedback/posts";
@@ -18,7 +19,7 @@ import { OTP_LENGTH } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "مرکز فید‌بک | وسا",
-  description: "فید‌بک کاربران، نقشه راه و تغییرات منتشر شده در یک جا، شفاف و بدون واسطه.",
+  description: "فید‌بک کاربران و تغییرات منتشر شده در یک جا، شفاف و بدون واسطه. نقشه راه هم به زودی اضافه می‌شود.",
 };
 
 const COLUMN_HINTS: Record<string, string> = {
@@ -67,11 +68,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
             <span className="fb-live-dot" aria-hidden="true" />
           </p>
           <h1 className="fb-title">
-            فید‌بک‌ت رو بنویس، <span className="fb-title-mark">مسیرش رو ببین</span>.
+            <span className="sr-only">به هر وب‌سایت، اپلیکیشن، فروشگاه یا محصولی فیدبک بده.</span>
+            <span className="fb-title-line" aria-hidden="true">
+              به هر <RotatingWord />
+            </span>
+            <span className="fb-title-line" aria-hidden="true">
+              فیدبک بده.
+            </span>
           </h1>
           <p className="fb-lede">
-            هر نظری یا درخواستی که بنویسی، از بررسی تا نقشه راه و انتشار دنبالش می‌کنیم.
-            خوندن برای همه آزاده؛ برای نوشتن و رای دادن هم کافیه وارد بشی.
+            هر نظری یا درخواستی که بنویسی، از بررسی تا انتشار دنبالش می‌کنیم. خواندن برای همه آزاده؛
+            برای نوشتن و رای دادن هم کافیه وارد بشی.
           </p>
           <div className="fb-hero-actions">
             <ComposerButton className="fb-btn fb-btn-primary">فید‌بک بده</ComposerButton>
@@ -79,7 +86,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               فید‌بک‌ها رو ببین
             </Link>
             <Link href="/roadmap" className="fb-btn fb-btn-ghost">
-              نقشه راه
+              نقشه راه{" "}
+              <span className="fb-soon">به زودی</span>
             </Link>
           </div>
           <ul className="fb-hero-stats">
@@ -97,7 +105,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
             </li>
             <li>
               <strong>بدون حساب</strong>
-              <span>می‌تونی فید‌بک‌ها و نقشه راه رو ببینی</span>
+              <span>می‌تونی فید‌بک‌ها رو ببینی</span>
             </li>
           </ul>
           <HeroTicker />
@@ -145,13 +153,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
       <section className="fb-section" aria-labelledby="roadmap-title">
         <div className="fb-section-head">
           <div>
-            <h2 id="roadmap-title" className="fb-section-title">نقشه راه، بدون ابهام</h2>
+            <h2 id="roadmap-title" className="fb-section-title">
+              نقشه راه{" "}
+              <span className="fb-soon">به زودی</span>
+            </h2>
             <p className="fb-section-sub">
-              هر درخواست یه ستون مشخص داره: تو نوبت، در حال انجام، یا منتشر شده.
+              نقشه راه در دست توسعه‌ست. پایین‌تر یه پیش‌نمایشه؛ وضعیت هر فید‌بک رو فعلا روی کارتش و
+              تو فید دنبال کن.
             </p>
           </div>
           <Link href="/roadmap" className="fb-link">
-            نقشه راه کامل
+            پیش‌نمایش نقشه راه
           </Link>
         </div>
 
@@ -159,8 +171,15 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           {groups.map((group) => (
             <section key={group.status} className="fb-column" aria-label={STATUS_LABELS[group.status]}>
               <div className="fb-column-head">
-                <h3>{STATUS_LABELS[group.status]}</h3>
-                <span>{faNumber(group.items.length)}</span>
+                <h3>
+                  {STATUS_LABELS[group.status]}
+                  {group.status === "in_progress" ? (
+                    <span className="fb-column-live" aria-hidden="true" />
+                  ) : null}
+                </h3>
+                <span className="fb-column-count">
+                  <CountUp value={group.items.length} />
+                </span>
               </div>
               <p className="field-hint fb-column-hint">{COLUMN_HINTS[group.status]}</p>
               {group.items.length > 0 ? (
@@ -245,7 +264,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
                 <Link href="/requests" className="fb-btn fb-btn-primary">
                   درخواست‌هام
                 </Link>
-                <Link href="/feed" className="fb-btn">
+                <Link href="/profile" className="fb-btn">
+                  پروفایل من
+                </Link>
+                <Link href="/feed" className="fb-btn fb-btn-ghost">
                   فید‌بک‌ها
                 </Link>
                 {viewer.role === "admin" ? (

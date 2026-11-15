@@ -1,4 +1,4 @@
-import { MAX_FILE_BYTES } from "./constants";
+import { AVATAR_MAX_BYTES, AVATAR_TYPES, MAX_FILE_BYTES } from "./constants";
 import { MEDIA_BUCKET, mediaUrl } from "./media";
 
 const BUCKET = MEDIA_BUCKET;
@@ -10,6 +10,8 @@ export const ALLOWED_TYPES: Record<string, string> = {
   "image/gif": "gif",
   "application/pdf": "pdf",
 };
+
+const ALLOWED_AVATAR_TYPES: readonly string[] = AVATAR_TYPES;
 
 type StorageConfig = { url: string; key: string };
 
@@ -31,6 +33,13 @@ export function publicUrl(path: string): string {
 export function isValidUpload(file: { type: string; size: number }): string | null {
   if (!ALLOWED_TYPES[file.type]) return "فقط تصویر (PNG، JPG، WebP، GIF) یا PDF مجاز است.";
   if (file.size > MAX_FILE_BYTES) return "حجم هر فایل باید کمتر از ۱۰ مگابایت باشد.";
+  if (file.size === 0) return "فایل خالی است.";
+  return null;
+}
+
+export function isValidAvatar(file: { type: string; size: number }): string | null {
+  if (!ALLOWED_AVATAR_TYPES.includes(file.type)) return "برای عکس پروفایل فقط PNG، JPG، WebP یا GIF مجاز است.";
+  if (file.size > AVATAR_MAX_BYTES) return "حجم عکس پروفایل باید کمتر از ۴ مگابایت باشد.";
   if (file.size === 0) return "فایل خالی است.";
   return null;
 }
@@ -107,4 +116,17 @@ export async function uploadObject(
   }
 
   return publicUrl(path);
+}
+
+export async function deleteObject(path: string): Promise<void> {
+  const cfg = config();
+  if (!cfg) return;
+  try {
+    await fetch(`${cfg.url}/storage/v1/object/${BUCKET}/${path}`, {
+      method: "DELETE",
+      headers: headers(cfg),
+    });
+  } catch {
+    // A leftover avatar file costs a little storage but never breaks the profile.
+  }
 }

@@ -4,6 +4,7 @@ import {
   attachments,
   changelogEntries,
   changelogPosts,
+  comments,
   posts,
   profiles,
   upvotes,
@@ -45,6 +46,7 @@ export type PostSummary = {
   createdAt: Date;
   authorId: string;
   authorName: string | null;
+  authorAvatarPath: string | null;
   upvotes: number;
   viewerUpvoted: boolean;
 };
@@ -107,6 +109,7 @@ function summarySelect(viewerId?: string) {
     createdAt: posts.createdAt,
     authorId: posts.authorId,
     authorName: profiles.name,
+    authorAvatarPath: profiles.avatarPath,
     upvotes: upvoteCount(),
     viewerUpvoted: viewerVoted(viewerId),
   };
@@ -278,6 +281,34 @@ export async function countFeedback(): Promise<number> {
     .from(posts)
     .where(eq(posts.type, "feedback"));
   return row?.n ?? 0;
+}
+
+export type ProfileStats = { feedback: number; votes: number; comments: number };
+
+export async function getProfileStats(userId: string): Promise<ProfileStats> {
+  const [row] = await getDb()
+    .select({
+      feedback: sql<number>`(
+        select count(*)::int from ${posts}
+         where ${posts.authorId} = ${userId}::uuid
+           and ${posts.type} = 'feedback'
+           and ${posts.hidden} = false
+      )`,
+      votes: sql<number>`(
+        select count(*)::int from ${upvotes}
+          inner join ${posts} on ${posts.id} = ${upvotes.postId}
+         where ${posts.authorId} = ${userId}::uuid
+      )`,
+      comments: sql<number>`(
+        select count(*)::int from ${comments}
+         where ${comments.authorId} = ${userId}::uuid
+      )`,
+    })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  return row ?? { feedback: 0, votes: 0, comments: 0 };
 }
 
 function cleanTitle(value: string): string {

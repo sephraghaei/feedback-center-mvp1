@@ -1,31 +1,11 @@
-import { productContext } from "@/lib/feedback/product";
-
-function ProductIcon() {
-  return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="9" />
-      <path d="M3.5 9h17" />
-      <path d="M3.5 15h17" />
-      <path d="M12 3c2.4 2.6 3.6 5.6 3.6 9S14.4 18.4 12 21c-2.4-2.6-3.6-5.6-3.6-9S9.6 5.6 12 3Z" />
-    </svg>
-  );
-}
+import { productBrand } from "@/lib/feedback/product";
+import ProductMark from "./product-mark";
 
 function ExternalIcon() {
   return (
     <svg
-      width="12"
-      height="12"
+      width="13"
+      height="13"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -41,62 +21,43 @@ function ExternalIcon() {
   );
 }
 
-export default function ProductTag({
-  product,
-  variant = "inline",
-}: {
-  product: string | null;
-  variant?: "inline" | "detail";
-}) {
-  const source = productContext(product);
-  if (!source) return null;
-
-  if (variant === "detail") {
-    return (
-      <div className="fb-product-banner">
-        <span className="fb-product-icon" aria-hidden="true">
-          <ProductIcon />
-        </span>
-        <span className="fb-product-text">
-          <span className="fb-product-label">فید‌بک برای</span>
-          {source.href ? (
-            <a
-              className="fb-product-name"
-              href={source.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              dir="ltr"
-            >
-              {source.label}
-            </a>
-          ) : (
-            <span className="fb-product-name" dir="auto">
-              {source.label}
-            </span>
-          )}
-        </span>
-        {source.href ? (
-          <a
-            className="fb-product-open"
-            href={source.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`باز کردن ${source.label}`}
-            title="باز کردن سایت"
-          >
-            <ExternalIcon />
-          </a>
-        ) : null}
-      </div>
-    );
-  }
+export default function ProductTag({ product }: { product: string | null }) {
+  const brand = productBrand(product);
+  if (!brand) return null;
 
   return (
-    <span className="fb-product-tag" title={source.href ?? source.label}>
-      <ProductIcon />
-      <span className="fb-product-tag-text" dir="auto">
-        {source.label}
+    <div className="fb-product-banner">
+      <ProductMark brand={brand} size={46} className="fb-product-mark" />
+      <span className="fb-product-text">
+        <span className="fb-product-label">فید‌بک برای</span>
+        {brand.href ? (
+          <a
+            className="fb-product-name"
+            href={brand.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            dir="ltr"
+          >
+            {brand.display}
+          </a>
+        ) : (
+          <span className="fb-product-name" dir="auto">
+            {brand.display}
+          </span>
+        )}
       </span>
-    </span>
+      {brand.href ? (
+        <a
+          className="fb-product-open"
+          href={brand.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`باز کردن ${brand.display}`}
+          title="باز کردن سایت"
+        >
+          <ExternalIcon />
+        </a>
+      ) : null}
+    </div>
   );
 }

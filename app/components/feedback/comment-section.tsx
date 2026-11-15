@@ -6,6 +6,8 @@ import { addCommentAction, deleteOwnCommentAction, voteCommentAction } from "@/a
 import ConfirmDialog from "@/app/components/confirm-dialog";
 import type { CommentView } from "@/lib/feedback/comments";
 import { faDate, faNumber } from "@/lib/feedback/labels";
+import { mediaUrl } from "@/lib/feedback/media";
+import Avatar from "./avatar";
 import EmojiPicker from "./emoji-picker";
 
 function CommentComposer({
@@ -106,9 +108,12 @@ function CommentRow({
 }) {
   return (
     <div className={`fb-comment ${compact ? "fb-comment-reply" : ""}`}>
-      <span className="fb-comment-avatar" aria-hidden="true">
-        {item.authorName.trim().charAt(0) || "؟"}
-      </span>
+      <Avatar
+        name={item.authorName}
+        src={item.authorAvatarPath ? mediaUrl(item.authorAvatarPath) : null}
+        size={compact ? 22 : 30}
+        className="fb-comment-avatar"
+      />
       <div className="fb-comment-main">
         <div className="fb-comment-head">
           <strong>{item.authorName}</strong>

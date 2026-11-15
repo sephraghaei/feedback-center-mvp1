@@ -3,6 +3,7 @@ import { withApiLogging } from "@/lib/api-logger";
 import { getViewer } from "@/lib/feedback/viewer";
 import {
   extensionFor,
+  isValidAvatar,
   isValidUpload,
   storageConfigured,
   uploadObject,
@@ -30,11 +31,15 @@ export const POST = withApiLogging("/api/uploads", async (request, _context, log
     return NextResponse.json({ message: "درخواست بارگذاری معتبر نیست." }, { status: 400 });
   }
 
+  const isAvatar = form.get("kind") === "avatar";
   const files = form.getAll("files").filter((value): value is File => value instanceof File);
   if (files.length === 0) {
     return NextResponse.json({ message: "فایلی انتخاب نشده است." }, { status: 400 });
   }
-  if (files.length > MAX_FILES) {
+  if (isAvatar && files.length > 1) {
+    return NextResponse.json({ message: "برای عکس پروفایل فقط یک فایل بفرست." }, { status: 400 });
+  }
+  if (!isAvatar && files.length > MAX_FILES) {
     return NextResponse.json(
       { message: `حداکثر ${MAX_FILES} فایل برای هر فید‌بک مجاز است.` },
       { status: 400 },
@@ -49,12 +54,13 @@ export const POST = withApiLogging("/api/uploads", async (request, _context, log
   }[] = [];
 
   for (const file of files) {
-    const problem = isValidUpload(file);
+    const problem = isAvatar ? isValidAvatar(file) : isValidUpload(file);
     if (problem) {
       return NextResponse.json({ message: problem }, { status: 400 });
     }
 
-    const path = `posts/${viewer.userId}/${crypto.randomUUID()}.${extensionFor(file.type)}`;
+    const folder = isAvatar ? "avatars" : "posts";
+    const path = `${folder}/${viewer.userId}/${crypto.randomUUID()}.${extensionFor(file.type)}`;
     try {
       await uploadObject(path, await file.arrayBuffer(), file.type);
     } catch (error) {
@@ -71,7 +77,7 @@ export const POST = withApiLogging("/api/uploads", async (request, _context, log
   }
 
   log.info("feedback.storage.uploaded", {
-    context: { count: uploaded.length, userRef: viewer.method },
+    context: { count: uploaded.length, kind: isAvatar ? "avatar" : "post", userRef: viewer.method },
   });
 
   return NextResponse.json({ files: uploaded });

@@ -10,6 +10,7 @@ export type CommentView = {
   createdAt: Date;
   authorId: string;
   authorName: string;
+  authorAvatarPath: string | null;
   score: number;
   myVote: number;
 };
@@ -54,6 +55,7 @@ export async function listComments(postId: string, viewerId?: string): Promise<C
       createdAt: comments.createdAt,
       authorId: comments.authorId,
       authorName: sql<string>`coalesce(${profiles.name}, nullif(split_part(${users.email}, '@', 1), ''), 'کاربر')`,
+      authorAvatarPath: profiles.avatarPath,
       score: scoreOf(),
       myVote: myVoteOf(viewerId),
     })
@@ -75,6 +77,7 @@ export async function addComment(input: {
   postId: string;
   authorId: string;
   authorName: string;
+  authorAvatarPath?: string | null;
   body: string;
   parentId?: string | null;
 }): Promise<CommentView> {
@@ -118,6 +121,7 @@ export async function addComment(input: {
     createdAt: row.createdAt,
     authorId: input.authorId,
     authorName: input.authorName,
+    authorAvatarPath: input.authorAvatarPath ?? null,
     score: 0,
     myVote: 0,
   };

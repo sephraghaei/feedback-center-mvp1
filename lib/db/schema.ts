@@ -26,17 +26,23 @@ export const users = pgTable(
   (table) => [check("users_role_check", sql`${table.role} in ('customer', 'admin')`)],
 );
 
-export const profiles = pgTable("profiles", {
-  userId: uuid("user_id")
-    .primaryKey()
-    .references(() => users.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  age: integer("age"),
-  sex: text("sex"),
-  company: text("company"),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-});
+export const profiles = pgTable(
+  "profiles",
+  {
+    userId: uuid("user_id")
+      .primaryKey()
+      .references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    age: integer("age"),
+    sex: text("sex"),
+    company: text("company"),
+    bio: text("bio"),
+    avatarPath: text("avatar_path"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [check("profiles_bio_check", sql`${table.bio} is null or char_length(${table.bio}) <= 280`)],
+);
 
 export const verifications = pgTable(
   "verifications",

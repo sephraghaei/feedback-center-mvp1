@@ -10,10 +10,11 @@ import {
   MAX_FILE_BYTES,
 } from "@/lib/feedback/constants";
 import { CATEGORY_LABELS } from "@/lib/feedback/labels";
-import { MAX_PRODUCT_LENGTH, parseProduct } from "@/lib/feedback/product";
+import { MAX_PRODUCT_LENGTH, parseProduct, productBrand } from "@/lib/feedback/product";
 import { mediaUrl } from "@/lib/feedback/media";
 import EmojiPicker from "./emoji-picker";
 import Markdown from "./markdown";
+import ProductMark from "./product-mark";
 
 type HeaderViewer = { name: string; role: "customer" | "admin" } | null;
 
@@ -277,6 +278,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
   const uploading = files.some((entry) => !entry.path && !entry.error);
   const signInHref = `/?next=${encodeURIComponent(pathname)}#account`;
   const clerkHref = `/sign-in?redirect_url=${encodeURIComponent(pathname)}`;
+  const previewBrand = productBrand(product);
 
   return (
     <div
@@ -377,6 +379,17 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
             <p id="composer-product-hint" className="field-hint" style={{ marginTop: 0 }}>
               فید‌بک به همین محصول وصل می‌شود و بالای کارتش نشان داده می‌شود.
             </p>
+            {previewBrand ? (
+              <div className="fb-composer-brand">
+                <ProductMark brand={previewBrand} size={30} />
+                <span className="fb-composer-brand-text">
+                  <span className="fb-composer-brand-name" dir="auto">
+                    {previewBrand.display}
+                  </span>
+                  <span className="field-hint">این نشان روی کارت فید‌بک می‌آید.</span>
+                </span>
+              </div>
+            ) : null}
             {productError ? (
               <p id="composer-product-error" className="field-error">
                 {productError}

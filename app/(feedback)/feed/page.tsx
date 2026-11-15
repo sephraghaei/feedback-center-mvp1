@@ -10,7 +10,7 @@ import { getViewer } from "@/lib/feedback/viewer";
 
 export const metadata: Metadata = {
   title: "فید‌بک‌ها | وسا",
-  description: "فید‌بک محصول را بخوان، رای بده و مسیر رسیدنش به نقشه راه را ببین.",
+  description: "فید‌بک محصول را بخوان، رای بده و وضعیتش را دنبال کن. نقشه راه هم به زودی می‌آید.",
 };
 
 type Search = { category?: string; status?: string };
@@ -45,13 +45,14 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         </p>
         <h1 className="fb-title">آنچه کاربران می‌خواهند، شفاف و مرتب</h1>
         <p className="fb-lede">
-          فید‌بک‌ها را بخوان، به آن‌ها رای بده و ببین هر کدام به کدام ستون نقشه راه رسیده است. خواندن
-          برای همه آزاد است؛ نوشتن فقط یک حساب می‌خواهد.
+          فید‌بک‌ها را بخوان، به آن‌ها رای بده و وضعیت هر کدام را ببین. نقشه راه هم به زودی کامل
+          می‌شه. خواندن برای همه آزاد است؛ نوشتن فقط یک حساب می‌خواهد.
         </p>
         <div className="fb-hero-actions">
           <ComposerButton className="fb-btn fb-btn-primary">ثبت فید‌بک تازه</ComposerButton>
           <Link href="/roadmap" className="fb-btn">
-            نقشه راه
+            نقشه راه{" "}
+            <span className="fb-soon">به زودی</span>
           </Link>
           <Link href="/changelog" className="fb-btn fb-btn-ghost">
             تغییرات منتشر شده

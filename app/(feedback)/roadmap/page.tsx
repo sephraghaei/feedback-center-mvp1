@@ -8,8 +8,8 @@ import { ROADMAP_STATUSES, listRoadmap } from "@/lib/feedback/posts";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
 
 export const metadata: Metadata = {
-  title: "نقشه راه | وسا",
-  description: "ستون‌های نقشه راه: برنامه‌ریزی شده، در حال انجام و منتشر شده.",
+  title: "نقشه راه، به زودی | وسا",
+  description: "نقشه راه وسا در دست توسعه است و به زودی می‌آید. تا آن موقع فید‌بک‌ها و وضعیتشان را دنبال کن.",
 };
 
 const COLUMN_HINTS: Record<string, string> = {
@@ -31,12 +31,13 @@ export default async function RoadmapPage() {
       <section className="fb-hero">
         <p className="fb-eyebrow">
           <BrandMark className="eyebrow-mark" simple />
-          نقشه راه
+          نقشه راه{" "}
+          <span className="fb-soon">به زودی</span>
         </p>
-        <h1 className="fb-title">از درخواست تا انتشار، یک مسیر روشن</h1>
+        <h1 className="fb-title">نقشه راه، به زودی میاد</h1>
         <p className="fb-lede">
-          هر فید‌بک دقیقا در یک ستون است، پس هیچ درخواستی بین دو جا گم نمی‌شود. وضعیت روی خود
-          فید‌بک هم همین ستون را نشان می‌دهد.
+          داریم نقشه راه رو می‌سازیم تا هر درخواست از نوبت تا انتشار یه مسیر روشن داشته باشه. تا
+          آماده شدنش، فید‌بک‌ها رو بخون، بهشون رای بده و وضعیت هر کدوم رو دنبال کن.
         </p>
         <div className="fb-hero-actions">
           <ComposerButton className="fb-btn fb-btn-primary">ثبت فید‌بک تازه</ComposerButton>
@@ -44,10 +45,19 @@ export default async function RoadmapPage() {
             همه فید‌بک‌ها
           </Link>
         </div>
+        <p className="fb-soon-note">
+          <span className="fb-soon">به زودی</span>{" "}
+          <span>
+            نقشه راه هنوز در دست توسعه‌ست و چیدمانش تا نسخه نهایی ممکنه عوض بشه. پایین‌تر فقط یه
+            پیش‌نمایش از ستون‌هاست.
+          </span>
+        </p>
         {admin ? (
           <p className="field-hint">تو مدیر هستی: از منوی هر کارت می‌توانی ستونش را عوض کنی.</p>
         ) : null}
       </section>
+
+      <p className="field-hint fb-board-caption">پیش‌نمایش ستون‌ها با فید‌بک‌های فعلی</p>
 
       <div className="fb-board">
         {groups.map((group) => (

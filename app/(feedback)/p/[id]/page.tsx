@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AdminPostActions from "@/app/components/feedback/admin-post-actions";
+import Avatar from "@/app/components/feedback/avatar";
 import ComposerButton from "@/app/components/feedback/composer-button";
 import CommentSection from "@/app/components/feedback/comment-section";
 import Markdown from "@/app/components/feedback/markdown";
@@ -73,7 +74,6 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
   const track = TRACKS[post.type] ?? TRACKS.feedback;
   const trackIndex = track.findIndex((step) => step.value === post.status);
-  const authorInitial = (post.authorName ?? "کاربر").trim().charAt(0);
   const backHref = isSupport ? "/requests" : "/feed";
   const backLabel = isSupport ? "درخواست‌های من" : "بازگشت به فید";
 
@@ -89,7 +89,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
         </div>
 
         <header className="fb-detail-head">
-          {source ? <ProductTag product={post.product} variant="detail" /> : null}
+          {source ? <ProductTag product={post.product} /> : null}
 
           <div className="fb-card-top">
             {isSupport || isAuthor ? (
@@ -104,9 +104,11 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           <h1 className="fb-detail-title">{post.title}</h1>
 
           <div className="fb-meta-row">
-            <span className="fb-byline-avatar" aria-hidden="true">
-              {authorInitial}
-            </span>
+            <Avatar
+              name={post.authorName ?? "کاربر"}
+              src={post.authorAvatarPath ? mediaUrl(post.authorAvatarPath) : null}
+              size={26}
+            />
             <span className="fb-author">{post.authorName ?? "کاربر"}</span>
             <span className="fb-dot" aria-hidden="true" />
             <time dateTime={post.createdAt.toISOString()}>{faDate(post.createdAt)}</time>

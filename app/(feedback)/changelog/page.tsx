@@ -30,7 +30,8 @@ export default async function ChangelogPage() {
             همه فید‌بک‌ها
           </Link>
           <Link href="/roadmap" className="fb-btn fb-btn-ghost">
-            نقشه راه
+            نقشه راه{" "}
+            <span className="fb-soon">به زودی</span>
           </Link>
         </div>
       </section>

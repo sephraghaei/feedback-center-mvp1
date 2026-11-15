@@ -6,12 +6,19 @@ import { useEffect, useRef, useState } from "react";
 import BrandMark from "../brand-mark";
 import { ClerkSignOutButton, LogoutButton } from "../logout-buttons";
 import ThemeToggle from "../theme-toggle";
+import { mediaUrl } from "@/lib/feedback/media";
+import Avatar from "./avatar";
 
-type HeaderViewer = { name: string; role: "customer" | "admin"; method: "phone" | "email" | "clerk" } | null;
+type HeaderViewer = {
+  name: string;
+  role: "customer" | "admin";
+  method: "phone" | "email" | "clerk";
+  avatarPath: string | null;
+} | null;
 
-const LINKS = [
+const LINKS: { href: string; label: string; soon?: boolean }[] = [
   { href: "/feed", label: "فید‌بک‌ها" },
-  { href: "/roadmap", label: "نقشه راه" },
+  { href: "/roadmap", label: "نقشه راه", soon: true },
   { href: "/changelog", label: "تغییرات" },
 ];
 
@@ -69,7 +76,8 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
               className={`fb-nav-link ${isActive(link.href) ? "active" : ""}`}
               onClick={() => setOpen(false)}
             >
-              {link.label}
+              {link.label}{" "}
+              {link.soon ? <span className="fb-soon">به زودی</span> : null}
             </Link>
           ))}
           {!viewer ? (
@@ -127,9 +135,11 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
                 aria-label={`حساب ${viewer.name}`}
                 title={viewer.name}
               >
-                <span className="fb-avatar" aria-hidden="true">
-                  {viewer.name.trim().charAt(0)}
-                </span>
+                <Avatar
+                  name={viewer.name}
+                  src={viewer.avatarPath ? mediaUrl(viewer.avatarPath) : null}
+                  size={24}
+                />
                 <span className="fb-profile-name">{viewer.name}</span>
                 <svg
                   className="fb-profile-caret"
@@ -153,6 +163,9 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
                     <strong>{viewer.name}</strong>
                     <span>{METHOD_LABELS[viewer.method]}</span>
                   </div>
+                  <Link href="/profile" className="fb-profile-item" onClick={() => setProfileOpen(false)}>
+                    پروفایل من
+                  </Link>
                   <Link href="/requests" className="fb-profile-item" onClick={() => setProfileOpen(false)}>
                     درخواست‌های من
                   </Link>

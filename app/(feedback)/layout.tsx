@@ -10,7 +10,7 @@ import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
 export default async function FeedbackLayout({ children }: { children: React.ReactNode }) {
   const [viewer, admin] = await Promise.all([getViewer(), isAdminRequest()]);
   const headerViewer = viewer
-    ? { name: viewer.name, role: viewer.role, method: viewer.method }
+    ? { name: viewer.name, role: viewer.role, method: viewer.method, avatarPath: viewer.avatarPath }
     : null;
 
   return (
@@ -24,7 +24,7 @@ export default async function FeedbackLayout({ children }: { children: React.Rea
           <BrandMark className="footer-mark" simple />
           <span className="footer-name">وسا</span>
         </span>
-        <span>فید‌بک، نقشه راه و تغییرات در یک جا</span>
+        <span>فید‌بک و تغییرات در یک جا، نقشه راه به زودی</span>
       </footer>
       <Composer viewer={headerViewer} />
       <PointerFx />

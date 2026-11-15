@@ -46,3 +46,55 @@ export function productContext(value: string | null | undefined): ProductContext
   }
   return { label: parsed.value, href: null };
 }
+
+export type ProductBrand = {
+  label: string;
+  display: string;
+  href: string | null;
+  host: string | null;
+  origin: string | null;
+  initial: string;
+  hue: number;
+};
+
+/** Hues picked to sit beside the blue accent in both themes. */
+const MARK_HUES = [214, 262, 190, 158, 32, 350, 288, 16];
+
+function hashOf(value: string): number {
+  let hash = 5381;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 33 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+export function productBrand(value: string | null | undefined): ProductBrand | null {
+  const context = productContext(value);
+  if (!context) return null;
+
+  let host: string | null = null;
+  let origin: string | null = null;
+  if (context.href) {
+    try {
+      const url = new URL(context.href);
+      origin = url.origin;
+      host = url.hostname.replace(/^www\./i, "");
+    } catch {
+      origin = null;
+    }
+  }
+
+  const source = (host ?? context.label).trim();
+  const first = Array.from(source)[0] ?? "؟";
+  const initial = /[a-z]/i.test(first) ? first.toUpperCase() : first;
+
+  return {
+    label: context.label,
+    display: host ?? context.label,
+    href: context.href,
+    host,
+    origin,
+    initial,
+    hue: MARK_HUES[hashOf(source.toLowerCase()) % MARK_HUES.length],
+  };
+}
