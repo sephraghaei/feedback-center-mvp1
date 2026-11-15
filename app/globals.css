@@ -748,6 +748,16 @@ a {
   color: var(--mark);
 }
 
+@media (max-width: 900px) {
+  .site-footer {
+    font-size: 0.85rem;
+  }
+
+  .footer-name {
+    font-size: 0.92rem;
+  }
+}
+
 /* Clerk pages */
 
 .auth-page {
@@ -1215,10 +1225,6 @@ select.input {
 
   .nav-link {
     padding: 0.5rem 0.6rem;
-  }
-
-  .nav-name {
-    font-size: 0.9rem;
   }
 
   .hero {

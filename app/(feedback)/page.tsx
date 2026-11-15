@@ -7,6 +7,7 @@ import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-button
 import ComposerButton from "@/app/components/feedback/composer-button";
 import CountUp from "@/app/components/feedback/count-up";
 import { HeroCommentScene, HeroTicker } from "@/app/components/feedback/hero-community";
+import HomeStory from "@/app/components/feedback/home-story";
 import PostCard from "@/app/components/feedback/post-card";
 import { CATEGORY_LABELS, STATUS_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { listChangelog } from "@/lib/feedback/changelog";
@@ -104,29 +105,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         <HeroCommentScene />
       </section>
 
-      <ol className="fb-steps-list" aria-label="مسیر یک فید‌بک">
-        <li className="fb-step">
-          <span className="fb-step-num" aria-hidden="true">۱</span>
-          <div className="fb-step-body">
-            <strong>فید‌بک بده</strong>
-            <p>هر ایده یا دغدغه‌ای داری، تو چند خط بنویس.</p>
-          </div>
-        </li>
-        <li className="fb-step">
-          <span className="fb-step-num" aria-hidden="true">۲</span>
-          <div className="fb-step-body">
-            <strong>رای بگیر</strong>
-            <p>بقیه رای می‌دن تا اولویت مشخص بشه.</p>
-          </div>
-        </li>
-        <li className="fb-step">
-          <span className="fb-step-num" aria-hidden="true">۳</span>
-          <div className="fb-step-body">
-            <strong>پیگیری کن</strong>
-            <p>وضعیتش رو روی نقشه راه و تغییرات ببین.</p>
-          </div>
-        </li>
-      </ol>
+      <HomeStory />
 
       <section className="fb-section" aria-labelledby="recent-title">
         <div className="fb-section-head">
