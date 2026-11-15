@@ -30,13 +30,13 @@ export default function GlobalError({
         <style>{`
           :root {
             color-scheme: light;
-            --paper: #fafafa; --surface: #ffffff; --hairline: #ebebeb; --ink: #171717;
-            --ink-3: #666666; --accent: #171717; --on-accent: #ffffff; --mark: #000000;
+            --paper: #f4f7fd; --surface: #ffffff; --hairline: #e1e8f4; --ink: #0d1b33;
+            --ink-3: #5a6b87; --accent: #2563eb; --on-accent: #ffffff; --mark: #1d4ed8;
           }
           :root[data-theme="dark"] {
             color-scheme: dark;
-            --paper: #0a0a0a; --surface: #111111; --hairline: #262626; --ink: #ededed;
-            --ink-3: #a1a1a1; --accent: #ededed; --on-accent: #0a0a0a; --mark: #ededed;
+            --paper: #070d1a; --surface: #0d1729; --hairline: #1d2c49; --ink: #e9effc;
+            --ink-3: #95a4c3; --accent: #6ea8fe; --on-accent: #061225; --mark: #8cbcff;
           }
         `}</style>
       </head>

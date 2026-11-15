@@ -32,14 +32,14 @@
 }
 
 .fb-nav-link:hover {
-  color: var(--ink);
-  background: var(--wash);
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .fb-nav-link.active {
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-  background: var(--surface);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+  background: var(--accent-soft);
 }
 
 .fb-nav-login {
@@ -87,7 +87,7 @@
   height: 22px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--accent);
   color: var(--on-accent);
   font-size: 0.72rem;
   font-weight: 600;
@@ -182,7 +182,7 @@
 }
 
 .fb-link:hover {
-  color: var(--ink);
+  color: var(--accent);
 }
 
 .fb-menu {
@@ -228,9 +228,10 @@
 }
 
 .fb-btn-primary {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
   color: var(--on-accent);
+  box-shadow: 0 10px 22px -14px var(--accent);
 }
 
 .fb-btn-primary:hover:not(:disabled) {
@@ -271,7 +272,7 @@
   margin: 0;
   font-size: 0.74rem;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--accent);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -351,8 +352,8 @@
 }
 
 .fb-filter.active {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
   color: var(--on-accent);
 }
 
@@ -365,21 +366,25 @@
 .fb-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .fb-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--hairline);
   border-radius: var(--radius-card);
-  background: var(--surface);
+  background-color: color-mix(in srgb, var(--accent-soft) 55%, var(--surface));
   box-shadow: var(--shadow-card);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
 .fb-card:hover {
-  border-color: var(--hairline-strong);
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
 }
 
 .fb-cover {
@@ -394,8 +399,8 @@
 .fb-card-body {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 16px;
+  gap: 12px;
+  padding: 18px;
   flex: 1;
 }
 
@@ -417,6 +422,12 @@
   color: var(--ink-2);
   background: var(--wash);
   white-space: nowrap;
+}
+
+.fb-card-top .fb-chip:not([class*="tone-"]) {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
 }
 
 .fb-chip.tone-open {
@@ -468,7 +479,7 @@
 
 .fb-product-tag svg {
   flex-shrink: 0;
-  color: var(--ink-3);
+  color: var(--accent);
 }
 
 .fb-product-tag-text {
@@ -486,11 +497,11 @@
 
 .fb-card-title a {
   text-decoration: none;
+  transition: color 0.15s ease;
 }
 
 .fb-card:hover .fb-card-title a {
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: var(--accent);
 }
 
 .fb-excerpt {
@@ -551,8 +562,8 @@
 }
 
 .fb-vote.on {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
   color: var(--on-accent);
 }
 
@@ -3771,7 +3782,7 @@ a.fb-product-name:hover {
   [data-spotlight] {
     background-image: radial-gradient(
       220px circle at var(--mx, -400px) var(--my, -400px),
-      color-mix(in srgb, var(--ink) 8%, transparent),
+      color-mix(in srgb, var(--accent) 12%, transparent),
       transparent 70%
     );
     background-repeat: no-repeat;

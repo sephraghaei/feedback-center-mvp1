@@ -42,7 +42,7 @@ export default function RootLayout({
               colorShadow: "var(--ink)",
               colorSuccess: "var(--green)",
               colorDanger: "var(--red)",
-              borderRadius: "0.375rem",
+              borderRadius: "0.625rem",
               fontFamily: '"Vazirmatn Variable", Vazirmatn, system-ui, sans-serif',
               fontSize: "0.875rem",
             },
