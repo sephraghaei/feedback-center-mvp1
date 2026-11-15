@@ -59,7 +59,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           <span className="fb-aura-glow" />
           <span className="fb-aura-grid" />
         </div>
-        <span className="fb-hero-cursor" aria-hidden="true" />
         <div className="fb-hero-inner">
           <p className="fb-eyebrow fb-eyebrow-chip">
             <BrandMark className="eyebrow-mark" simple />

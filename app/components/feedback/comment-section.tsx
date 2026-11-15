@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { addCommentAction, voteCommentAction } from "@/app/feedback-actions";
 import type { CommentView } from "@/lib/feedback/comments";
 import { faDate, faNumber } from "@/lib/feedback/labels";
+import EmojiPicker from "./emoji-picker";
 
 function CommentComposer({
   value,
@@ -29,9 +30,24 @@ function CommentComposer({
   autoFocus?: boolean;
   onCancel?: () => void;
 }) {
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  function insertEmoji(emoji: string) {
+    const el = inputRef.current;
+    const start = el?.selectionStart ?? value.length;
+    const end = el?.selectionEnd ?? start;
+    onChange(value.slice(0, start) + emoji + value.slice(end));
+    requestAnimationFrame(() => {
+      el?.focus();
+      const position = start + emoji.length;
+      el?.setSelectionRange(position, position);
+    });
+  }
+
   return (
     <form className={`fb-comment-form ${compact ? "compact" : ""}`} onSubmit={onSubmit}>
       <textarea
+        ref={inputRef}
         className="input fb-comment-input"
         rows={compact ? 2 : 3}
         maxLength={2000}
@@ -44,6 +60,7 @@ function CommentComposer({
       <div className="fb-comment-form-foot">
         <span className="fb-comment-hint">{faNumber(value.trim().length)} از ۲۰۰۰ نویسه</span>
         <div className="fb-comment-foot-actions">
+          <EmojiPicker onPick={insertEmoji} />
           {onCancel ? (
             <button type="button" className="fb-btn fb-btn-ghost fb-btn-sm" onClick={onCancel}>
               بی‌خیال

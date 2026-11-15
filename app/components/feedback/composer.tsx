@@ -12,6 +12,7 @@ import {
 import { CATEGORY_LABELS } from "@/lib/feedback/labels";
 import { MAX_PRODUCT_LENGTH, parseProduct } from "@/lib/feedback/product";
 import { mediaUrl } from "@/lib/feedback/media";
+import EmojiPicker from "./emoji-picker";
 import Markdown from "./markdown";
 
 type HeaderViewer = { name: string; role: "customer" | "admin" } | null;
@@ -194,6 +195,18 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
     requestAnimationFrame(() => {
       el.focus();
       el.setSelectionRange(start + prefix.length, start + prefix.length);
+    });
+  }
+
+  function insertEmoji(emoji: string) {
+    const el = editorRef.current;
+    const start = el?.selectionStart ?? body.length;
+    const end = el?.selectionEnd ?? start;
+    setBody(body.slice(0, start) + emoji + body.slice(end));
+    requestAnimationFrame(() => {
+      el?.focus();
+      const position = start + emoji.length;
+      el?.setSelectionRange(position, position);
     });
   }
 
@@ -431,6 +444,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
                   <button type="button" className="fb-tool" onClick={() => surround("`")} title="کد درون‌خطی">
                     <code>{"`"}</code>
                   </button>
+                  <EmojiPicker onPick={insertEmoji} />
                 </div>
                 <textarea
                   ref={editorRef}

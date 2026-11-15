@@ -1,134 +1,94 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { faNumber } from "@/lib/feedback/labels";
 
-type Variant = { selector: string; title: string; body: string; expand?: "section-head" };
-type StepDef = { id: string; variants: Variant[]; final?: boolean };
-type ResolvedStep = { id: string; title: string; body: string; el: HTMLElement; final: boolean };
+type StepDef = {
+  id: string;
+  title: string;
+  body: string;
+  selector: string;
+  route?: string | (() => string | null);
+  final?: boolean;
+  optional?: boolean;
+  noScroll?: boolean;
+};
+
 type Box = { top: number; left: number; width: number; height: number };
 type Placement = { top: number; left: number; dock: boolean };
+
+const SEEN_KEY = "fc-tour";
+const AUTO_ROUTES = new Set(["/", "/feed", "/roadmap", "/changelog"]);
+
+function firstPostHref(): string | null {
+  const link = document.querySelector<HTMLAnchorElement>('.fb-grid a[href^="/p/"]');
+  return link?.getAttribute("href") ?? null;
+}
+
+function postRoute(): string | null {
+  const fromFeed = firstPostHref();
+  if (fromFeed) return fromFeed;
+  const path = window.location.pathname;
+  return path.startsWith("/p/") ? path : null;
+}
 
 const STEPS: StepDef[] = [
   {
     id: "nav",
-    variants: [
-      {
-        selector: ".site-nav",
-        title: "همه‌جا در دسترس",
-        body: "از همین منو بین بازخوردها، نقشه راه و تغییرات جابه‌جا شو. اگه وارد شده باشی، درخواست‌های من هم به منو اضافه می‌شه.",
-      },
-    ],
+    selector: ".site-nav",
+    noScroll: true,
+    title: "یه دور کامل، از اول تا آخر",
+    body: "کل مسیر سایت از همین منو می‌گذره: بازخوردها، نقشه راه و تغییرات. با هم یه دور کامل رو ببینیم.",
   },
   {
-    id: "intro",
-    variants: [
-      {
-        selector: ".fb-home .fb-hero-inner",
-        title: "قلب مرکز بازخورد",
-        body: "اینجا بازخورد بده، آمار رو ببین و سراغ تازه‌ترین‌ها برو. کارت‌های کنار صفحه هم نمونه‌ی واقعی بازخوردها هستن؛ بهشون رای بده و ببین چی می‌شه.",
-      },
-      {
-        selector: ".fb-page .fb-hero",
-        title: "خوش اومدی",
-        body: "اینجا خلاصه‌ی این بخش و کارهای اصلی‌شه. با دکمه‌های همین‌جا سریع بین بخش‌ها جابه‌جا می‌شی.",
-      },
-    ],
+    id: "feed",
+    selector: ".fb-grid",
+    route: "/feed",
+    optional: true,
+    title: "اول، بازخوردها رو بخون",
+    body: "هر کارت یه بازخورد واقعیه؛ بخونش و ببین چند نفر رای داده. فیلترهای بالای صفحه هم پیدا کردن موضوع خاص رو راحت می‌کنن.",
   },
   {
-    id: "content",
-    variants: [
-      {
-        selector: "#recent-title",
-        expand: "section-head",
-        title: "تازه‌ترین بازخوردها",
-        body: "هر بازخورد یه کارت داره: بخونش، رای بده و ببین بقیه چی می‌گن. رای‌ها معلوم می‌کنن چی اولویت داره.",
-      },
-      {
-        selector: ".fb-toolbar-row",
-        title: "فیلتر کن، پیدا کن",
-        body: "از فیلترها استفاده کن تا دقیقاً همون دسته یا وضعیتی که می‌خوای رو ببینی.",
-      },
-      {
-        selector: ".fb-entry-list",
-        title: "تغییرات منتشر شده",
-        body: "هر تغییر می‌گه کدوم بازخوردها رو حل کرده. از همین‌جا ردش رو می‌گیری.",
-      },
-      {
-        selector: ".fb-page .fb-entry",
-        title: "تغییرات منتشر شده",
-        body: "هر تغییر می‌گه کدوم بازخوردها رو حل کرده. از همین‌جا ردش رو می‌گیری.",
-      },
-      {
-        selector: ".fb-board",
-        title: "نقشه راه",
-        body: "هر درخواست تو یه ستونه: تو نوبت، در حال انجام، یا منتشر شده.",
-      },
-      {
-        selector: ".fb-grid",
-        title: "بازخوردها",
-        body: "روی هر کارت بزن تا جزئیات و مسیرش رو ببینی و رای بدی.",
-      },
-    ],
+    id: "detail",
+    selector: ".fb-detail-head",
+    route: postRoute,
+    optional: true,
+    title: "هر بازخورد، یه صفحه‌ی کامل",
+    body: "با زدن روی کارت، کل ماجرا باز می‌شه: متن، رای‌ها، مسیرش تا انتشار و حرف بقیه.",
+  },
+  {
+    id: "comments",
+    selector: ".fb-comments",
+    route: postRoute,
+    optional: true,
+    title: "گفتگو رو دنبال کن",
+    body: "زیر هر بازخورد می‌تونی کامنت بذاری، به کامنت‌ها رای بدی و پاسخ بدی. برای نوشتن فقط یه بار وارد حساب می‌شی و جواب تیم هم همین‌جا میاد.",
   },
   {
     id: "roadmap",
-    variants: [
-      {
-        selector: "#roadmap-title",
-        expand: "section-head",
-        title: "مسیر رو دنبال کن",
-        body: "از این‌جا می‌بینی هر درخواست کجای مسیره. چیزی که منتشر می‌شه، به تغییرات هم می‌رسه.",
-      },
-    ],
+    selector: ".fb-board",
+    route: "/roadmap",
+    title: "نقشه راه: از نوبت تا انتشار",
+    body: "هر درخواست توی یه ستونه: در نوبت، در حال انجام یا منتشر شده. رای بیشتر یعنی شانس بیشتر برای رفتن به ستون بعدی.",
   },
   {
-    id: "account",
-    variants: [
-      {
-        selector: "#account-title",
-        expand: "section-head",
-        title: "حساب، بدون رمز",
-        body: "با شماره موبایل یا ایمیل وارد شو. بعدش درخواست‌هات یه جا جمع می‌شن و وضعیتشون رو می‌بینی.",
-      },
-    ],
+    id: "changelog",
+    selector: ".fb-entry",
+    route: "/changelog",
+    optional: true,
+    title: "تغییرات: نتیجه‌ی نهایی",
+    body: "هر چیزی که منتشر می‌شه این‌جا ثبت می‌شه و می‌گه کدوم بازخوردها رو حل کرده. مسیر هر بازخورد تا آخر شفافه.",
   },
   {
     id: "compose",
+    selector: ".fb-compose-btn",
     final: true,
-    variants: [
-      {
-        selector: ".fb-compose-btn",
-        title: "حالا نوبت توئه",
-        body: "هر وقت خواستی بازخورد بدی، از همین دکمه شروع کن. مسیرش رو تا انتشار دنبال می‌کنیم.",
-      },
-    ],
+    noScroll: true,
+    title: "حالا نوبت توئه",
+    body: "هر وقت خواستی بازخورد بدی، از همین دکمه شروع کن. برای ثبت فقط با موبایل یا ایمیل وارد می‌شی؛ بعدش چند خط می‌نویسی و بقیه‌ش با ما و رای بقیه.",
   },
 ];
-
-function resolveSteps(): ResolvedStep[] {
-  const resolved: ResolvedStep[] = [];
-  for (const def of STEPS) {
-    for (const variant of def.variants) {
-      const base = document.querySelector<HTMLElement>(variant.selector);
-      if (!base) continue;
-      const el =
-        variant.expand === "section-head"
-          ? base.closest<HTMLElement>(".fb-section-head") ?? base
-          : base;
-      resolved.push({
-        id: def.id,
-        title: variant.title,
-        body: variant.body,
-        el,
-        final: Boolean(def.final),
-      });
-      break;
-    }
-  }
-  return resolved;
-}
 
 function sameBox(a: Box, b: Box): boolean {
   return (
@@ -141,45 +101,47 @@ function sameBox(a: Box, b: Box): boolean {
 
 export default function SiteTour() {
   const pathname = usePathname();
+  const router = useRouter();
   const [active, setActive] = useState(false);
-  const [steps, setSteps] = useState<ResolvedStep[]>([]);
   const [index, setIndex] = useState(0);
+  const [target, setTarget] = useState<HTMLElement | null>(null);
   const [rect, setRect] = useState<Box | null>(null);
   const [placement, setPlacement] = useState<Placement | null>(null);
   const [viewportTick, setViewportTick] = useState(0);
   const tipRef = useRef<HTMLDivElement>(null);
   const restoreRef = useRef<HTMLElement | null>(null);
+  const skippedRef = useRef(new Set<string>());
 
   const start = useCallback(() => {
-    const next = resolveSteps();
-    if (!next.length) return;
     restoreRef.current =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    setSteps(next);
-    setIndex(0);
+    skippedRef.current = new Set();
+    setTarget(null);
     setRect(null);
     setPlacement(null);
+    setIndex(0);
     setActive(true);
   }, []);
 
   const close = useCallback((focusBack = true) => {
     setActive(false);
+    setTarget(null);
     setRect(null);
     setPlacement(null);
     try {
-      window.localStorage.setItem("fc-tour", "done");
+      window.localStorage.setItem(SEEN_KEY, "done");
     } catch {
       // Private mode can block storage; the tour still closes.
     }
-    const target = restoreRef.current;
-    if (focusBack && target && target.isConnected) {
-      requestAnimationFrame(() => target.focus({ preventScroll: true }));
+    const previous = restoreRef.current;
+    if (focusBack && previous && previous.isConnected) {
+      requestAnimationFrame(() => previous.focus({ preventScroll: true }));
     }
   }, []);
 
   const goNext = useCallback(() => {
-    setIndex((value) => Math.min(value + 1, steps.length - 1));
-  }, [steps.length]);
+    setIndex((value) => Math.min(value + 1, STEPS.length - 1));
+  }, []);
 
   const goPrev = useCallback(() => {
     setIndex((value) => Math.max(value - 1, 0));
@@ -191,10 +153,10 @@ export default function SiteTour() {
   }, [start]);
 
   useEffect(() => {
-    if (pathname !== "/") return;
+    if (!AUTO_ROUTES.has(pathname)) return;
     let seen = false;
     try {
-      seen = Boolean(window.localStorage.getItem("fc-tour"));
+      seen = Boolean(window.localStorage.getItem(SEEN_KEY));
     } catch {
       seen = false;
     }
@@ -208,12 +170,12 @@ export default function SiteTour() {
     const timer = window.setTimeout(() => {
       if (cancelled || document.visibilityState === "hidden" || window.scrollY > 40) return;
       try {
-        window.localStorage.setItem("fc-tour", "done");
+        window.localStorage.setItem(SEEN_KEY, "done");
       } catch {
         // Storage is optional; the tour can still run once per load.
       }
       start();
-    }, 1400);
+    }, 1200);
 
     window.addEventListener("fc:open-composer", cancel, { once: true });
     window.addEventListener("pointerdown", cancel, { once: true, passive: true });
@@ -234,48 +196,80 @@ export default function SiteTour() {
 
   useEffect(() => {
     if (!active) return;
-    const next = resolveSteps();
-    if (!next.length) {
-      close(false);
+    const step = STEPS[index];
+    if (!step) return;
+
+    const route = typeof step.route === "function" ? step.route() : step.route ?? null;
+    if (route && route !== pathname) {
+      setTarget(null);
+      setRect(null);
+      setPlacement(null);
+      router.push(route, { scroll: false });
       return;
     }
-    setSteps(next);
-    setIndex((value) => Math.min(value, next.length - 1));
-  }, [active, pathname, close]);
+
+    let frame = 0;
+    let cancelled = false;
+    const deadline = performance.now() + 3500;
+
+    const find = () => {
+      if (cancelled) return;
+      const el = document.querySelector<HTMLElement>(step.selector);
+      if (el) {
+        setTarget(el);
+        return;
+      }
+      if (performance.now() > deadline) {
+        setTarget(null);
+        if (step.optional && !skippedRef.current.has(step.id)) {
+          skippedRef.current.add(step.id);
+          setIndex((value) => Math.min(value + 1, STEPS.length - 1));
+        }
+        return;
+      }
+      frame = requestAnimationFrame(find);
+    };
+
+    find();
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+    };
+  }, [active, index, pathname, router]);
 
   useEffect(() => {
-    if (!active) return;
-    const step = steps[index];
-    if (!step) return;
+    if (!active || !target) return;
+    const step = STEPS[index];
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    step.el.scrollIntoView({ block: "center", inline: "nearest", behavior: reduce ? "auto" : "smooth" });
-  }, [active, steps, index]);
-
-  useEffect(() => {
-    if (!active) return;
-    const step = steps[index];
-    if (!step) return;
+    if (!step?.noScroll) {
+      target.scrollIntoView({
+        block: "center",
+        inline: "nearest",
+        behavior: reduce ? "auto" : "smooth",
+      });
+    }
 
     let frame = 0;
     const track = () => {
-      const el = step.el;
-      if (el.isConnected) {
-        const box = el.getBoundingClientRect();
-        const pad = 8;
-        const next: Box = {
-          top: Math.max(6, box.top - pad),
-          left: Math.max(6, box.left - pad),
-          width: Math.max(0, Math.min(window.innerWidth - 6, box.right + pad) - Math.max(6, box.left - pad)),
-          height: Math.max(0, Math.min(window.innerHeight - 6, box.bottom + pad) - Math.max(6, box.top - pad)),
-        };
-        setRect((prev) => (prev && sameBox(prev, next) ? prev : next));
+      if (!target.isConnected) {
+        setTarget(null);
+        return;
       }
+      const box = target.getBoundingClientRect();
+      const pad = 8;
+      const next: Box = {
+        top: Math.max(6, box.top - pad),
+        left: Math.max(6, box.left - pad),
+        width: Math.max(0, Math.min(window.innerWidth - 6, box.right + pad) - Math.max(6, box.left - pad)),
+        height: Math.max(0, Math.min(window.innerHeight - 6, box.bottom + pad) - Math.max(6, box.top - pad)),
+      };
+      setRect((prev) => (prev && sameBox(prev, next) ? prev : next));
       frame = requestAnimationFrame(track);
     };
 
     frame = requestAnimationFrame(track);
     return () => cancelAnimationFrame(frame);
-  }, [active, steps, index]);
+  }, [active, index, target]);
 
   useEffect(() => {
     if (!active) return;
@@ -330,7 +324,11 @@ export default function SiteTour() {
   }, [active, close, goNext, goPrev]);
 
   useLayoutEffect(() => {
-    if (!active || !rect) return;
+    if (!active) return;
+    if (!rect) {
+      setPlacement((prev) => (prev?.dock ? prev : { top: 0, left: 0, dock: true }));
+      return;
+    }
     const tip = tipRef.current;
     if (!tip) return;
 
@@ -363,17 +361,17 @@ export default function SiteTour() {
         ? prev
         : { top, left, dock: false },
     );
-  }, [active, rect, index, steps, viewportTick]);
+  }, [active, rect, index, viewportTick]);
 
   const finish = () => {
     close(false);
     window.dispatchEvent(new Event("fc:open-composer"));
   };
 
-  const step = steps[index];
+  const step = STEPS[index];
   if (!active || !step) return null;
 
-  const total = steps.length;
+  const total = STEPS.length;
 
   return (
     <div className="fb-tour" role="presentation">
@@ -418,26 +416,36 @@ export default function SiteTour() {
           <span className="fb-tour-step">
             {faNumber(index + 1)} از {faNumber(total)}
           </span>
-          <button
-            type="button"
-            className="fb-tour-close"
-            onClick={() => close()}
-            aria-label="بستن آموزش"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              aria-hidden="true"
+          <div className="fb-tour-top-actions">
+            <button
+              type="button"
+              className="fb-tour-skip"
+              onClick={() => close()}
+              aria-label="رد کردن آموزش"
             >
-              <path d="M6 6l12 12" />
-              <path d="M18 6L6 18" />
-            </svg>
-          </button>
+              رد کردن
+            </button>
+            <button
+              type="button"
+              className="fb-tour-close"
+              onClick={() => close()}
+              aria-label="بستن آموزش"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
+                <path d="M6 6l12 12" />
+                <path d="M18 6L6 18" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div className="fb-tour-bar" aria-hidden="true">

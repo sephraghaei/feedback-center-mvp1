@@ -10,7 +10,6 @@ export default function PointerFx() {
     let frame = 0;
     let pending: PointerEvent | null = null;
     let lastSpot: HTMLElement | null = null;
-    let lastScene: HTMLElement | null = null;
 
     const paint = () => {
       frame = 0;
@@ -31,18 +30,6 @@ export default function PointerFx() {
         spot.style.setProperty("--mx", `${event.clientX - rect.left}px`);
         spot.style.setProperty("--my", `${event.clientY - rect.top}px`);
       }
-
-      const scene = target?.closest<HTMLElement>(".fb-hero") ?? null;
-      const homeScene = scene?.closest<HTMLElement>(".fb-home") ? scene : null;
-      if (homeScene) {
-        const rect = homeScene.getBoundingClientRect();
-        homeScene.style.setProperty("--gx", `${event.clientX - rect.left}px`);
-        homeScene.style.setProperty("--gy", `${event.clientY - rect.top}px`);
-        homeScene.dataset.pointer = "on";
-        lastScene = homeScene;
-      } else if (lastScene) {
-        lastScene.dataset.pointer = "off";
-      }
     };
 
     const onMove = (event: PointerEvent) => {
@@ -51,7 +38,6 @@ export default function PointerFx() {
     };
 
     const onLeave = () => {
-      if (lastScene) lastScene.dataset.pointer = "off";
       if (lastSpot) {
         lastSpot.style.removeProperty("--mx");
         lastSpot.style.removeProperty("--my");
