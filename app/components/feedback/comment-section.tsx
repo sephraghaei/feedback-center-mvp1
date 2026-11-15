@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { addCommentAction, deleteOwnCommentAction, voteCommentAction } from "@/app/feedback-actions";
+import ConfirmDialog from "@/app/components/confirm-dialog";
 import type { CommentView } from "@/lib/feedback/comments";
 import { faDate, faNumber } from "@/lib/feedback/labels";
 import EmojiPicker from "./emoji-picker";
@@ -220,6 +221,7 @@ export default function CommentSection({
   const [replyError, setReplyError] = useState<string | null>(null);
   const [pendingVote, setPendingVote] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<CommentView | null>(null);
 
   function signIn() {
     router.push(`/?next=${encodeURIComponent(nextPath)}#account`);
@@ -322,15 +324,12 @@ export default function CommentSection({
 
   async function remove(item: CommentView) {
     if (deletingId) return;
-    const confirmText = item.parentId
-      ? "این پاسخ برای همیشه حذف شود؟"
-      : "این کامنت و پاسخ‌های خودت برای همیشه حذف شوند؟";
-    if (!window.confirm(confirmText)) return;
 
     setActionError(null);
     setDeletingId(item.id);
     const result = await deleteOwnCommentAction(item.id);
     setDeletingId(null);
+    setConfirmDelete(null);
 
     if (!result.ok) {
       setActionError(result.error);
@@ -364,7 +363,7 @@ export default function CommentSection({
       </div>
 
       {locked ? (
-        <p className="fb-note">این بازخورد پنهان شده و کامنت تازه نمی‌پذیرد.</p>
+        <p className="fb-note">این فید‌بک پنهان شده و کامنت تازه نمی‌پذیرد.</p>
       ) : signedIn ? (
         <CommentComposer
           value={draft}
@@ -372,7 +371,7 @@ export default function CommentSection({
           onSubmit={submitRoot}
           busy={sending}
           error={error}
-          placeholder="چیزی بنویس که به بهتر شدن این بازخورد کمک کند."
+          placeholder="چیزی بنویس که به بهتر شدن این فید‌بک کمک کند."
           submitLabel="ارسال کامنت"
         />
       ) : (
@@ -401,7 +400,7 @@ export default function CommentSection({
                   canDelete={Boolean(viewerId) && item.authorId === viewerId}
                   deleting={deletingId === item.id}
                   onVote={vote}
-                  onDelete={() => void remove(item)}
+                  onDelete={() => setConfirmDelete(item)}
                   onReply={locked ? undefined : () => beginReply(item)}
                   footer={
                     replyingTo === item.id ? (
@@ -432,7 +431,7 @@ export default function CommentSection({
                           canDelete={Boolean(viewerId) && reply.authorId === viewerId}
                           deleting={deletingId === reply.id}
                           onVote={vote}
-                          onDelete={() => void remove(reply)}
+                          onDelete={() => setConfirmDelete(reply)}
                         />
                       </li>
                     ))}
@@ -443,6 +442,24 @@ export default function CommentSection({
           })}
         </ol>
       )}
+
+      <ConfirmDialog
+        open={confirmDelete !== null}
+        title={confirmDelete?.parentId ? "حذف پاسخ؟" : "حذف کامنت؟"}
+        description={
+          confirmDelete?.parentId
+            ? "این پاسخ برای همیشه حذف می‌شود."
+            : "این کامنت و پاسخ‌های خودت برای همیشه حذف می‌شوند."
+        }
+        confirmLabel={confirmDelete?.parentId ? "حذف پاسخ" : "حذف کامنت"}
+        busy={Boolean(confirmDelete && deletingId === confirmDelete.id)}
+        onConfirm={() => {
+          if (confirmDelete) void remove(confirmDelete);
+        }}
+        onCancel={() => {
+          if (!deletingId) setConfirmDelete(null);
+        }}
+      />
     </section>
   );
 }

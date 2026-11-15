@@ -7,7 +7,7 @@ import { listChangelog } from "@/lib/feedback/changelog";
 
 export const metadata: Metadata = {
   title: "تغییرات | وسا",
-  description: "هر نسخه چه چیزی را حل کرد و کدام بازخوردها به انتشار رسیدند.",
+  description: "هر نسخه چه چیزی را حل کرد و کدام فید‌بک‌ها به انتشار رسیدند.",
 };
 
 export default async function ChangelogPage() {
@@ -22,12 +22,12 @@ export default async function ChangelogPage() {
         </p>
         <h1 className="fb-title">آنچه ساخته شد، با تاریخ و پیوند</h1>
         <p className="fb-lede">
-          هر ورودی تغییرات به بازخوردهایی وصل است که آن را حل کرده‌اند. این‌جا معلوم می‌شود حرف
+          هر ورودی تغییرات به فید‌بک‌هایی وصل است که آن را حل کرده‌اند. این‌جا معلوم می‌شود حرف
           کاربران به کدام تغییر رسیده است.
         </p>
         <div className="fb-hero-actions">
           <Link href="/feed" className="fb-btn">
-            فید بازخوردها
+            همه فید‌بک‌ها
           </Link>
           <Link href="/roadmap" className="fb-btn fb-btn-ghost">
             نقشه راه
@@ -45,7 +45,7 @@ export default async function ChangelogPage() {
             <Markdown source={entry.body} />
             <p className="field-hint" style={{ marginTop: 12 }}>
               <Link href={`/changelog/${entry.id}`} className="fb-link">
-                بازخوردهای مرتبط
+                فید‌بک‌های مرتبط
               </Link>
             </p>
           </article>
@@ -53,7 +53,7 @@ export default async function ChangelogPage() {
       ) : (
         <div className="fb-empty" style={{ marginTop: 22 }}>
           <strong>هنوز ورودی تغییری منتشر نشده است.</strong>
-          وقتی اولین تغییر منتشر شود، همین‌جا با پیوند به بازخوردهایش می‌آید.
+          وقتی اولین تغییر منتشر شود، همین‌جا با پیوند به فید‌بک‌هایش می‌آید.
         </div>
       )}
     </>

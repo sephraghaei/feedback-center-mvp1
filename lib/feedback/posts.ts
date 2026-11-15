@@ -313,7 +313,7 @@ export async function createPost(input: {
   let category: string | null = null;
   if (input.type === "feedback") {
     if (!input.category || !(FEEDBACK_CATEGORIES as readonly string[]).includes(input.category)) {
-      throw new PostError("برای بازخورد محصول یکی از دسته‌ها را انتخاب کن.");
+      throw new PostError("برای فید‌بک محصول یکی از دسته‌ها را انتخاب کن.");
     }
     category = input.category;
   }
@@ -348,7 +348,7 @@ export async function createPost(input: {
       })
       .returning({ id: posts.id });
 
-    if (!row) throw new PostError("ثبت بازخورد انجام نشد.");
+    if (!row) throw new PostError("ثبت فید‌بک انجام نشد.");
 
     if (files.length > 0) {
       await tx.insert(attachments).values(
@@ -370,7 +370,7 @@ export async function toggleUpvote(
   postId: string,
   userId: string,
 ): Promise<{ upvoted: boolean; count: number }> {
-  if (!isUuid(postId)) throw new PostError("شناسه بازخورد معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
 
   const db = getDb();
   const [post] = await db
@@ -380,7 +380,7 @@ export async function toggleUpvote(
     .limit(1);
 
   if (!post || post.type !== "feedback" || post.hidden) {
-    throw new PostError("این بازخورد برای رای دادن در دسترس نیست.");
+    throw new PostError("این فید‌بک برای رای دادن در دسترس نیست.");
   }
 
   const [existing] = await db
@@ -404,7 +404,7 @@ export async function toggleUpvote(
 }
 
 export async function movePost(postId: string, status: string): Promise<void> {
-  if (!isUuid(postId)) throw new PostError("شناسه بازخورد معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
   if (!(ROADMAP_STATUSES as readonly string[]).includes(status)) {
     throw new PostError("وضعیت انتخابی معتبر نیست.");
   }
@@ -415,11 +415,11 @@ export async function movePost(postId: string, status: string): Promise<void> {
     .where(and(eq(posts.id, postId), eq(posts.type, "feedback")))
     .returning({ id: posts.id });
 
-  if (updated.length === 0) throw new PostError("بازخورد پیدا نشد.");
+  if (updated.length === 0) throw new PostError("فید‌بک پیدا نشد.");
 }
 
 export async function setPostHidden(postId: string, hidden: boolean): Promise<void> {
-  if (!isUuid(postId)) throw new PostError("شناسه بازخورد معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
   await getDb()
     .update(posts)
     .set({ hidden, updatedAt: new Date() })
@@ -427,19 +427,19 @@ export async function setPostHidden(postId: string, hidden: boolean): Promise<vo
 }
 
 export async function removePost(postId: string): Promise<void> {
-  if (!isUuid(postId)) throw new PostError("شناسه بازخورد معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
   await getDb().delete(posts).where(eq(posts.id, postId));
 }
 
 export async function removeOwnPost(postId: string, authorId: string): Promise<void> {
-  if (!isUuid(postId)) throw new PostError("شناسه بازخورد معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
 
   const deleted = await getDb()
     .delete(posts)
     .where(and(eq(posts.id, postId), eq(posts.authorId, authorId)))
     .returning({ id: posts.id });
 
-  if (deleted.length === 0) throw new PostError("این بازخورد پیدا نشد یا مال تو نیست.");
+  if (deleted.length === 0) throw new PostError("این فید‌بک پیدا نشد یا مال تو نیست.");
 }
 
 export async function answerSupport(

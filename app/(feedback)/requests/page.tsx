@@ -9,7 +9,7 @@ import { requireViewer } from "@/lib/feedback/viewer";
 
 export const metadata: Metadata = {
   title: "درخواست‌های من | وسا",
-  description: "همه بازخوردها و درخواست‌های پشتیبانی خودت، با وضعیت به‌روز.",
+  description: "همه فید‌بک‌ها و درخواست‌های پشتیبانی خودت، با وضعیت به‌روز.",
 };
 
 export default async function RequestsPage() {
@@ -29,18 +29,18 @@ export default async function RequestsPage() {
         </p>
         <h1 className="fb-title">هر چه فرستادی، یک جا</h1>
         <p className="fb-lede">
-          بازخوردهای عمومی و درخواست‌های پشتیبانی خصوصی‌ات را از همین‌جا دنبال کن. وضعیت هر
+          فید‌بک‌های عمومی و درخواست‌های پشتیبانی خصوصی‌ات را از همین‌جا دنبال کن. وضعیت هر
           درخواست را بدون ایمیل و پیام اضافه می‌بینی.
         </p>
         <div className="fb-hero-actions">
           <ComposerButton className="fb-btn fb-btn-primary">ثبت درخواست تازه</ComposerButton>
           <Link href="/feed" className="fb-btn fb-btn-ghost">
-            فید بازخورد
+            همه فید‌بک‌ها
           </Link>
         </div>
         <ul className="fb-hero-stats">
           <li>
-            <strong>{faNumber(publicPosts.length)}</strong> بازخورد عمومی
+            <strong>{faNumber(publicPosts.length)}</strong> فید‌بک عمومی
           </li>
           <li>
             <strong>{faNumber(supportPosts.length)}</strong> درخواست پشتیبانی
@@ -51,7 +51,7 @@ export default async function RequestsPage() {
       {posts.length === 0 ? (
         <div className="fb-empty">
           <strong>هنوز چیزی ثبت نکرده‌ای.</strong>
-          اولین بازخورد یا درخواست پشتیبانی‌ات را از دکمه بالا بنویس و وضعیتش را همین‌جا ببین.
+          اولین فید‌بک یا درخواست پشتیبانی‌ات را از دکمه بالا بنویس و وضعیتش را همین‌جا ببین.
         </div>
       ) : null}
 
@@ -59,7 +59,7 @@ export default async function RequestsPage() {
         <section aria-labelledby="mine-feedback">
           <div className="fb-toolbar-row">
             <h2 id="mine-feedback" className="section-title" style={{ fontSize: "1.05rem" }}>
-              بازخوردهای عمومی
+              فید‌بک‌های عمومی
             </h2>
             <p className="fb-count">{faNumber(publicPosts.length)} مورد</p>
           </div>

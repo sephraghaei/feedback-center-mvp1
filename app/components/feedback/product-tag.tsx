@@ -58,7 +58,7 @@ export default function ProductTag({
           <ProductIcon />
         </span>
         <span className="fb-product-text">
-          <span className="fb-product-label">بازخورد برای</span>
+          <span className="fb-product-label">فید‌بک برای</span>
           {source.href ? (
             <a
               className="fb-product-name"

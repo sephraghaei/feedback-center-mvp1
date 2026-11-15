@@ -74,11 +74,11 @@ export default function PostCard({
             <PostOwnerActions
               postId={post.id}
               redirectTo={nextPath}
-              label={post.type === "support" ? "حذف درخواست" : "حذف بازخورد"}
+              label={post.type === "support" ? "حذف درخواست" : "حذف فید‌بک"}
               confirmText={
                 post.type === "support"
                   ? "این درخواست پشتیبانی برای همیشه حذف شود؟"
-                  : "این بازخورد با همه کامنت‌هایش برای همیشه حذف شود؟"
+                  : "این فید‌بک با همه کامنت‌هایش برای همیشه حذف شود؟"
               }
             />
           ) : null}

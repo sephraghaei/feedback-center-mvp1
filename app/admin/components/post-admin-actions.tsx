@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deletePostAction, hidePostAction, movePostAction } from "@/app/feedback-actions";
+import ConfirmDialog from "@/app/components/confirm-dialog";
 import { ROADMAP_STATUSES } from "@/lib/feedback/constants";
 import { STATUS_LABELS } from "@/lib/feedback/labels";
 import { Icon } from "./bits";
@@ -21,6 +22,7 @@ export default function PostAdminActions({
   const [isHidden, setIsHidden] = useState(hidden);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   async function move(next: string) {
     if (next === value || busy) return;
@@ -54,11 +56,11 @@ export default function PostAdminActions({
 
   async function remove() {
     if (busy) return;
-    if (!window.confirm("این بازخورد برای همیشه حذف شود؟")) return;
     setBusy(true);
     setError(null);
     const result = await deletePostAction(postId);
     setBusy(false);
+    setConfirming(false);
     if (result.ok) {
       router.refresh();
       return;
@@ -95,10 +97,10 @@ export default function PostAdminActions({
       <button
         type="button"
         className="btn btn-ghost btn-icon danger"
-        onClick={remove}
+        onClick={() => setConfirming(true)}
         disabled={busy}
-        title="حذف بازخورد"
-        aria-label="حذف بازخورد"
+        title="حذف فید‌بک"
+        aria-label="حذف فید‌بک"
       >
         <Icon name="trash" size={16} />
       </button>
@@ -107,6 +109,17 @@ export default function PostAdminActions({
           {error}
         </span>
       ) : null}
+      <ConfirmDialog
+        open={confirming}
+        title="حذف این فید‌بک؟"
+        description="این فید‌بک با همه کامنت‌هایش برای همیشه حذف می‌شود."
+        confirmLabel="حذف فید‌بک"
+        busy={busy}
+        onConfirm={() => void remove()}
+        onCancel={() => {
+          if (!busy) setConfirming(false);
+        }}
+      />
     </div>
   );
 }

@@ -149,7 +149,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
     const room = MAX_FILES - files.length;
     if (room <= 0) {
-      setError(`حداکثر ${MAX_FILES} فایل برای هر بازخورد مجاز است.`);
+      setError(`حداکثر ${MAX_FILES} فایل برای هر فید‌بک مجاز است.`);
       return;
     }
 
@@ -222,7 +222,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
     const cleanTitle = title.trim();
     const cleanBody = body.trim();
     if (!product.trim()) {
-      setProductError("نام محصول یا آدرس سایت را بنویس تا مشخص شود بازخورد برای کجاست.");
+      setProductError("نام محصول یا آدرس سایت را بنویس تا مشخص شود فید‌بک برای کجاست.");
       return;
     }
     const parsedProduct = parseProduct(product);
@@ -236,7 +236,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
       return;
     }
     if (cleanBody.length < 10) {
-      setError("متن بازخورد باید حداقل ۱۰ نویسه باشد.");
+      setError("متن فید‌بک باید حداقل ۱۰ نویسه باشد.");
       return;
     }
     if (files.some((entry) => !entry.path && !entry.error)) {
@@ -290,9 +290,9 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
         <div className="fb-composer-head">
           <div>
             <h2 id="composer-title" className="modal-title">
-              ثبت بازخورد
+              ثبت فید‌بک
             </h2>
-            <p className="modal-hint">بازخورد محصول را عمومی بنویس، یا درخواست شخصی را فقط برای مدیر بفرست.</p>
+            <p className="modal-hint">فید‌بک محصول را عمومی بنویس، یا درخواست شخصی را فقط برای مدیر بفرست.</p>
           </div>
           <button type="button" className="fb-btn fb-btn-ghost fb-btn-sm" onClick={close} disabled={submitting}>
             بستن
@@ -301,7 +301,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
         {signInRequired ? (
           <div className="fb-signin-card">
-            <p>برای ثبت بازخورد یک حساب لازم است. بعد از ورود به همین صفحه برمی‌گردی.</p>
+            <p>برای ثبت فید‌بک یک حساب لازم است. بعد از ورود به همین صفحه برمی‌گردی.</p>
             <div className="fb-signin-actions">
               <Link href={signInHref} className="fb-btn fb-btn-primary">
                 ورود با موبایل یا ایمیل
@@ -321,7 +321,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
                 className={type === "feedback" ? "active" : ""}
                 onClick={() => setType("feedback")}
               >
-                بازخورد محصول
+                فید‌بک محصول
               </button>
               <button
                 type="button"
@@ -375,7 +375,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
               placeholder="مثلا: فروشگاه من یا example.com"
             />
             <p id="composer-product-hint" className="field-hint" style={{ marginTop: 0 }}>
-              بازخورد به همین محصول وصل می‌شود و بالای کارتش نشان داده می‌شود.
+              فید‌بک به همین محصول وصل می‌شود و بالای کارتش نشان داده می‌شود.
             </p>
             {productError ? (
               <p id="composer-product-error" className="field-error">
@@ -396,7 +396,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
             />
 
             <div className="fb-editor-tabs">
-              <span className="label">{type === "feedback" ? "توضیح بازخورد" : "توضیح درخواست"}</span>
+              <span className="label">{type === "feedback" ? "توضیح فید‌بک" : "توضیح درخواست"}</span>
               <div className="fb-filters" role="tablist" aria-label="حالت ویرایش">
                 <button
                   type="button"
@@ -452,7 +452,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
                   value={body}
                   onChange={(event) => setBody(event.target.value)}
                   placeholder={"جزئیات را بنویس. مارک‌داون ساده پشتیبانی می‌شود: ## عنوان، **ضخیم**، - فهرست"}
-                  aria-label="متن بازخورد"
+                  aria-label="متن فید‌بک"
                 />
               </>
             )}
@@ -518,7 +518,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
             <div className="fb-modal-foot">
               <p>
                 {type === "feedback"
-                  ? "بازخورد محصول عمومی است و همه می‌بینند."
+                  ? "فید‌بک محصول عمومی است و همه می‌بینند."
                   : "درخواست شخصی فقط برای تو و مدیر نمایش داده می‌شود."}
               </p>
               <button type="submit" className="fb-btn fb-btn-primary" disabled={submitting || uploading}>

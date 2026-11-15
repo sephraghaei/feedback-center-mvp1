@@ -24,7 +24,7 @@ export default async function FeedbackLayout({ children }: { children: React.Rea
           <BrandMark className="footer-mark" simple />
           <span className="footer-name">وسا</span>
         </span>
-        <span>بازخورد، نقشه راه و تغییرات در یک جا</span>
+        <span>فید‌بک، نقشه راه و تغییرات در یک جا</span>
       </footer>
       <Composer viewer={headerViewer} />
       <PointerFx />

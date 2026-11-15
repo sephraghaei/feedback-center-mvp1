@@ -6,7 +6,7 @@ import { CATEGORY_LABELS, STATUS_LABELS, faDate, faNumber } from "@/lib/feedback
 import { listFeedbackForAdmin } from "@/lib/feedback/posts";
 import { toPersianDigits } from "@/lib/phone";
 
-export const metadata: Metadata = { title: "مدیریت بازخوردها | وسا" };
+export const metadata: Metadata = { title: "مدیریت فید‌بک‌ها | وسا" };
 
 export default async function AdminPostsPage() {
   const posts = await listFeedbackForAdmin();
@@ -16,11 +16,11 @@ export default async function AdminPostsPage() {
     <>
       <div className="page-head">
         <div className="page-title-row">
-          <h1 className="page-title">مدیریت بازخوردها</h1>
+          <h1 className="page-title">مدیریت فید‌بک‌ها</h1>
           <span className="count-badge">{toPersianDigits(String(posts.length))}</span>
         </div>
         <p className="page-sub">
-          جابه‌جایی روی نقشه راه، پنهان کردن یا حذف. وضعیت هر بازخورد همان ستون نقشه راه است.
+          جابه‌جایی روی نقشه راه، پنهان کردن یا حذف. وضعیت هر فید‌بک همان ستون نقشه راه است.
           {hidden > 0 ? ` ${toPersianDigits(String(hidden))} مورد پنهان شده است.` : ""}
         </p>
       </div>
@@ -28,15 +28,15 @@ export default async function AdminPostsPage() {
       {posts.length === 0 ? (
         <div className="empty-state">
           <Icon name="list" size={26} />
-          <h3>هنوز بازخوردی ثبت نشده.</h3>
-          <p>اولین بازخورد محصول که کاربران بنویسند، همین‌جا برای مدیریت ظاهر می‌شود.</p>
+          <h3>هنوز فید‌بک‌ی ثبت نشده.</h3>
+          <p>اولین فید‌بک محصول که کاربران بنویسند، همین‌جا برای مدیریت ظاهر می‌شود.</p>
         </div>
       ) : (
         <div className="table-wrap">
           <table className="admin-table">
             <thead>
               <tr>
-                <th style={{ width: "34%" }}>بازخورد</th>
+                <th style={{ width: "34%" }}>فید‌بک</th>
                 <th style={{ width: "11%" }}>دسته</th>
                 <th style={{ width: "11%" }}>وضعیت</th>
                 <th style={{ width: "7%" }}>رای</th>

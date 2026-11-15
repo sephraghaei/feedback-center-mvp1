@@ -30,7 +30,7 @@ const DEMO_PHONES = [
   "09120000004",
 ];
 const ADMIN_EMAIL = "admin@feedback.local";
-const DEMO_ENTRY_TITLES = ["جستجوی بازخوردها و تاریخ شمسی"];
+const DEMO_ENTRY_TITLES = ["جستجوی فید‌بک‌ها و تاریخ شمسی"];
 
 function daysAgo(days: number): Date {
   return new Date(Date.now() - days * 24 * 60 * 60 * 1000);
@@ -133,9 +133,9 @@ async function main(): Promise<void> {
         authorId: sara.id,
         type: "feedback",
         category: "improvement",
-        title: "جستجو در فید بازخوردها",
+        title: "جستجو در فید‌بک‌ها",
         product: "feedback.local",
-        body: "با زیاد شدن بازخوردها پیدا کردن موارد تکراری سخت می‌شود. یک جستجوی ساده بالای فید کمک می‌کند.",
+        body: "با زیاد شدن فید‌بک‌ها پیدا کردن موارد تکراری سخت می‌شود. یک جستجوی ساده بالای فید کمک می‌کند.",
         status: "shipped",
         createdAt: daysAgo(30),
         updatedAt: daysAgo(20),
@@ -171,7 +171,7 @@ async function main(): Promise<void> {
     return row.id;
   }
 
-  const searchPost = idOf("جستجو در فید بازخوردها");
+  const searchPost = idOf("جستجو در فید‌بک‌ها");
   const datePost = idOf("تاریخ شمسی روی کارت‌های فید");
   const mobilePost = idOf("دکمه ارسال در موبایل زیر کیبورد می‌رود");
   const myRequestsPost = idOf("پیگیری وضعیت درخواست‌ها در یک صفحه");
@@ -305,8 +305,8 @@ async function main(): Promise<void> {
   const [entry] = await db
     .insert(changelogEntries)
     .values({
-      title: "جستجوی بازخوردها و تاریخ شمسی",
-      body: "## چه چیزی تازه است\n\n- جستجو در فید بازخوردها\n- نمایش تاریخ شمسی روی کارت‌ها\n\nهر دو مورد از بازخوردهای همین تابلو شروع شد.",
+      title: "جستجوی فید‌بک‌ها و تاریخ شمسی",
+      body: "## چه چیزی تازه است\n\n- جستجو در فید‌بک‌ها\n- نمایش تاریخ شمسی روی کارت‌ها\n\nهر دو مورد از فید‌بک‌های همین تابلو شروع شد.",
       publishedAt: daysAgo(20),
       createdAt: daysAgo(20),
     })

@@ -16,8 +16,8 @@ import { getProfile } from "@/lib/user-store";
 import { OTP_LENGTH } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "مرکز بازخورد | وسا",
-  description: "بازخورد کاربران، نقشه راه و تغییرات منتشر شده در یک جا، شفاف و بدون واسطه.",
+  title: "مرکز فید‌بک | وسا",
+  description: "فید‌بک کاربران، نقشه راه و تغییرات منتشر شده در یک جا، شفاف و بدون واسطه.",
 };
 
 const COLUMN_HINTS: Record<string, string> = {
@@ -62,20 +62,20 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         <div className="fb-hero-inner">
           <p className="fb-eyebrow fb-eyebrow-chip">
             <BrandMark className="eyebrow-mark" simple />
-            <span>مرکز بازخورد</span>
+            <span>مرکز فید‌بک</span>
             <span className="fb-live-dot" aria-hidden="true" />
           </p>
           <h1 className="fb-title">
-            بازخوردت رو بنویس، <span className="fb-title-mark">مسیرش رو ببین</span>.
+            فید‌بک‌ت رو بنویس، <span className="fb-title-mark">مسیرش رو ببین</span>.
           </h1>
           <p className="fb-lede">
             هر نظری یا درخواستی که بنویسی، از بررسی تا نقشه راه و انتشار دنبالش می‌کنیم.
             خوندن برای همه آزاده؛ برای نوشتن و رای دادن هم کافیه وارد بشی.
           </p>
           <div className="fb-hero-actions">
-            <ComposerButton className="fb-btn fb-btn-primary">بازخورد بده</ComposerButton>
+            <ComposerButton className="fb-btn fb-btn-primary">فید‌بک بده</ComposerButton>
             <Link href="/feed" className="fb-btn">
-              بازخوردها رو ببین
+              فید‌بک‌ها رو ببین
             </Link>
             <Link href="/roadmap" className="fb-btn fb-btn-ghost">
               نقشه راه
@@ -86,7 +86,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               <strong>
                 <CountUp value={feedbackCount} />
               </strong>
-              <span>بازخورد ثبت‌شده</span>
+              <span>فید‌بک ثبت‌شده</span>
             </li>
             <li>
               <strong>
@@ -96,7 +96,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
             </li>
             <li>
               <strong>بدون حساب</strong>
-              <span>می‌تونی بازخوردها و نقشه راه رو ببینی</span>
+              <span>می‌تونی فید‌بک‌ها و نقشه راه رو ببینی</span>
             </li>
           </ul>
           <HeroTicker />
@@ -104,11 +104,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         <HeroCommentScene />
       </section>
 
-      <ol className="fb-steps-list" aria-label="مسیر یک بازخورد">
+      <ol className="fb-steps-list" aria-label="مسیر یک فید‌بک">
         <li className="fb-step">
           <span className="fb-step-num" aria-hidden="true">۱</span>
           <div className="fb-step-body">
-            <strong>بازخورد بده</strong>
+            <strong>فید‌بک بده</strong>
             <p>هر ایده یا دغدغه‌ای داری، تو چند خط بنویس.</p>
           </div>
         </li>
@@ -131,11 +131,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
       <section className="fb-section" aria-labelledby="recent-title">
         <div className="fb-section-head">
           <div>
-            <h2 id="recent-title" className="fb-section-title">تازه‌ترین بازخوردها</h2>
+            <h2 id="recent-title" className="fb-section-title">تازه‌ترین فید‌بک‌ها</h2>
             <p className="fb-section-sub">ببین بقیه چی می‌گن و به چیزهایی که مهمه رای بده.</p>
           </div>
           <Link href="/feed" className="fb-link">
-            همه بازخوردها
+            همه فید‌بک‌ها
           </Link>
         </div>
 
@@ -152,11 +152,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           </div>
         ) : (
           <div className="fb-empty">
-            <strong>هنوز هیچ بازخوردی ثبت نشده.</strong>
+            <strong>هنوز هیچ فید‌بک‌ی ثبت نشده.</strong>
             اولین نفر باش و دغدغه‌ات رو بنویس.
             <div className="fb-empty-action">
               <ComposerButton className="fb-btn fb-btn-primary fb-btn-sm">
-                اولین بازخوردت رو بنویس
+                اولین فید‌بک‌ت رو بنویس
               </ComposerButton>
             </div>
           </div>
@@ -217,7 +217,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         <div className="fb-section-head">
           <div>
             <h2 id="changelog-title" className="fb-section-title">آخرین تغییرات</h2>
-            <p className="fb-section-sub">ببین هر تغییر کدوم بازخوردها رو حل کرده.</p>
+            <p className="fb-section-sub">ببین هر تغییر کدوم فید‌بک‌ها رو حل کرده.</p>
           </div>
           <Link href="/changelog" className="fb-link">
             همه تغییرات
@@ -236,7 +236,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         ) : (
           <div className="fb-empty">
             <strong>هنوز تغییری منتشر نشده.</strong>
-            اولین نسخه که منتشر بشه، همین‌جا میاد و می‌بینی کدوم بازخوردها رو حل کرده.
+            اولین نسخه که منتشر بشه، همین‌جا میاد و می‌بینی کدوم فید‌بک‌ها رو حل کرده.
           </div>
         )}
       </section>
@@ -258,8 +258,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
             <p className="fb-account-greeting">سلام، {viewer.name} عزیز</p>
             <p className="fb-lede">
               {profile
-                ? "همه بازخوردها و درخواست‌هات یه جا جمعن؛ وضعیت هر کدوم رو همین‌جا ببین."
-                : "پروفایلت رو کامل کن تا بازخوردها با اسم خودت ثبت بشن."}
+                ? "همه فید‌بک‌ها و درخواست‌هات یه جا جمعن؛ وضعیت هر کدوم رو همین‌جا ببین."
+                : "پروفایلت رو کامل کن تا فید‌بک‌ها با اسم خودت ثبت بشن."}
             </p>
             {profile ? (
               <div className="fb-hero-actions">
@@ -267,7 +267,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
                   درخواست‌هام
                 </Link>
                 <Link href="/feed" className="fb-btn">
-                  بازخوردها
+                  فید‌بک‌ها
                 </Link>
                 {viewer.role === "admin" ? (
                   <Link href="/admin" className="fb-btn fb-btn-ghost">
@@ -284,7 +284,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           </div>
         ) : (
           <div className="fb-account">
-            <p className="fb-account-greeting">بازخوردت رو پیگیری کن</p>
+            <p className="fb-account-greeting">فید‌بک‌ت رو پیگیری کن</p>
             <p className="fb-lede">
               با شماره موبایل یا ایمیل وارد شو. بعدش درخواست‌هات رو می‌بینی و وضعیتشون رو
               دنبال می‌کنی.

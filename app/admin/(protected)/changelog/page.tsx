@@ -18,7 +18,7 @@ export default async function AdminChangelogPage() {
           <span className="count-badge">{entries.length.toLocaleString("fa-IR")}</span>
         </div>
         <p className="page-sub">
-          هر ورودی را با بازخوردهایی که حل کرده وصل کن. بعد از انتشار، آن بازخوردها خودکار
+          هر ورودی را با فید‌بک‌هایی که حل کرده وصل کن. بعد از انتشار، آن فید‌بک‌ها خودکار
           «منتشر شده» می‌شوند و لینک ورودی رویشان می‌آید.
         </p>
       </div>

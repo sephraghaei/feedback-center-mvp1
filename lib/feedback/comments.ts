@@ -35,7 +35,7 @@ function myVoteOf(viewerId?: string) {
 }
 
 function commentablePost(postId: string) {
-  if (!isUuid(postId)) throw new PostError("شناسه بازخورد معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
   return getDb()
     .select({ id: posts.id, type: posts.type, hidden: posts.hidden })
     .from(posts)
@@ -82,7 +82,7 @@ export async function addComment(input: {
 
   const [post] = await commentablePost(input.postId);
   if (!post || post.type !== "feedback" || post.hidden) {
-    throw new PostError("این بازخورد کامنت نمی‌پذیرد.");
+    throw new PostError("این فید‌بک کامنت نمی‌پذیرد.");
   }
 
   let parentId: string | null = null;

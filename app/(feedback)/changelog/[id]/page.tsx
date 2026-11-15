@@ -32,7 +32,7 @@ export default async function ChangelogEntryPage({ params }: { params: Promise<{
         {entry.posts.length > 0 ? (
           <>
             <h2 className="label" style={{ marginTop: 22 }}>
-              بازخوردهایی که این تغییر حل کرد
+              فید‌بک‌هایی که این تغییر حل کرد
             </h2>
             <div className="fb-linked">
               {entry.posts.map((post) => (
@@ -45,7 +45,7 @@ export default async function ChangelogEntryPage({ params }: { params: Promise<{
           </>
         ) : (
           <p className="field-hint" style={{ marginTop: 16 }}>
-            این ورودی به بازخوردی وصل نشده است.
+            این ورودی به فید‌بک‌ی وصل نشده است.
           </p>
         )}
       </article>

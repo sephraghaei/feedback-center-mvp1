@@ -10,7 +10,7 @@ import ThemeToggle from "../theme-toggle";
 type HeaderViewer = { name: string; role: "customer" | "admin"; method: "phone" | "email" | "clerk" } | null;
 
 const LINKS = [
-  { href: "/feed", label: "بازخوردها" },
+  { href: "/feed", label: "فید‌بک‌ها" },
   { href: "/roadmap", label: "نقشه راه" },
   { href: "/changelog", label: "تغییرات" },
 ];
@@ -61,7 +61,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
           <span className="nav-name">وسا</span>
         </Link>
 
-        <nav className={`fb-nav ${open ? "open" : ""}`} aria-label="بخش‌های بازخورد">
+        <nav className={`fb-nav ${open ? "open" : ""}`} aria-label="بخش‌های فید‌بک">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -173,7 +173,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
               window.dispatchEvent(new Event("fc:open-composer"));
             }}
           >
-            ثبت بازخورد
+            ثبت فید‌بک
           </button>
           <button
             type="button"

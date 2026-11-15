@@ -8,7 +8,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "وسا",
-  description: "مرکز بازخورد ساده و شفاف برای شنیدن نظر کاربران",
+  description: "مرکز فید‌بک ساده و شفاف برای شنیدن نظر کاربران",
 };
 
 export default function RootLayout({

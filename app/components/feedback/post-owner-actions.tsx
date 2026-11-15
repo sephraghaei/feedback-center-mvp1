@@ -3,12 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteOwnPostAction } from "@/app/feedback-actions";
+import ConfirmDialog from "@/app/components/confirm-dialog";
 
 export default function PostOwnerActions({
   postId,
   redirectTo = "/feed",
-  label = "حذف بازخورد",
-  confirmText = "این بازخورد با همه کامنت‌هایش برای همیشه حذف شود؟",
+  label = "حذف فید‌بک",
+  confirmText = "این فید‌بک با همه کامنت‌هایش برای همیشه حذف شود؟",
 }: {
   postId: string;
   redirectTo?: string;
@@ -18,15 +19,16 @@ export default function PostOwnerActions({
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   async function remove() {
     if (busy) return;
-    if (!window.confirm(confirmText)) return;
 
     setBusy(true);
     setError(null);
     const result = await deleteOwnPostAction(postId);
     setBusy(false);
+    setConfirming(false);
 
     if (result.ok) {
       router.push(redirectTo);
@@ -39,7 +41,12 @@ export default function PostOwnerActions({
 
   return (
     <div className="fb-owner-actions">
-      <button type="button" className="fb-btn fb-btn-danger fb-btn-sm" onClick={remove} disabled={busy}>
+      <button
+        type="button"
+        className="fb-btn fb-btn-danger fb-btn-sm"
+        onClick={() => setConfirming(true)}
+        disabled={busy}
+      >
         {busy ? "در حال حذف..." : label}
       </button>
       {error ? (
@@ -47,6 +54,17 @@ export default function PostOwnerActions({
           {error}
         </span>
       ) : null}
+      <ConfirmDialog
+        open={confirming}
+        title="حذف فید‌بک؟"
+        description={confirmText}
+        confirmLabel="حذف فید‌بک"
+        busy={busy}
+        onConfirm={() => void remove()}
+        onCancel={() => {
+          if (!busy) setConfirming(false);
+        }}
+      />
     </div>
   );
 }

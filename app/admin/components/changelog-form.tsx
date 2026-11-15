@@ -84,7 +84,7 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
 
       <div className="field">
         <label>
-          بازخوردهای حل شده{" "}
+          فید‌بک‌های حل شده{" "}
           <span className="opt">
             ({selected.length} انتخاب شده)
           </span>
@@ -93,7 +93,7 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
           type="search"
           value={filter}
           onChange={(event) => setFilter(event.target.value)}
-          placeholder="جستجو در بازخوردها"
+          placeholder="جستجو در فید‌بک‌ها"
           disabled={busy || candidates.length === 0}
         />
         <div
@@ -107,7 +107,7 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
         >
           {visible.length === 0 ? (
             <p style={{ margin: "10px 0", fontSize: "0.78rem", color: "var(--ink-3)" }}>
-              بازخوردی برای انتخاب نیست.
+              فید‌بک‌ی برای انتخاب نیست.
             </p>
           ) : (
             visible.map((post) => (
@@ -143,7 +143,7 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
           )}
         </div>
         <p style={{ margin: 0, fontSize: "0.72rem", color: "var(--ink-4)" }}>
-          با انتشار، این بازخوردها خودکار به وضعیت «منتشر شده» می‌روند.
+          با انتشار، این فید‌بک‌ها خودکار به وضعیت «منتشر شده» می‌روند.
         </p>
       </div>
 

@@ -35,8 +35,8 @@ export default function GlobalError({
           }
           :root[data-theme="dark"] {
             color-scheme: dark;
-            --paper: #070d1a; --surface: #0d1729; --hairline: #1d2c49; --ink: #e9effc;
-            --ink-3: #95a4c3; --accent: #6ea8fe; --on-accent: #061225; --mark: #8cbcff;
+            --paper: #0a0a0b; --surface: #121214; --hairline: #29292e; --ink: #f4f4f5;
+            --ink-3: #9d9da4; --accent: #f4f4f5; --on-accent: #131316; --mark: #f4f4f5;
           }
         `}</style>
       </head>

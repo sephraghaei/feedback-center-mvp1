@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 
 export default function ComposerButton({
-  children = "ثبت بازخورد",
+  children = "ثبت فید‌بک",
   className = "fb-btn fb-btn-primary",
 }: {
   children?: ReactNode;

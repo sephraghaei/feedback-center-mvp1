@@ -35,13 +35,13 @@ export default async function RoadmapPage() {
         </p>
         <h1 className="fb-title">از درخواست تا انتشار، یک مسیر روشن</h1>
         <p className="fb-lede">
-          هر بازخورد دقیقا در یک ستون است، پس هیچ درخواستی بین دو جا گم نمی‌شود. وضعیت روی خود
-          بازخورد هم همین ستون را نشان می‌دهد.
+          هر فید‌بک دقیقا در یک ستون است، پس هیچ درخواستی بین دو جا گم نمی‌شود. وضعیت روی خود
+          فید‌بک هم همین ستون را نشان می‌دهد.
         </p>
         <div className="fb-hero-actions">
-          <ComposerButton className="fb-btn fb-btn-primary">ثبت بازخورد تازه</ComposerButton>
+          <ComposerButton className="fb-btn fb-btn-primary">ثبت فید‌بک تازه</ComposerButton>
           <Link href="/feed" className="fb-btn">
-            فید بازخوردها
+            همه فید‌بک‌ها
           </Link>
         </div>
         {admin ? (

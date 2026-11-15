@@ -15,7 +15,7 @@ export const STATUS_LABELS: Record<string, string> = {
 };
 
 export const TYPE_LABELS: Record<string, string> = {
-  feedback: "بازخورد محصول",
+  feedback: "فید‌بک محصول",
   support: "درخواست شخصی",
 };
 

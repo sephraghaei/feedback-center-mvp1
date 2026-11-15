@@ -38,7 +38,7 @@ export async function sendOtpEmail(email: string, code: string): Promise<EmailRe
       body: JSON.stringify({
         from,
         to: [email],
-        subject: "کد ورود به فیدبک سنتر",
+        subject: "کد ورود به فید‌بک سنتر",
         html: `<p>کد ورود تو <b>${code}</b> است. این کد را به کسی نگو و فقط در همین سایت واردش کن.</p>`,
       }),
       cache: "no-store",

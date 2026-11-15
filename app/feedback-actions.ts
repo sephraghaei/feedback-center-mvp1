@@ -34,10 +34,10 @@ export async function createPostAction(input: {
 }): Promise<{ ok: true; id: string } | { ok: false; error: string; signIn?: boolean }> {
   const viewer = await getViewer();
   if (!viewer) {
-    return { ok: false, error: "برای ثبت بازخورد اول وارد حسابت شو.", signIn: true };
+    return { ok: false, error: "برای ثبت فید‌بک اول وارد حسابت شو.", signIn: true };
   }
   if (input.type !== "feedback" && input.type !== "support") {
-    return { ok: false, error: "نوع بازخورد معتبر نیست." };
+    return { ok: false, error: "نوع فید‌بک معتبر نیست." };
   }
 
   try {
@@ -137,7 +137,7 @@ export async function deleteOwnPostAction(
   postId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const viewer = await getViewer();
-  if (!viewer) return { ok: false, error: "برای حذف بازخورد اول وارد حسابت شو." };
+  if (!viewer) return { ok: false, error: "برای حذف فید‌بک اول وارد حسابت شو." };
 
   try {
     await removeOwnPost(postId, viewer.userId);

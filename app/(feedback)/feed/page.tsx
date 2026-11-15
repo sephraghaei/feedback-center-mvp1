@@ -9,8 +9,8 @@ import { FEEDBACK_CATEGORIES, FEEDBACK_STATUSES, listFeed } from "@/lib/feedback
 import { getViewer } from "@/lib/feedback/viewer";
 
 export const metadata: Metadata = {
-  title: "بازخوردها | وسا",
-  description: "بازخورد محصول را بخوان، رای بده و مسیر رسیدنش به نقشه راه را ببین.",
+  title: "فید‌بک‌ها | وسا",
+  description: "فید‌بک محصول را بخوان، رای بده و مسیر رسیدنش به نقشه راه را ببین.",
 };
 
 type Search = { category?: string; status?: string };
@@ -41,15 +41,15 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
       <section className="fb-hero">
         <p className="fb-eyebrow">
           <BrandMark className="eyebrow-mark" simple />
-          فید بازخورد
+          جریان فید‌بک
         </p>
         <h1 className="fb-title">آنچه کاربران می‌خواهند، شفاف و مرتب</h1>
         <p className="fb-lede">
-          بازخوردها را بخوان، به آن‌ها رای بده و ببین هر کدام به کدام ستون نقشه راه رسیده است. خواندن
+          فید‌بک‌ها را بخوان، به آن‌ها رای بده و ببین هر کدام به کدام ستون نقشه راه رسیده است. خواندن
           برای همه آزاد است؛ نوشتن فقط یک حساب می‌خواهد.
         </p>
         <div className="fb-hero-actions">
-          <ComposerButton className="fb-btn fb-btn-primary">ثبت بازخورد تازه</ComposerButton>
+          <ComposerButton className="fb-btn fb-btn-primary">ثبت فید‌بک تازه</ComposerButton>
           <Link href="/roadmap" className="fb-btn">
             نقشه راه
           </Link>
@@ -62,7 +62,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
             <strong>
               <CountUp value={posts.length} />
             </strong>{" "}
-            بازخورد در این نما
+            فید‌بک در این نما
           </li>
           <li>بدون نیاز به حساب</li>
         </ul>
@@ -100,7 +100,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
           </div>
         </div>
         <p className="fb-count">
-          {filtered ? `${faNumber(posts.length)} نتیجه` : `${faNumber(posts.length)} بازخورد`}
+          {filtered ? `${faNumber(posts.length)} نتیجه` : `${faNumber(posts.length)} فید‌بک`}
         </p>
       </div>
 
@@ -117,10 +117,10 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         </div>
       ) : (
         <div className="fb-empty">
-          <strong>هنوز بازخوردی با این فیلتر نیست.</strong>
-          فیلتر را عوض کن یا اولین بازخورد را ثبت کن.
+          <strong>هنوز فید‌بک‌ی با این فیلتر نیست.</strong>
+          فیلتر را عوض کن یا اولین فید‌بک را ثبت کن.
           <div style={{ marginTop: 14 }}>
-            <ComposerButton className="fb-btn fb-btn-primary">ثبت بازخورد</ComposerButton>
+            <ComposerButton className="fb-btn fb-btn-primary">ثبت فید‌بک</ComposerButton>
           </div>
         </div>
       )}

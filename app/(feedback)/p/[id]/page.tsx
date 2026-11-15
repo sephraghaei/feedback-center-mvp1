@@ -22,7 +22,7 @@ type Params = { id: string };
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { id } = await params;
   const post = await getPostDetail(id, { isAdmin: false });
-  if (!post) return { title: "بازخورد پیدا نشد | وسا" };
+  if (!post) return { title: "فید‌بک پیدا نشد | وسا" };
   return { title: `${post.title} | وسا` };
 }
 
@@ -124,9 +124,9 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
         {cover ? <img className="fb-cover-wide" src={cover} alt="" /> : null}
 
-        <section className="fb-detail-panel" aria-label="متن بازخورد">
+        <section className="fb-detail-panel" aria-label="متن فید‌بک">
           <div className="fb-detail-panel-head">
-            <h2>{isSupport ? "متن درخواست" : "درباره این بازخورد"}</h2>
+            <h2>{isSupport ? "متن درخواست" : "درباره این فید‌بک"}</h2>
           </div>
           <Markdown source={post.body} />
         </section>
@@ -164,7 +164,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
       {post.changelog ? (
         <p className="fb-note">
-          این بازخورد در تغییرات منتشر شده آمده است:{" "}
+          این فید‌بک در تغییرات منتشر شده آمده است:{" "}
           <Link href={`/changelog/${post.changelog.id}`}>{post.changelog.title}</Link>
         </p>
       ) : null}
@@ -199,7 +199,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           <section className="fb-detail-related" aria-labelledby="related-title">
             <div className="fb-detail-related-head">
               <div>
-                <h2 id="related-title">بازخوردهای همین محصول</h2>
+                <h2 id="related-title">فید‌بک‌های همین محصول</h2>
                 <p>بقیه چیزهایی که برای {source?.label ?? "این محصول"} نوشته شده.</p>
               </div>
               <Link href="/feed" className="fb-link">
@@ -256,9 +256,9 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
         </div>
       </div>
 
-      <aside className="fb-detail-side" aria-label="وضعیت بازخورد">
+      <aside className="fb-detail-side" aria-label="وضعیت فید‌بک">
         <section className="fb-side-card">
-          <h2 className="fb-side-title">مسیر این بازخورد</h2>
+          <h2 className="fb-side-title">مسیر این فید‌بک</h2>
           <ol className="fb-track">
             {track.map((step, index) => {
               const state = index === trackIndex ? "current" : index < trackIndex ? "done" : "";
@@ -279,9 +279,9 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
         <section className="fb-side-card fb-side-cta">
           <h2 className="fb-side-title">چیزی برای گفتن داری؟</h2>
-          <p>بازخورد جدیدت را بنویس تا به همین مسیر اضافه شود.</p>
+          <p>فید‌بک جدیدت را بنویس تا به همین مسیر اضافه شود.</p>
           <ComposerButton className="fb-btn fb-btn-primary fb-btn-sm">
-            بازخورد تازه
+            فید‌بک تازه
           </ComposerButton>
         </section>
       </aside>

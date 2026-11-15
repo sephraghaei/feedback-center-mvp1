@@ -35,7 +35,7 @@ export default function AdminShell({
   const items: NavItem[] = [
     { href: "/admin", label: "داشبورد", icon: "dashboard", exact: true },
     { href: "/admin/inbox", label: "صندوق پشتیبانی", icon: "mail", badge: openSupport },
-    { href: "/admin/posts", label: "مدیریت بازخوردها", icon: "list", badge: feedbackCount },
+    { href: "/admin/posts", label: "مدیریت فید‌بک‌ها", icon: "list", badge: feedbackCount },
     { href: "/admin/changelog", label: "تغییرات", icon: "calendar" },
     { href: "/admin/users", label: "مدیریت کاربران", icon: "users", badge: userCount },
   ];

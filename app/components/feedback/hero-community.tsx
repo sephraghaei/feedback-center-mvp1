@@ -47,7 +47,17 @@ const COMMENTS: Comment[] = [
   },
 ];
 
-type IconName = "bubble" | "heart" | "thumb" | "star" | "check" | "spark";
+type IconName =
+  | "bubble"
+  | "bubbleLines"
+  | "reply"
+  | "poll"
+  | "megaphone"
+  | "heart"
+  | "thumb"
+  | "star"
+  | "check"
+  | "spark";
 
 const SYMBOLS: { icon: IconName; className: string }[] = [
   { icon: "bubble", className: "s1" },
@@ -56,6 +66,10 @@ const SYMBOLS: { icon: IconName; className: string }[] = [
   { icon: "check", className: "s4" },
   { icon: "spark", className: "s5" },
   { icon: "thumb", className: "s6" },
+  { icon: "bubbleLines", className: "s7" },
+  { icon: "reply", className: "s8" },
+  { icon: "poll", className: "s9" },
+  { icon: "megaphone", className: "s10" },
 ];
 
 function HeroIcon({ name, filled = false }: { name: IconName; filled?: boolean }) {
@@ -65,6 +79,38 @@ function HeroIcon({ name, filled = false }: { name: IconName; filled?: boolean }
         <>
           <rect x="3.2" y="4.2" width="17.6" height="13.2" rx="3.8" stroke="currentColor" strokeWidth="1.8" />
           <path d="M8.6 17.4 6 21.4l6.4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </>
+      ) : null}
+      {name === "bubbleLines" ? (
+        <>
+          <rect x="3.2" y="4.2" width="17.6" height="13.2" rx="3.8" stroke="currentColor" strokeWidth="1.8" />
+          <path d="M8.6 17.4 6 21.4l6.4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M7.6 8.9h8.8M7.6 12.2h5.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </>
+      ) : null}
+      {name === "reply" ? (
+        <>
+          <path d="M9.6 6.6 4.6 11.4l5 4.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M4.9 11.4h8.4a5.2 5.2 0 0 1 5.2 5.2v1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </>
+      ) : null}
+      {name === "poll" ? (
+        <path
+          d="M6.4 20V11.6M12 20V4.8M17.6 20v-5.8"
+          stroke="currentColor"
+          strokeWidth="2.1"
+          strokeLinecap="round"
+        />
+      ) : null}
+      {name === "megaphone" ? (
+        <>
+          <path
+            d="M4 10.2v3.6a1.6 1.6 0 0 0 1.6 1.6H8l6 4V4.6l-6 4H5.6A1.6 1.6 0 0 0 4 10.2Z"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinejoin="round"
+          />
+          <path d="M17.2 9.4a3.6 3.6 0 0 1 0 5.2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </>
       ) : null}
       {name === "heart" ? (
@@ -130,7 +176,7 @@ function LikeButton({
       type="button"
       className={`hero-like${small ? " hero-like-sm" : ""}${liked ? " is-liked" : ""}`}
       aria-pressed={liked}
-      aria-label={`${liked ? "رای داده شد" : "رای دادن به این نمونه بازخورد"}، ${faNumber(count)} رای`}
+      aria-label={`${liked ? "رای داده شد" : "رای دادن به این نمونه فید‌بک"}، ${faNumber(count)} رای`}
       onClick={onToggle}
     >
       <span className="hero-like-icon">
@@ -224,7 +270,7 @@ export function HeroCommentScene() {
         ))}
       </div>
 
-      <div className="fb-hero-comment-layer" role="group" aria-label="نمونه بازخوردهای کاربران">
+      <div className="fb-hero-comment-layer" role="group" aria-label="نمونه فید‌بک‌های کاربران">
         <CommentCard comment={COMMENTS[0]} side="start" />
         <CommentCard comment={COMMENTS[1]} side="end" />
         <div className="fb-typing" aria-hidden="true">
@@ -283,13 +329,13 @@ export function HeroTicker() {
         <p className="hero-ticker-text" key={index}>
           <span className="hero-ticker-name">{comment.name}:</span> {comment.short}
         </p>
-        <div className="hero-ticker-dots" role="group" aria-label="نمونه بازخوردها">
+        <div className="hero-ticker-dots" role="group" aria-label="نمونه فید‌بک‌ها">
           {COMMENTS.map((item, position) => (
             <button
               key={item.name}
               type="button"
               className={position === index ? "on" : ""}
-              aria-label={`نمایش بازخورد ${item.name}`}
+              aria-label={`نمایش فید‌بک ${item.name}`}
               aria-pressed={position === index}
               onClick={() => setIndex(position)}
             />

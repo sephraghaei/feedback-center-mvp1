@@ -36,7 +36,7 @@ export const POST = withApiLogging("/api/uploads", async (request, _context, log
   }
   if (files.length > MAX_FILES) {
     return NextResponse.json(
-      { message: `حداکثر ${MAX_FILES} فایل برای هر بازخورد مجاز است.` },
+      { message: `حداکثر ${MAX_FILES} فایل برای هر فید‌بک مجاز است.` },
       { status: 400 },
     );
   }

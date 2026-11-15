@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deletePostAction, hidePostAction } from "@/app/feedback-actions";
+import ConfirmDialog from "@/app/components/confirm-dialog";
 
 export default function AdminPostActions({
   postId,
@@ -14,6 +15,7 @@ export default function AdminPostActions({
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   async function toggleHidden() {
     if (busy) return;
@@ -30,11 +32,11 @@ export default function AdminPostActions({
 
   async function remove() {
     if (busy) return;
-    if (!window.confirm("این مورد برای همیشه حذف شود؟")) return;
     setBusy(true);
     setError(null);
     const result = await deletePostAction(postId);
     setBusy(false);
+    setConfirming(false);
     if (result.ok) {
       router.push("/feed");
       router.refresh();
@@ -48,7 +50,12 @@ export default function AdminPostActions({
       <button type="button" className="fb-btn fb-btn-ghost fb-btn-sm" onClick={toggleHidden} disabled={busy}>
         {hidden ? "بازگرداندن به دید عمومی" : "پنهان کردن"}
       </button>
-      <button type="button" className="fb-btn fb-btn-danger fb-btn-sm" onClick={remove} disabled={busy}>
+      <button
+        type="button"
+        className="fb-btn fb-btn-danger fb-btn-sm"
+        onClick={() => setConfirming(true)}
+        disabled={busy}
+      >
         حذف
       </button>
       {error ? (
@@ -56,6 +63,17 @@ export default function AdminPostActions({
           {error}
         </span>
       ) : null}
+      <ConfirmDialog
+        open={confirming}
+        title="حذف این فید‌بک؟"
+        description="این فید‌بک با همه کامنت‌هایش برای همیشه حذف می‌شود."
+        confirmLabel="حذف فید‌بک"
+        busy={busy}
+        onConfirm={() => void remove()}
+        onCancel={() => {
+          if (!busy) setConfirming(false);
+        }}
+      />
     </div>
   );
 }
