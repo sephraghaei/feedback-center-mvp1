@@ -169,9 +169,9 @@
 }
 
 :root[data-theme="dark"] .fb-mark {
-  border-color: hsl(var(--mark-hue, 214) 34% 27%);
-  background: hsl(var(--mark-hue, 214) 38% 15%);
-  color: hsl(var(--mark-hue, 214) 68% 74%);
+  border-color: hsl(var(--mark-hue, 214) 30% 28%);
+  background: hsl(var(--mark-hue, 214) 32% 17%);
+  color: hsl(var(--mark-hue, 214) 58% 72%);
 }
 
 :root[data-theme="dark"] .fb-mark-plain {
@@ -484,7 +484,7 @@
 :root[data-theme="dark"] .fb-card::before {
   background: radial-gradient(
     115% 85% at 100% -8%,
-    hsl(var(--card-hue, 214) 70% 52% / 0.1),
+    hsl(var(--card-hue, 214) 60% 48% / 0.09),
     transparent 64%
   );
 }
@@ -2527,6 +2527,14 @@ a.fb-product-name:hover {
   scale: 0.92;
 }
 
+/* A solid light badge this large glares on a dark page, so the highlight turns into a
+   soft tinted wash and the word keeps the heading ink instead of the accent fill. */
+:root[data-theme="dark"] .fb-rotate-word {
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  color: var(--ink);
+  box-shadow: none;
+}
+
 .fb-home .fb-lede {
   max-width: 42rem;
   font-size: 1rem;
@@ -3206,6 +3214,9 @@ a.fb-product-name:hover {
   padding: 0 0 clamp(40px, 14vh, 130px);
   list-style: none;
   border-top: 1px solid var(--hairline);
+  /* The story settles the active chapter on its own, so the browser must not
+     add anchoring adjustments on top of it. */
+  overflow-anchor: none;
 }
 
 .fb-story-row {
@@ -3248,8 +3259,8 @@ a.fb-product-name:hover {
   transform: scaleX(0);
   transform-origin: 100% 50%;
   transition:
-    transform 0.62s cubic-bezier(0.22, 0.7, 0.25, 1),
-    opacity 0.4s ease;
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.36s ease;
 }
 
 .fb-story-row.is-active .fb-story-chapter-title::after {
@@ -3342,9 +3353,7 @@ a.fb-product-name:hover {
   font-weight: 600;
   line-height: 1.55;
   letter-spacing: -0.015em;
-  transition:
-    color 0.3s ease,
-    font-weight 0.3s ease;
+  transition: color 0.28s ease;
 }
 
 .fb-story-row.is-active .fb-story-chapter-title {
@@ -3377,7 +3386,10 @@ a.fb-product-name:hover {
 .fb-story-reveal {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.52s cubic-bezier(0.16, 1, 0.3, 1);
+  /* The chapter above collapses as one chapter hands over to the next, and every row
+     below rides that height. An ease-out-expo start snaps the text column a third of the
+     way in the first frames, so the handover uses a curve that starts from rest. */
+  transition: grid-template-rows 0.52s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fb-story-row.is-active .fb-story-reveal {
@@ -3482,9 +3494,9 @@ a.fb-product-name:hover {
   background-color: color-mix(in srgb, var(--story-accent) var(--story-mix), var(--surface));
   box-shadow: 0 30px 60px -54px color-mix(in srgb, var(--story-accent) 60%, transparent);
   transition:
-    background-color 0.62s ease,
-    border-color 0.62s ease,
-    box-shadow 0.62s ease;
+    background-color 0.55s ease,
+    border-color 0.55s ease,
+    box-shadow 0.55s ease;
 }
 
 .fb-story-stage[data-dir="up"] {
@@ -3614,9 +3626,9 @@ a.fb-product-name:hover {
   translate: 0 var(--shot-shift);
   scale: 0.985;
   transition:
-    opacity 0.32s ease,
-    translate 0.58s cubic-bezier(0.16, 1, 0.3, 1),
-    scale 0.58s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    translate 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    scale 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 }
 
@@ -3627,31 +3639,31 @@ a.fb-product-name:hover {
 }
 
 .fb-story-shot.is-active > * {
-  animation: fc-shot-part 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fc-shot-part 0.44s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .fb-story-shot.is-active > *:nth-child(1) {
-  animation-delay: 0.03s;
+  animation-delay: 0.02s;
 }
 
 .fb-story-shot.is-active > *:nth-child(2) {
-  animation-delay: 0.07s;
+  animation-delay: 0.05s;
 }
 
 .fb-story-shot.is-active > *:nth-child(3) {
-  animation-delay: 0.11s;
+  animation-delay: 0.08s;
 }
 
 .fb-story-shot.is-active > *:nth-child(4) {
-  animation-delay: 0.15s;
+  animation-delay: 0.11s;
 }
 
 .fb-story-shot.is-active > *:nth-child(5) {
-  animation-delay: 0.19s;
+  animation-delay: 0.14s;
 }
 
 .fb-story-shot.is-active > *:nth-child(n + 6) {
-  animation-delay: 0.22s;
+  animation-delay: 0.16s;
 }
 
 @keyframes fc-shot-part {
@@ -4035,33 +4047,33 @@ a.fb-product-name:hover {
 
 :root[data-theme="dark"] .fb-story-row[data-accent="violet"],
 :root[data-theme="dark"] .fb-story-stage[data-accent="violet"] {
-  --story-accent: #b79cff;
+  --story-accent: #a99bea;
 }
 
 :root[data-theme="dark"] .fb-story-row[data-accent="teal"],
 :root[data-theme="dark"] .fb-story-stage[data-accent="teal"] {
-  --story-accent: #5eead4;
+  --story-accent: #79cfc0;
 }
 
 :root[data-theme="dark"] .fb-story-row[data-accent="amber"],
 :root[data-theme="dark"] .fb-story-stage[data-accent="amber"] {
-  --story-accent: #fbbf24;
+  --story-accent: #e3b86f;
 }
 
 :root[data-theme="dark"] .fb-story-row[data-accent="violet"] {
-  --story-wash: rgba(183, 156, 255, 0.13);
+  --story-wash: rgba(169, 155, 234, 0.11);
 }
 
 :root[data-theme="dark"] .fb-story-row[data-accent="teal"] {
-  --story-wash: rgba(94, 234, 212, 0.12);
+  --story-wash: rgba(121, 207, 192, 0.1);
 }
 
 :root[data-theme="dark"] .fb-story-row[data-accent="amber"] {
-  --story-wash: rgba(251, 191, 36, 0.12);
+  --story-wash: rgba(227, 184, 111, 0.1);
 }
 
 :root[data-theme="dark"] .fb-story-stage {
-  --story-mix: 15%;
+  --story-mix: 13%;
 }
 
 :root[data-theme="dark"] .fb-shot-item,
@@ -4159,6 +4171,7 @@ a.fb-product-name:hover {
 
 @media (max-width: 900px) {
   .fb-story-grid {
+    --story-figure-top: 72px;
     grid-template-columns: minmax(0, 1fr);
     gap: 22px;
     width: 100%;
@@ -4166,7 +4179,7 @@ a.fb-product-name:hover {
 
   .fb-story-figure {
     order: -1;
-    top: 72px;
+    top: var(--story-figure-top);
     z-index: 6;
   }
 
@@ -4244,11 +4257,35 @@ a.fb-product-name:hover {
   .fb-story-meter-label {
     font-size: 0.76rem;
   }
+
+  /* The pinned preview is taller than half the screen, so on its own it swallows the chapter
+     titles while their bodies are still readable. Once it pins, each head parks right under it
+     and the row hands it back to the next one as it ends. */
+  .fb-story-grid[data-pinned="true"] .fb-story-head {
+    position: sticky;
+    top: var(--story-head-pin, 380px);
+    z-index: 2;
+  }
+
+  .fb-story-grid[data-pinned="true"] .fb-story-head[data-stuck="true"] {
+    background: var(--paper);
+    box-shadow: 0 1px 0 var(--hairline);
+  }
+
+  .fb-story-grid[data-pinned="true"] .fb-story-figure::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 100%;
+    height: 10px;
+    background: var(--paper);
+    pointer-events: none;
+  }
 }
 
 @media (max-width: 480px) {
-  .fb-story-figure {
-    top: 66px;
+  .fb-story-grid {
+    --story-figure-top: 66px;
   }
 }
 

@@ -248,6 +248,14 @@ function probeOffset() {
   return window.innerHeight * (window.matchMedia("(max-width: 900px)").matches ? 0.68 : 0.46);
 }
 
+// Heads park under the pinned preview on small screens, so their own rect no longer tracks
+// the row. Measuring from the row keeps activation on the chapter's flow position.
+function chapterCenter(row: HTMLLIElement | null) {
+  const head = row?.firstElementChild;
+  if (!row || !(head instanceof HTMLElement)) return null;
+  return row.getBoundingClientRect().top + head.offsetHeight / 2;
+}
+
 export default function HomeStory() {
   const uid = useId();
   const [active, setActive] = useState(0);
@@ -255,59 +263,56 @@ export default function HomeStory() {
   const activeRef = useRef(0);
   const rowRefs = useRef<Array<HTMLLIElement | null>>([]);
   const goalRef = useRef<{ index: number; until: number } | null>(null);
-  const pinRef = useRef<{ index: number; top: number; until: number; frame: number; behavior: string } | null>(
-    null,
-  );
   const scrollFrameRef = useRef(0);
-  const measureRef = useRef<((settle: boolean) => void) | null>(null);
-
-  const stopPin = useCallback(() => {
-    const pin = pinRef.current;
-    if (!pin) return;
-    pinRef.current = null;
-    window.cancelAnimationFrame(pin.frame);
-    document.documentElement.style.scrollBehavior = pin.behavior;
-  }, []);
-
-  // Holding the activated header still while its row animates open stops the row
-  // collapsing above it from shoving the next chapter into the scroll probe.
-  const startPin = useCallback(
-    (index: number, top: number) => {
-      stopPin();
-      const root = document.documentElement;
-      const pin = { index, top, until: performance.now() + 520, frame: 0, behavior: root.style.scrollBehavior };
-      root.style.scrollBehavior = "auto";
-      pinRef.current = pin;
-
-      const step = () => {
-        const head = rowRefs.current[index]?.firstElementChild;
-        if (!pinRef.current || !(head instanceof HTMLElement)) {
-          stopPin();
-          return;
-        }
-        const delta = head.getBoundingClientRect().top - top;
-        if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
-        if (performance.now() < pin.until) {
-          pin.frame = window.requestAnimationFrame(step);
-        } else {
-          pinRef.current = null;
-          root.style.scrollBehavior = pin.behavior;
-          window.requestAnimationFrame(() => measureRef.current?.(false));
-        }
-      };
-
-      pin.frame = window.requestAnimationFrame(step);
-    },
-    [stopPin],
-  );
+  const stopScrollRef = useRef<(() => void) | null>(null);
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const figureRef = useRef<HTMLDivElement | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let frame = 0;
     let settleTimer = 0;
 
+    const syncPin = () => {
+      const grid = gridRef.current;
+      const figure = figureRef.current;
+      const stage = stageRef.current;
+      if (!grid || !figure || !stage) return;
+
+      if (!window.matchMedia("(max-width: 900px)").matches) {
+        if (figure.style.top) figure.style.top = "";
+        if (grid.dataset.pinned !== "false") grid.dataset.pinned = "false";
+        return;
+      }
+
+      const baseTop =
+        Number.parseFloat(getComputedStyle(grid).getPropertyValue("--story-figure-top")) || 72;
+      const stageHeight = stage.offsetHeight;
+      const lastRow = rowRefs.current[rowRefs.current.length - 1];
+      const lastHead = lastRow?.firstElementChild;
+      // The track ends before the preview would release, which used to squeeze the final title
+      // out from under it. Carrying the stage up with the last row keeps that title attached.
+      const release =
+        lastRow && lastHead instanceof HTMLElement
+          ? lastRow.getBoundingClientRect().bottom - lastHead.offsetHeight - stageHeight
+          : baseTop;
+      const stageTop = Math.round(Math.min(baseTop, release));
+      const topValue = `${stageTop}px`;
+      if (figure.style.top !== topValue) figure.style.top = topValue;
+
+      const pin = `${stageTop + stageHeight}px`;
+      if (grid.style.getPropertyValue("--story-head-pin") !== pin) {
+        grid.style.setProperty("--story-head-pin", pin);
+      }
+
+      const pinned = figure.getBoundingClientRect().top <= baseTop + 1;
+      const next = pinned ? "true" : "false";
+      if (grid.dataset.pinned !== next) grid.dataset.pinned = next;
+    };
+
     const measure = (settle = true) => {
       frame = 0;
-      if (pinRef.current) return;
+      syncPin();
       const probe = probeOffset();
 
       const goal = goalRef.current;
@@ -315,11 +320,8 @@ export default function HomeStory() {
         if (performance.now() > goal.until) {
           goalRef.current = null;
         } else {
-          const goalHead = rowRefs.current[goal.index]?.firstElementChild;
-          if (goalHead instanceof HTMLElement) {
-            const rect = goalHead.getBoundingClientRect();
-            if (Math.abs(rect.top + rect.height / 2 - probe) > 40) return;
-          }
+          const goalCenter = chapterCenter(rowRefs.current[goal.index]);
+          if (goalCenter !== null && Math.abs(goalCenter - probe) > 40) return;
           goalRef.current = null;
         }
       }
@@ -327,17 +329,20 @@ export default function HomeStory() {
       let best = -1;
       let bestDistance = Number.POSITIVE_INFINITY;
       let currentDistance = Number.POSITIVE_INFINITY;
-      let bestHalf = 0;
 
       rowRefs.current.forEach((row, index) => {
         const head = row?.firstElementChild;
-        if (!(head instanceof HTMLElement)) return;
-        const rect = head.getBoundingClientRect();
-        const distance = Math.abs(rect.top + rect.height / 2 - probe);
+        if (!row || !(head instanceof HTMLElement)) return;
+        const rowTop = row.getBoundingClientRect().top;
+        const center = rowTop + head.offsetHeight / 2;
+        // A displaced head is either parked under the preview or handing over to the next row,
+        // and only then does it need its own paper backdrop.
+        const stuck = head.getBoundingClientRect().top > rowTop + 1 ? "true" : "false";
+        if (head.dataset.stuck !== stuck) head.dataset.stuck = stuck;
+        const distance = Math.abs(center - probe);
         if (distance < bestDistance) {
           bestDistance = distance;
           best = index;
-          bestHalf = rect.height / 2;
         }
         if (index === activeRef.current) currentDistance = distance;
       });
@@ -347,12 +352,9 @@ export default function HomeStory() {
       setDirection(best > activeRef.current ? "down" : "up");
       activeRef.current = best;
       setActive(best);
-      startPin(best, probe - bestHalf);
       window.clearTimeout(settleTimer);
       if (settle) settleTimer = window.setTimeout(() => measure(false), 620);
     };
-
-    measureRef.current = measure;
 
     const onScroll = () => {
       if (frame) return;
@@ -367,55 +369,48 @@ export default function HomeStory() {
       window.removeEventListener("resize", onScroll);
       window.clearTimeout(settleTimer);
       if (frame) window.cancelAnimationFrame(frame);
-      measureRef.current = null;
-      stopPin();
     };
-  }, [startPin, stopPin]);
-
-  // Any real scroll input takes over from the pin, so a quick flick still feels native.
-  useEffect(() => {
-    const release = () => stopPin();
-    window.addEventListener("wheel", release, { passive: true });
-    window.addEventListener("touchmove", release, { passive: true });
-    window.addEventListener("keydown", release);
-    return () => {
-      window.removeEventListener("wheel", release);
-      window.removeEventListener("touchmove", release);
-      window.removeEventListener("keydown", release);
-      stopPin();
-      if (scrollFrameRef.current) window.cancelAnimationFrame(scrollFrameRef.current);
-    };
-  }, [stopPin]);
+  }, []);
 
   const scrollToChapter = useCallback((index: number) => {
-    if (scrollFrameRef.current) window.cancelAnimationFrame(scrollFrameRef.current);
+    stopScrollRef.current?.();
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const root = document.documentElement;
-    const previousBehavior = root.style.scrollBehavior;
-    root.style.scrollBehavior = "auto";
     const started = performance.now();
 
+    const stop = () => {
+      if (scrollFrameRef.current) window.cancelAnimationFrame(scrollFrameRef.current);
+      scrollFrameRef.current = 0;
+      stopScrollRef.current = null;
+      window.removeEventListener("wheel", stop);
+      window.removeEventListener("touchstart", stop);
+    };
+
+    // The chapter that opens changes the height above the target while it animates, so the
+    // scroll keeps re-centering until the handover is done instead of stopping on the first
+    // frame that happens to line up. A wheel or touch hands control straight back.
     const step = () => {
-      const head = rowRefs.current[index]?.firstElementChild;
-      if (!(head instanceof HTMLElement)) {
-        root.style.scrollBehavior = previousBehavior;
-        scrollFrameRef.current = 0;
+      const center = chapterCenter(rowRefs.current[index]);
+      if (center === null) {
+        stop();
         return;
       }
-      const rect = head.getBoundingClientRect();
-      const delta = rect.top + rect.height / 2 - probeOffset();
-      if (reduce || performance.now() - started > 640 || Math.abs(delta) < 1.5) {
-        window.scrollBy(0, delta);
-        root.style.scrollBehavior = previousBehavior;
-        scrollFrameRef.current = 0;
+      const delta = center - probeOffset();
+      const done = reduce || performance.now() - started > 700;
+      window.scrollTo({ top: window.scrollY + (done ? delta : delta * 0.18), behavior: "instant" });
+      if (done) {
+        stop();
         return;
       }
-      window.scrollBy(0, delta * 0.16);
       scrollFrameRef.current = window.requestAnimationFrame(step);
     };
 
+    stopScrollRef.current = stop;
+    window.addEventListener("wheel", stop, { passive: true });
+    window.addEventListener("touchstart", stop, { passive: true });
     scrollFrameRef.current = window.requestAnimationFrame(step);
   }, []);
+
+  useEffect(() => () => stopScrollRef.current?.(), []);
 
   useLayoutEffect(() => {
     if (goalRef.current?.index === active) scrollToChapter(active);
@@ -423,7 +418,6 @@ export default function HomeStory() {
 
   function goTo(index: number) {
     if (!rowRefs.current[index]) return;
-    stopPin();
     if (index === active) {
       scrollToChapter(index);
       return;
@@ -451,7 +445,7 @@ export default function HomeStory() {
         </div>
       </div>
 
-      <div className="fb-story-grid">
+      <div className="fb-story-grid" ref={gridRef}>
         <ol className="fb-story-track">
           {CHAPTERS.map((chapter, index) => {
             const isActive = index === active;
@@ -498,8 +492,13 @@ export default function HomeStory() {
           })}
         </ol>
 
-        <div className="fb-story-figure">
-          <div className="fb-story-stage" data-accent={current.accent} data-dir={direction}>
+        <div className="fb-story-figure" ref={figureRef}>
+          <div
+            className="fb-story-stage"
+            ref={stageRef}
+            data-accent={current.accent}
+            data-dir={direction}
+          >
             <div className="fb-story-frame">
               <div className="fb-story-bar">
                 <span className="fb-story-window" aria-hidden="true">
