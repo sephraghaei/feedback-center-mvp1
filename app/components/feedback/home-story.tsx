@@ -251,6 +251,7 @@ function probeOffset() {
 export default function HomeStory() {
   const uid = useId();
   const [active, setActive] = useState(0);
+  const [direction, setDirection] = useState<"down" | "up">("down");
   const activeRef = useRef(0);
   const rowRefs = useRef<Array<HTMLLIElement | null>>([]);
   const goalRef = useRef<{ index: number; until: number } | null>(null);
@@ -343,6 +344,7 @@ export default function HomeStory() {
 
       if (best < 0 || best === activeRef.current) return;
       if (bestDistance > currentDistance - 12) return;
+      setDirection(best > activeRef.current ? "down" : "up");
       activeRef.current = best;
       setActive(best);
       startPin(best, probe - bestHalf);
@@ -428,6 +430,7 @@ export default function HomeStory() {
     }
     activeRef.current = index;
     goalRef.current = { index, until: performance.now() + 1600 };
+    setDirection(index > active ? "down" : "up");
     setActive(index);
   }
 
@@ -496,7 +499,7 @@ export default function HomeStory() {
         </ol>
 
         <div className="fb-story-figure">
-          <div className="fb-story-stage" data-accent={current.accent}>
+          <div className="fb-story-stage" data-accent={current.accent} data-dir={direction}>
             <div className="fb-story-frame">
               <div className="fb-story-bar">
                 <span className="fb-story-window" aria-hidden="true">
@@ -505,7 +508,9 @@ export default function HomeStory() {
                   <i />
                 </span>
                 <span className="fb-story-url" dir="ltr">
-                  {current.url}
+                  <span key={current.url} className="fb-story-url-text">
+                    {current.url}
+                  </span>
                 </span>
               </div>
               <div className="fb-story-screen" aria-hidden="true">
@@ -538,7 +543,9 @@ export default function HomeStory() {
                 ))}
               </div>
               <span className="fb-story-meter-label">
-                {current.kicker} از {faNumber(CHAPTERS.length)}
+                <span key={active} className="fb-story-meter-text">
+                  {current.kicker} از {faNumber(CHAPTERS.length)}
+                </span>
               </span>
             </div>
           </div>
