@@ -65,7 +65,15 @@ export default async function RequestsPage() {
           </div>
           <div className="fb-grid">
             {publicPosts.map((post) => (
-              <PostCard key={post.id} post={post} signedIn nextPath="/requests" showType vote={false} />
+              <PostCard
+                key={post.id}
+                post={post}
+                signedIn
+                nextPath="/requests"
+                showType
+                vote={false}
+                ownerActions
+              />
             ))}
           </div>
         </section>
@@ -84,7 +92,15 @@ export default async function RequestsPage() {
           </p>
           <div className="fb-grid" style={{ marginTop: 16 }}>
             {supportPosts.map((post) => (
-              <PostCard key={post.id} post={post} signedIn nextPath="/requests" showType vote={false} />
+              <PostCard
+                key={post.id}
+                post={post}
+                signedIn
+                nextPath="/requests"
+                showType
+                vote={false}
+                ownerActions
+              />
             ))}
           </div>
         </section>
@@ -103,7 +119,15 @@ export default async function RequestsPage() {
           </p>
           <div className="fb-grid" style={{ marginTop: 16 }}>
             {hiddenPosts.map((post) => (
-              <PostCard key={post.id} post={post} signedIn nextPath="/requests" showType vote={false} />
+              <PostCard
+                key={post.id}
+                post={post}
+                signedIn
+                nextPath="/requests"
+                showType
+                vote={false}
+                ownerActions
+              />
             ))}
           </div>
         </section>

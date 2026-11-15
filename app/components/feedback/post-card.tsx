@@ -5,6 +5,7 @@ import { mediaUrl } from "@/lib/feedback/media";
 import ProductTag from "./product-tag";
 import StatusChip from "./status-chip";
 import VoteButton from "./vote-button";
+import PostOwnerActions from "./post-owner-actions";
 
 export default function PostCard({
   post,
@@ -12,12 +13,14 @@ export default function PostCard({
   nextPath,
   showType = false,
   vote = true,
+  ownerActions = false,
 }: {
   post: PostSummary;
   signedIn: boolean;
   nextPath: string;
   showType?: boolean;
   vote?: boolean;
+  ownerActions?: boolean;
 }) {
   const cover = post.coverPath ? mediaUrl(post.coverPath) : "";
   const href = `/p/${post.id}`;
@@ -67,6 +70,18 @@ export default function PostCard({
               مشاهده
             </Link>
           )}
+          {ownerActions ? (
+            <PostOwnerActions
+              postId={post.id}
+              redirectTo={nextPath}
+              label={post.type === "support" ? "حذف درخواست" : "حذف بازخورد"}
+              confirmText={
+                post.type === "support"
+                  ? "این درخواست پشتیبانی برای همیشه حذف شود؟"
+                  : "این بازخورد با همه کامنت‌هایش برای همیشه حذف شود؟"
+              }
+            />
+          ) : null}
         </div>
       </div>
     </article>

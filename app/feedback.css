@@ -522,6 +522,12 @@
   white-space: nowrap;
 }
 
+.fb-card-foot .fb-owner-actions .fb-btn {
+  padding: 0.18rem 0.5rem;
+  font-size: 0.68rem;
+  line-height: 1.7;
+}
+
 .fb-vote {
   margin-inline-start: auto;
   display: inline-flex;
