@@ -70,7 +70,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           <h1 className="fb-title">
             <span className="sr-only">به هر وب‌سایت، اپلیکیشن، فروشگاه یا محصولی فیدبک بده.</span>
             <span className="fb-title-line" aria-hidden="true">
-              به هر <RotatingWord />
+              <span className="fb-title-pre">به هر</span> <RotatingWord />
             </span>
             <span className="fb-title-line" aria-hidden="true">
               فیدبک بده.
@@ -81,7 +81,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
             برای نوشتن و رای دادن هم کافیه وارد بشی.
           </p>
           <div className="fb-hero-actions">
-            <ComposerButton className="fb-btn fb-btn-primary">فید‌بک بده</ComposerButton>
+            <div className="fb-hero-cta">
+              <span className="fb-hero-spark">کمتر از یک دقیقه</span>
+              <ComposerButton className="fb-btn fb-btn-primary">فید‌بک بده</ComposerButton>
+            </div>
             <Link href="/feed" className="fb-btn">
               فید‌بک‌ها رو ببین
             </Link>

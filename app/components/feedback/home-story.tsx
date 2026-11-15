@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { faNumber } from "@/lib/feedback/labels";
 import ComposerButton from "./composer-button";
 
@@ -159,7 +159,7 @@ type Chapter = {
   title: string;
   body: string;
   url: string;
-  accent: "blue" | "green";
+  accent: "blue" | "violet" | "teal" | "amber" | "green";
   icon: ReactNode;
   scene: ReactNode;
   cta: { kind: "composer"; label: string } | { kind: "link"; href: string; label: string };
@@ -186,7 +186,7 @@ const CHAPTERS: Chapter[] = [
     title: "بنویسش، با جزئیات",
     body: "چند خط توضیح کافیه: چی شده، کجا، و چه انتظاری داری. عکس هم می‌تونی بچسبونی تا موضوع روشن‌تر بشه.",
     url: "vasa.app/new",
-    accent: "blue",
+    accent: "violet",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4.5 19.5l.9-3.6L15 6.3l3.2 3.2L8.6 19.1z" />
@@ -201,7 +201,7 @@ const CHAPTERS: Chapter[] = [
     title: "بقیه هم همراهش می‌شن",
     body: "کاربرهای دیگه فید‌بک رو می‌خونن، رای می‌دن و کامنت می‌ذارن. هرچی رای بیشتر، شانس دیده شدن هم بیشتر.",
     url: "vasa.app/feed",
-    accent: "blue",
+    accent: "teal",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 19.5V6.5" />
@@ -216,7 +216,7 @@ const CHAPTERS: Chapter[] = [
     title: "روی نقشه راه، به زودی",
     body: "نقشه راه هنوز در دست توسعه‌ست، ولی قراره فید‌بک‌هایی که رای بیشتری دارن از انتظار به در حال ساخت و بعد منتشر برن. همین حالا هم وضعیت هر فید‌بک روی خود کارتش معلومه.",
     url: "vasa.app/roadmap",
-    accent: "green",
+    accent: "amber",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="4.5" width="5" height="15" rx="1.6" />
@@ -244,11 +244,61 @@ const CHAPTERS: Chapter[] = [
   },
 ];
 
+function probeOffset() {
+  return window.innerHeight * (window.matchMedia("(max-width: 900px)").matches ? 0.68 : 0.46);
+}
+
 export default function HomeStory() {
   const uid = useId();
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
   const rowRefs = useRef<Array<HTMLLIElement | null>>([]);
+  const goalRef = useRef<{ index: number; until: number } | null>(null);
+  const pinRef = useRef<{ index: number; top: number; until: number; frame: number; behavior: string } | null>(
+    null,
+  );
+  const scrollFrameRef = useRef(0);
+  const measureRef = useRef<((settle: boolean) => void) | null>(null);
+
+  const stopPin = useCallback(() => {
+    const pin = pinRef.current;
+    if (!pin) return;
+    pinRef.current = null;
+    window.cancelAnimationFrame(pin.frame);
+    document.documentElement.style.scrollBehavior = pin.behavior;
+  }, []);
+
+  // Holding the activated header still while its row animates open stops the row
+  // collapsing above it from shoving the next chapter into the scroll probe.
+  const startPin = useCallback(
+    (index: number, top: number) => {
+      stopPin();
+      const root = document.documentElement;
+      const pin = { index, top, until: performance.now() + 520, frame: 0, behavior: root.style.scrollBehavior };
+      root.style.scrollBehavior = "auto";
+      pinRef.current = pin;
+
+      const step = () => {
+        const head = rowRefs.current[index]?.firstElementChild;
+        if (!pinRef.current || !(head instanceof HTMLElement)) {
+          stopPin();
+          return;
+        }
+        const delta = head.getBoundingClientRect().top - top;
+        if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
+        if (performance.now() < pin.until) {
+          pin.frame = window.requestAnimationFrame(step);
+        } else {
+          pinRef.current = null;
+          root.style.scrollBehavior = pin.behavior;
+          window.requestAnimationFrame(() => measureRef.current?.(false));
+        }
+      };
+
+      pin.frame = window.requestAnimationFrame(step);
+    },
+    [stopPin],
+  );
 
   useEffect(() => {
     let frame = 0;
@@ -256,10 +306,27 @@ export default function HomeStory() {
 
     const measure = (settle = true) => {
       frame = 0;
-      const probe = window.innerHeight * (window.matchMedia("(max-width: 900px)").matches ? 0.68 : 0.46);
+      if (pinRef.current) return;
+      const probe = probeOffset();
+
+      const goal = goalRef.current;
+      if (goal) {
+        if (performance.now() > goal.until) {
+          goalRef.current = null;
+        } else {
+          const goalHead = rowRefs.current[goal.index]?.firstElementChild;
+          if (goalHead instanceof HTMLElement) {
+            const rect = goalHead.getBoundingClientRect();
+            if (Math.abs(rect.top + rect.height / 2 - probe) > 40) return;
+          }
+          goalRef.current = null;
+        }
+      }
+
       let best = -1;
       let bestDistance = Number.POSITIVE_INFINITY;
       let currentDistance = Number.POSITIVE_INFINITY;
+      let bestHalf = 0;
 
       rowRefs.current.forEach((row, index) => {
         const head = row?.firstElementChild;
@@ -269,6 +336,7 @@ export default function HomeStory() {
         if (distance < bestDistance) {
           bestDistance = distance;
           best = index;
+          bestHalf = rect.height / 2;
         }
         if (index === activeRef.current) currentDistance = distance;
       });
@@ -277,9 +345,12 @@ export default function HomeStory() {
       if (bestDistance > currentDistance - 12) return;
       activeRef.current = best;
       setActive(best);
+      startPin(best, probe - bestHalf);
       window.clearTimeout(settleTimer);
-      if (settle) settleTimer = window.setTimeout(() => measure(false), 520);
+      if (settle) settleTimer = window.setTimeout(() => measure(false), 620);
     };
+
+    measureRef.current = measure;
 
     const onScroll = () => {
       if (frame) return;
@@ -294,18 +365,70 @@ export default function HomeStory() {
       window.removeEventListener("resize", onScroll);
       window.clearTimeout(settleTimer);
       if (frame) window.cancelAnimationFrame(frame);
+      measureRef.current = null;
+      stopPin();
     };
+  }, [startPin, stopPin]);
+
+  // Any real scroll input takes over from the pin, so a quick flick still feels native.
+  useEffect(() => {
+    const release = () => stopPin();
+    window.addEventListener("wheel", release, { passive: true });
+    window.addEventListener("touchmove", release, { passive: true });
+    window.addEventListener("keydown", release);
+    return () => {
+      window.removeEventListener("wheel", release);
+      window.removeEventListener("touchmove", release);
+      window.removeEventListener("keydown", release);
+      stopPin();
+      if (scrollFrameRef.current) window.cancelAnimationFrame(scrollFrameRef.current);
+    };
+  }, [stopPin]);
+
+  const scrollToChapter = useCallback((index: number) => {
+    if (scrollFrameRef.current) window.cancelAnimationFrame(scrollFrameRef.current);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const root = document.documentElement;
+    const previousBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    const started = performance.now();
+
+    const step = () => {
+      const head = rowRefs.current[index]?.firstElementChild;
+      if (!(head instanceof HTMLElement)) {
+        root.style.scrollBehavior = previousBehavior;
+        scrollFrameRef.current = 0;
+        return;
+      }
+      const rect = head.getBoundingClientRect();
+      const delta = rect.top + rect.height / 2 - probeOffset();
+      if (reduce || performance.now() - started > 640 || Math.abs(delta) < 1.5) {
+        window.scrollBy(0, delta);
+        root.style.scrollBehavior = previousBehavior;
+        scrollFrameRef.current = 0;
+        return;
+      }
+      window.scrollBy(0, delta * 0.16);
+      scrollFrameRef.current = window.requestAnimationFrame(step);
+    };
+
+    scrollFrameRef.current = window.requestAnimationFrame(step);
   }, []);
 
+  useLayoutEffect(() => {
+    if (goalRef.current?.index === active) scrollToChapter(active);
+  }, [active, scrollToChapter]);
+
   function goTo(index: number) {
-    const row = rowRefs.current[index];
-    if (!row) return;
+    if (!rowRefs.current[index]) return;
+    stopPin();
+    if (index === active) {
+      scrollToChapter(index);
+      return;
+    }
     activeRef.current = index;
+    goalRef.current = { index, until: performance.now() + 1600 };
     setActive(index);
-    const head = row.firstElementChild;
-    const target = head instanceof HTMLElement ? head : row;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
   }
 
   const current = CHAPTERS[active];
