@@ -80,6 +80,7 @@ export async function toggleUpvoteAction(
 export async function addCommentAction(
   postId: string,
   body: string,
+  parentId?: string | null,
 ): Promise<{ ok: true; comment: CommentView } | { ok: false; error: string; signIn?: boolean }> {
   const viewer = await getViewer();
   if (!viewer) return { ok: false, error: "برای نوشتن کامنت اول وارد حسابت شو.", signIn: true };
@@ -90,6 +91,7 @@ export async function addCommentAction(
       authorId: viewer.userId,
       authorName: viewer.name,
       body,
+      parentId,
     });
     revalidatePath(`/p/${postId}`);
     return { ok: true, comment };

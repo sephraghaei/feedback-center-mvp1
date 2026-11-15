@@ -5,6 +5,7 @@ import { PostError, isUuid } from "./posts";
 
 export type CommentView = {
   id: string;
+  parentId: string | null;
   body: string;
   createdAt: Date;
   authorId: string;
@@ -48,6 +49,7 @@ export async function listComments(postId: string, viewerId?: string): Promise<C
   return getDb()
     .select({
       id: comments.id,
+      parentId: comments.parentId,
       body: comments.body,
       createdAt: comments.createdAt,
       authorId: comments.authorId,
@@ -74,6 +76,7 @@ export async function addComment(input: {
   authorId: string;
   authorName: string;
   body: string;
+  parentId?: string | null;
 }): Promise<CommentView> {
   const body = cleanComment(input.body);
 
@@ -82,15 +85,35 @@ export async function addComment(input: {
     throw new PostError("این بازخورد کامنت نمی‌پذیرد.");
   }
 
+  let parentId: string | null = null;
+  if (input.parentId) {
+    if (!isUuid(input.parentId)) throw new PostError("کامنتی که پاسخ می‌دهی پیدا نشد.");
+
+    const [parent] = await getDb()
+      .select({ id: comments.id, postId: comments.postId, parentId: comments.parentId })
+      .from(comments)
+      .where(eq(comments.id, input.parentId))
+      .limit(1);
+
+    if (!parent || parent.postId !== post.id) {
+      throw new PostError("کامنتی که پاسخ می‌دهی پیدا نشد.");
+    }
+    if (parent.parentId) {
+      throw new PostError("فقط به کامنت اصلی می‌شود پاسخ داد.");
+    }
+    parentId = parent.id;
+  }
+
   const [row] = await getDb()
     .insert(comments)
-    .values({ postId: post.id, authorId: input.authorId, body })
+    .values({ postId: post.id, authorId: input.authorId, parentId, body })
     .returning({ id: comments.id, createdAt: comments.createdAt });
 
   if (!row) throw new PostError("ثبت کامنت انجام نشد.");
 
   return {
     id: row.id,
+    parentId,
     body,
     createdAt: row.createdAt,
     authorId: input.authorId,

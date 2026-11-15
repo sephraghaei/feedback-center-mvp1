@@ -50,6 +50,13 @@
       "when": 1794686353062,
       "tag": "0006_yellow_mephisto",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794724759064,
+      "tag": "0007_happy_doctor_doom",
+      "breakpoints": true
     }
   ]
 }

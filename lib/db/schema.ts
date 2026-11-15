@@ -9,6 +9,7 @@ import {
   text,
   timestamp,
   uuid,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable(
@@ -133,12 +134,16 @@ export const comments = pgTable(
     authorId: uuid("author_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+    parentId: uuid("parent_id").references((): AnyPgColumn => comments.id, {
+      onDelete: "cascade",
+    }),
     body: text("body").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
     index("comments_post_idx").on(table.postId, table.createdAt),
     index("comments_author_idx").on(table.authorId),
+    index("comments_parent_idx").on(table.parentId, table.createdAt),
     check("comments_body_check", sql`char_length(${table.body}) between 2 and 2000`),
   ],
 );

@@ -243,6 +243,49 @@ async function main(): Promise<void> {
     "تصویر کوچک بهتر از لینک است، اما برای فایل‌های بزرگ هم یک پیش‌نمایش بگذارید.",
   );
 
+  const insertedReplies = await db
+    .insert(comments)
+    .values([
+      {
+        postId: mobilePost,
+        authorId: reza.id,
+        parentId: iosComment,
+        body: "من هم روی آیفون همین را دیدم. اگر دکمه ارسال بالای کیبورد ثابت شود، مشکل حل می‌شود.",
+        createdAt: daysAgo(7),
+      },
+      {
+        postId: mobilePost,
+        authorId: admin.id,
+        parentId: androidComment,
+        body: "در نسخه بعدی دکمه ارسال را بالای کیبورد می‌گذاریم. ممنون که دقیق گزارش دادی.",
+        createdAt: daysAgo(5),
+      },
+      {
+        postId: myRequestsPost,
+        authorId: sepideh.id,
+        parentId: trackedComment,
+        body: "ممنون. پس منتظر می‌مانم و تا آن موقع وضعیت‌ها را از همان صفحه چک می‌کنم.",
+        createdAt: daysAgo(9),
+      },
+    ])
+    .returning({ id: comments.id, body: comments.body });
+
+  function replyOf(body: string): string {
+    const row = insertedReplies.find((comment) => comment.body === body);
+    if (!row) throw new Error(`seed_reply_missing:${body}`);
+    return row.id;
+  }
+
+  const iosReply = replyOf(
+    "من هم روی آیفون همین را دیدم. اگر دکمه ارسال بالای کیبورد ثابت شود، مشکل حل می‌شود.",
+  );
+  const planningReply = replyOf(
+    "در نسخه بعدی دکمه ارسال را بالای کیبورد می‌گذاریم. ممنون که دقیق گزارش دادی.",
+  );
+  const waitReply = replyOf(
+    "ممنون. پس منتظر می‌مانم و تا آن موقع وضعیت‌ها را از همان صفحه چک می‌کنم.",
+  );
+
   await db.insert(commentVotes).values([
     { commentId: iosComment, userId: reza.id, value: 1 },
     { commentId: iosComment, userId: sepideh.id, value: 1 },
@@ -252,6 +295,11 @@ async function main(): Promise<void> {
     { commentId: trackedComment, userId: reza.id, value: 1 },
     { commentId: thumbnailComment, userId: sara.id, value: 1 },
     { commentId: thumbnailComment, userId: reza.id, value: -1 },
+    { commentId: iosReply, userId: sepideh.id, value: 1 },
+    { commentId: iosReply, userId: sara.id, value: 1 },
+    { commentId: planningReply, userId: sepideh.id, value: 1 },
+    { commentId: planningReply, userId: sara.id, value: 1 },
+    { commentId: waitReply, userId: reza.id, value: 1 },
   ]);
 
   const [entry] = await db
