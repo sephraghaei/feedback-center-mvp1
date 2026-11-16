@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { clientLogger } from "@/lib/client-logger";
-import { IRANSans } from "./fonts";
+import { Dana } from "./fonts";
 
 export default function GlobalError({
   error,
@@ -49,7 +49,7 @@ export default function GlobalError({
           placeItems: "center",
           background: "var(--paper)",
           color: "var(--ink)",
-          fontFamily: IRANSans.style.fontFamily,
+          fontFamily: Dana.style.fontFamily,
           textAlign: "center",
           padding: "2rem",
         }}

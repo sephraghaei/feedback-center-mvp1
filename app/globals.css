@@ -58,7 +58,7 @@
     #7c3aed 100%
   );
   --gradient-solar: linear-gradient(90deg, #38bdf8 0%, #2563eb 100%);
-  --font-brand: "Noto Kufi Arabic Variable", var(--font-iransans);
+  --font-brand: "Noto Kufi Arabic Variable", var(--font-dana);
 }
 
 :root[data-theme="dark"] {
@@ -128,7 +128,7 @@ html {
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-iransans);
+  font-family: var(--font-dana);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
