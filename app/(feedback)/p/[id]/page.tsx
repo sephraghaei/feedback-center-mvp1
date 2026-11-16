@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AdminPostActions from "@/app/components/feedback/admin-post-actions";
 import Avatar from "@/app/components/feedback/avatar";
-import ComposerButton from "@/app/components/feedback/composer-button";
 import CommentSection from "@/app/components/feedback/comment-section";
 import Markdown from "@/app/components/feedback/markdown";
 import MoveMenu from "@/app/components/feedback/move-menu";
@@ -34,20 +33,6 @@ function fileSize(bytes: number): string {
   return `${faNumber(Math.max(1, Math.round(bytes / 1024)))} کیلوبایت`;
 }
 
-const TRACKS: Record<string, { value: string; label: string }[]> = {
-  feedback: [
-    { value: "new", label: "ثبت شد" },
-    { value: "planned", label: "در نوبت" },
-    { value: "in_progress", label: "در حال انجام" },
-    { value: "shipped", label: "منتشر شد" },
-  ],
-  support: [
-    { value: "open", label: "باز" },
-    { value: "answered", label: "پاسخ داده شد" },
-    { value: "closed", label: "بسته شد" },
-  ],
-};
-
 export default async function PostPage({ params }: { params: Promise<Params> }) {
   const { id } = await params;
   if (!isUuid(id)) notFound();
@@ -74,8 +59,6 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
     isSupport ? Promise.resolve([]) : listComments(post.id, viewer?.userId),
   ]);
 
-  const track = TRACKS[post.type] ?? TRACKS.feedback;
-  const trackIndex = track.findIndex((step) => step.value === post.status);
   const backHref = isSupport ? "/requests" : "/feed";
   const backLabel = isSupport ? "درخواست‌های من" : "بازگشت به فید";
 
@@ -261,36 +244,6 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           )}
         </div>
       </div>
-
-      <aside className="fb-detail-side" aria-label="وضعیت فید‌بک">
-        <section className="fb-side-card">
-          <h2 className="fb-side-title">مسیر این فید‌بک</h2>
-          <ol className="fb-track">
-            {track.map((step, index) => {
-              const state = index === trackIndex ? "current" : index < trackIndex ? "done" : "";
-              return (
-                <li
-                  key={step.value}
-                  className={state}
-                  aria-current={index === trackIndex ? "step" : undefined}
-                >
-                  <span className="fb-track-dot" aria-hidden="true" />
-                  <span className="fb-track-label">{step.label}</span>
-                  {index === trackIndex ? <span className="fb-track-here">همین‌جا</span> : null}
-                </li>
-              );
-            })}
-          </ol>
-        </section>
-
-        <section className="fb-side-card fb-side-cta">
-          <h2 className="fb-side-title">چیزی برای گفتن داری؟</h2>
-          <p>فید‌بک جدیدت را بنویس تا به همین مسیر اضافه شود.</p>
-          <ComposerButton className="fb-btn fb-btn-primary fb-btn-sm">
-            فید‌بک تازه
-          </ComposerButton>
-        </section>
-      </aside>
     </div>
   );
 }

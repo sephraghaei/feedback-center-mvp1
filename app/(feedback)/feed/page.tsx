@@ -13,13 +13,14 @@ export const metadata: Metadata = {
   description: "فید‌بک محصول را بخوان، رای بده و وضعیتش را دنبال کن. نقشه راه هم به زودی می‌آید.",
 };
 
-type Search = { category?: string; status?: string };
+type Search = { category?: string; status?: string; sort?: string };
 
-function filterHref(current: Search, patch: Search): string {
+function feedHref(current: Search, patch: Search): string {
   const next = { ...current, ...patch };
   const query = new URLSearchParams();
   if (next.category) query.set("category", next.category);
   if (next.status) query.set("status", next.status);
+  if (next.sort === "newest") query.set("sort", "newest");
   const text = query.toString();
   return text ? `/feed?${text}` : "/feed";
 }
@@ -27,13 +28,19 @@ function filterHref(current: Search, patch: Search): string {
 export default async function FeedPage({ searchParams }: { searchParams: Promise<Search> }) {
   const params = await searchParams;
   const viewer = await getViewer();
+  const sort = params.sort === "newest" ? "newest" : "votes";
   const posts = await listFeed({
     category: params.category,
     status: params.status,
+    sort,
     viewerId: viewer?.userId,
   });
 
-  const current: Search = { category: params.category, status: params.status };
+  const current: Search = {
+    category: params.category,
+    status: params.status,
+    sort: sort === "newest" ? "newest" : undefined,
+  };
   const filtered = Boolean(params.category || params.status);
 
   return (
@@ -72,13 +79,13 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
       <div className="fb-toolbar-row">
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
           <div className="fb-filters" aria-label="فیلتر دسته">
-            <Link href={filterHref(current, { category: undefined })} className={`fb-filter ${!params.category ? "active" : ""}`}>
+            <Link href={feedHref(current, { category: undefined })} className={`fb-filter ${!params.category ? "active" : ""}`}>
               همه دسته‌ها
             </Link>
             {FEEDBACK_CATEGORIES.map((category) => (
               <Link
                 key={category}
-                href={filterHref(current, { category })}
+                href={feedHref(current, { category })}
                 className={`fb-filter ${params.category === category ? "active" : ""}`}
               >
                 {CATEGORY_LABELS[category]}
@@ -86,18 +93,33 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
             ))}
           </div>
           <div className="fb-filters" aria-label="فیلتر وضعیت">
-            <Link href={filterHref(current, { status: undefined })} className={`fb-filter ${!params.status ? "active" : ""}`}>
+            <Link href={feedHref(current, { status: undefined })} className={`fb-filter ${!params.status ? "active" : ""}`}>
               همه وضعیت‌ها
             </Link>
             {FEEDBACK_STATUSES.map((status) => (
               <Link
                 key={status}
-                href={filterHref(current, { status })}
+                href={feedHref(current, { status })}
                 className={`fb-filter ${params.status === status ? "active" : ""}`}
               >
                 {STATUS_LABELS[status]}
               </Link>
             ))}
+          </div>
+          <div className="fb-sort" aria-label="ترتیب فید‌بک‌ها">
+            <span className="fb-sort-label">ترتیب</span>
+            <Link
+              href={feedHref(current, { sort: undefined })}
+              className={`fb-filter ${sort === "votes" ? "active" : ""}`}
+            >
+              بیشترین رای
+            </Link>
+            <Link
+              href={feedHref(current, { sort: "newest" })}
+              className={`fb-filter ${sort === "newest" ? "active" : ""}`}
+            >
+              تازه
+            </Link>
           </div>
         </div>
         <p className="fb-count">
@@ -112,7 +134,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
               key={post.id}
               post={post}
               signedIn={Boolean(viewer)}
-              nextPath={filtered ? filterHref(current, {}) : "/feed"}
+              nextPath={feedHref(current, {})}
             />
           ))}
         </div>

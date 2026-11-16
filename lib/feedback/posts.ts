@@ -127,6 +127,8 @@ export function excerpt(body: string): string {
   return excerptOf(body);
 }
 
+export type FeedSort = "votes" | "newest";
+
 export async function listFeed(options: {
   category?: string;
   status?: string;
@@ -134,7 +136,13 @@ export async function listFeed(options: {
   excludeId?: string;
   viewerId?: string;
   limit?: number;
+  sort?: FeedSort;
 }): Promise<PostSummary[]> {
+  const order =
+    options.sort === "votes"
+      ? [desc(upvoteCount()), desc(posts.createdAt)]
+      : [desc(posts.createdAt)];
+
   const rows = await getDb()
     .select(summarySelect(options.viewerId))
     .from(posts)
@@ -154,7 +162,7 @@ export async function listFeed(options: {
         options.excludeId ? ne(posts.id, options.excludeId) : undefined,
       ),
     )
-    .orderBy(desc(posts.createdAt))
+    .orderBy(...order)
     .limit(options.limit ?? 60);
 
   return rows;

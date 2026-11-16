@@ -444,6 +444,18 @@
   color: var(--on-accent);
 }
 
+.fb-sort {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.fb-sort-label {
+  font-size: 0.72rem;
+  color: var(--ink-4);
+}
+
 .fb-count {
   margin: 0;
   font-size: 0.76rem;
@@ -906,12 +918,8 @@
 /* Detail */
 
 .fb-detail {
-  max-width: 60rem;
+  max-width: 46rem;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 16rem;
-  gap: 46px;
-  align-items: start;
 }
 
 .fb-detail-main {
@@ -1170,106 +1178,6 @@ a.fb-product-name:hover {
   color: var(--ink-3);
 }
 
-.fb-detail-side {
-  position: sticky;
-  top: 88px;
-  display: grid;
-  gap: 26px;
-}
-
-.fb-side-card {
-  padding: 0;
-}
-
-.fb-side-card + .fb-side-card {
-  padding-top: 22px;
-  border-top: 1px solid var(--hairline);
-}
-
-.fb-side-title {
-  margin: 0 0 10px;
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--ink-4);
-}
-
-.fb-track {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.fb-track li {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-block: 7px;
-  font-size: 0.78rem;
-  color: var(--ink-4);
-}
-
-.fb-track li::after {
-  content: "";
-  position: absolute;
-  inset-inline-start: 4px;
-  top: 23px;
-  bottom: -7px;
-  width: 1px;
-  background: var(--hairline);
-}
-
-.fb-track li:last-child::after {
-  display: none;
-}
-
-.fb-track-dot {
-  width: 9px;
-  height: 9px;
-  flex-shrink: 0;
-  border: 1.5px solid var(--hairline-strong);
-  border-radius: 50%;
-  background: var(--surface);
-}
-
-.fb-track li.done {
-  color: var(--ink-2);
-}
-
-.fb-track li.done .fb-track-dot,
-.fb-track li.current .fb-track-dot {
-  border-color: var(--ink);
-  background: var(--ink);
-}
-
-.fb-track li.current {
-  color: var(--ink);
-  font-weight: 600;
-}
-
-.fb-track li.current .fb-track-dot {
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 12%, transparent);
-}
-
-.fb-track-here {
-  margin-inline-start: 2px;
-  font-size: 0.64rem;
-  font-weight: 500;
-  color: var(--accent);
-}
-
-.fb-side-cta p {
-  margin: 0;
-  font-size: 0.74rem;
-  line-height: 1.8;
-  color: var(--ink-3);
-}
-
-.fb-side-cta .fb-btn {
-  width: auto;
-  margin-top: 12px;
-}
-
 .fb-cover-wide {
   display: block;
   width: 100%;
@@ -1374,12 +1282,7 @@ a.fb-product-name:hover {
 
 @media (max-width: 1023px) {
   .fb-detail {
-    display: block;
     max-width: 46rem;
-  }
-
-  .fb-detail-side {
-    display: none;
   }
 }
 
@@ -2524,8 +2427,8 @@ a.fb-product-name:hover {
   justify-self: center;
   padding: 0.02em 0.3em 0.07em;
   border-radius: 0.22em;
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  color: var(--accent);
+  background: color-mix(in srgb, var(--rotate-color) 12%, transparent);
+  color: var(--rotate-color);
   opacity: 0;
   translate: 0 0.55em;
   scale: 0.92;
@@ -2533,6 +2436,24 @@ a.fb-product-name:hover {
     opacity 0.38s ease,
     translate 0.55s cubic-bezier(0.22, 0.7, 0.25, 1),
     scale 0.55s cubic-bezier(0.22, 0.7, 0.25, 1);
+}
+
+/* One hue per word, walking the same sky to violet ramp as the brand gradient, so the
+   accent shifts with every swap instead of staying blue. */
+.fb-rotate-word:nth-child(1) {
+  --rotate-color: #0369a1;
+}
+
+.fb-rotate-word:nth-child(2) {
+  --rotate-color: #2563eb;
+}
+
+.fb-rotate-word:nth-child(3) {
+  --rotate-color: #4f46e5;
+}
+
+.fb-rotate-word:nth-child(4) {
+  --rotate-color: #7c3aed;
 }
 
 .fb-rotate-word.is-active {
@@ -2547,12 +2468,28 @@ a.fb-product-name:hover {
   scale: 0.92;
 }
 
-/* A solid light badge this large glares on a dark page, so the highlight turns into a
-   soft tinted wash and the word keeps the heading ink instead of the accent fill. */
+/* A solid light badge this large glares on a dark page, so the highlight becomes a soft
+   tinted wash and the word keeps a pastel version of its own hue. */
 :root[data-theme="dark"] .fb-rotate-word {
-  background: color-mix(in srgb, var(--accent) 13%, transparent);
-  color: var(--ink);
+  background: color-mix(in srgb, var(--rotate-color) 16%, transparent);
+  color: var(--rotate-color);
   box-shadow: none;
+}
+
+:root[data-theme="dark"] .fb-rotate-word:nth-child(1) {
+  --rotate-color: #7dd3fc;
+}
+
+:root[data-theme="dark"] .fb-rotate-word:nth-child(2) {
+  --rotate-color: #93c5fd;
+}
+
+:root[data-theme="dark"] .fb-rotate-word:nth-child(3) {
+  --rotate-color: #a5b4fc;
+}
+
+:root[data-theme="dark"] .fb-rotate-word:nth-child(4) {
+  --rotate-color: #c4b5fd;
 }
 
 .fb-home .fb-lede {
@@ -4788,9 +4725,9 @@ a.fb-product-name:hover {
   .fb-rotate-word {
     border-radius: 0.26em;
     padding: 0.04em 0.22em 0.1em;
-    background: var(--accent);
+    background: var(--rotate-color);
     color: var(--on-accent);
-    box-shadow: 0 0.16em 0.5em -0.22em color-mix(in srgb, var(--accent) 55%, transparent);
+    box-shadow: 0 0.16em 0.5em -0.22em color-mix(in srgb, var(--rotate-color) 55%, transparent);
   }
 
   .fb-home .fb-lede {
