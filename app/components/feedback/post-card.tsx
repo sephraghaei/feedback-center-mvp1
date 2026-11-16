@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { PostSummary } from "@/lib/feedback/posts";
+import { excerpt, type PostSummary } from "@/lib/feedback/posts";
 import { TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { productBrand } from "@/lib/feedback/product";
 import ProductMark from "./product-mark";
@@ -27,6 +27,7 @@ export default function PostCard({
 }) {
   const brand = productBrand(post.product, post.productUrl);
   const href = `/p/${post.id}`;
+  const snippet = excerpt(post.body);
 
   return (
     <article className="fb-card">
@@ -46,6 +47,8 @@ export default function PostCard({
         <h3 className="fb-card-title">
           <Link href={href}>{post.title}</Link>
         </h3>
+
+        {snippet ? <p className="fb-card-excerpt">{snippet}</p> : null}
 
         <p className="fb-card-meta">
           <span className="fb-card-brand">

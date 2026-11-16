@@ -669,7 +669,17 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-inline-start: auto;
+}
+
+.fb-card-excerpt {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--ink-3);
 }
 
 .fb-card .fb-chip {
@@ -5178,6 +5188,10 @@ a.fb-product-name:hover {
 
   .fb-card:has(.fb-owner-actions) .fb-card-type {
     display: none;
+  }
+
+  .fb-card-excerpt {
+    font-size: 0.84rem;
   }
 }
 
