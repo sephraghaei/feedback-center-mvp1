@@ -4,6 +4,7 @@ import { SignInButton, useAuth } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
+import BrandMark from "@/app/components/brand-mark";
 import { clientLogger } from "@/lib/client-logger";
 import { SEX_OPTIONS } from "@/lib/profile";
 import { toPersianDigits } from "@/lib/phone";
@@ -243,15 +244,21 @@ export default function AuthFlow({
                 aria-modal="true"
                 aria-labelledby="auth-title"
               >
-                <button
-                  type="button"
-                  className="modal-close"
-                  onClick={close}
-                  aria-label="بستن"
-                  disabled={loading}
-                >
-                  بستن
-                </button>
+                <div className="auth-top">
+                  <div className="auth-brand" aria-hidden="true">
+                    <BrandMark className="auth-brand-mark" />
+                    <span>وسا</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="modal-close"
+                    onClick={close}
+                    aria-label="بستن"
+                    disabled={loading}
+                  >
+                    بستن
+                  </button>
+                </div>
 
                 <p className="steps" aria-live="polite">
                   مرحله {toPersianDigits(String(step))} از {toPersianDigits("3")}

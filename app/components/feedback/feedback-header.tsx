@@ -34,6 +34,8 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   const links = viewer ? [...LINKS, { href: "/requests", label: "درخواست‌های من" }] : LINKS;
 
@@ -61,6 +63,53 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
     setProfileOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    if (!open) return;
+    const mobile = window.matchMedia("(max-width: 760px)");
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeMenu();
+        return;
+      }
+      const nav = navRef.current;
+      if (event.key !== "Tab" || !mobile.matches || !nav) return;
+      const focusable = Array.from(
+        nav.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"),
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    const onViewportChange = () => {
+      if (!mobile.matches) setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    mobile.addEventListener("change", onViewportChange);
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    if (mobile.matches) {
+      navRef.current?.querySelector<HTMLElement>(".fb-nav-link")?.focus();
+    }
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      mobile.removeEventListener("change", onViewportChange);
+      document.body.style.overflow = previous;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  function closeMenu() {
+    setOpen(false);
+    window.requestAnimationFrame(() => menuButtonRef.current?.focus());
+  }
+
   return (
     <header className="site-nav">
       <div className="nav-inner">
@@ -69,13 +118,36 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
           <span className="nav-name">وسا</span>
         </Link>
 
-        <nav className={`fb-nav ${open ? "open" : ""}`} aria-label="بخش‌های فید‌بک">
+        {open ? (
+          <div className="fb-nav-scrim" aria-hidden="true" onClick={closeMenu} />
+        ) : null}
+
+        <nav
+          ref={navRef}
+          id="fb-nav"
+          className={`fb-nav ${open ? "open" : ""}`}
+          aria-label="بخش‌های فید‌بک"
+        >
+          <div className="fb-sheet-head">
+            <span className="fb-sheet-grab" aria-hidden="true" />
+            <div className="fb-sheet-row">
+              <span className="fb-sheet-title">منو</span>
+              <button
+                type="button"
+                className="fb-sheet-close"
+                onClick={closeMenu}
+                aria-label="بستن منو"
+              >
+                بستن
+              </button>
+            </div>
+          </div>
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={`fb-nav-link ${isActive(link.href) ? "active" : ""}`}
-              onClick={() => setOpen(false)}
+              onClick={closeMenu}
             >
               {link.label}{" "}
               {link.soon ? <span className="fb-soon">به زودی</span> : null}
@@ -85,7 +157,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
             <Link
               href="/?next=/feed#account"
               className="fb-nav-link fb-nav-login"
-              onClick={() => setOpen(false)}
+              onClick={closeMenu}
             >
               ورود به حساب
             </Link>
@@ -165,11 +237,13 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
             ثبت فید‌بک
           </button>
           <button
+            ref={menuButtonRef}
             type="button"
             className="fb-menu"
-            aria-label="باز کردن منو"
+            aria-label={open ? "بستن منو" : "باز کردن منو"}
             aria-expanded={open}
-            onClick={() => setOpen((value) => !value)}
+            aria-controls="fb-nav"
+            onClick={() => (open ? closeMenu() : setOpen(true))}
           >
             <MenuIcon size={18} />
           </button>
