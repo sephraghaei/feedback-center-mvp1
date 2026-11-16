@@ -12,22 +12,30 @@ export default function ProductMark({
   size?: number;
   className?: string;
 }) {
-  const [failedOrigin, setFailedOrigin] = useState<string | null>(null);
-  const [loadedOrigin, setLoadedOrigin] = useState<string | null>(null);
+  const [failed, setFailed] = useState<string[]>([]);
+  const [loaded, setLoaded] = useState<string | null>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const showIcon = Boolean(brand.origin) && failedOrigin !== brand.origin;
-  const loaded = Boolean(brand.origin) && loadedOrigin === brand.origin;
+
+  const sources =
+    brand.host && brand.origin
+      ? [
+          `https://unavatar.io/${brand.host}?fallback=false`,
+          `${brand.origin}/favicon.ico`,
+        ]
+      : [];
+  const src = sources.find((candidate) => !failed.includes(candidate)) ?? null;
+  const showIcon = src !== null && loaded === src;
 
   useEffect(() => {
     const el = imgRef.current;
-    if (!el || !el.complete) return;
-    if (el.naturalWidth > 0) setLoadedOrigin(brand.origin);
-    else setFailedOrigin(brand.origin);
-  }, [brand.origin]);
+    if (!el || !src || !el.complete) return;
+    if (el.naturalWidth > 0) setLoaded(src);
+    else setFailed((current) => (current.includes(src) ? current : [...current, src]));
+  }, [src]);
 
   return (
     <span
-      className={`fb-mark${loaded ? " has-icon" : ""}${className ? ` ${className}` : ""}`}
+      className={`fb-mark${showIcon ? " has-icon" : ""}${className ? ` ${className}` : ""}`}
       style={
         {
           "--mark-size": `${size}px`,
@@ -37,19 +45,22 @@ export default function ProductMark({
       aria-hidden="true"
     >
       <span className="fb-mark-initial">{brand.initial}</span>
-      {showIcon && brand.origin ? (
+      {src ? (
         <img
+          key={src}
           ref={imgRef}
           className="fb-mark-img"
-          src={`${brand.origin}/favicon.ico`}
+          src={src}
           alt=""
           width={size}
           height={size}
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
-          onLoad={() => setLoadedOrigin(brand.origin)}
-          onError={() => setFailedOrigin(brand.origin)}
+          onLoad={() => setLoaded(src)}
+          onError={() =>
+            setFailed((current) => (current.includes(src) ? current : [...current, src]))
+          }
         />
       ) : null}
     </span>

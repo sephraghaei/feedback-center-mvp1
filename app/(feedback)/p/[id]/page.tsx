@@ -74,7 +74,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
         </div>
 
         <header className="fb-detail-head">
-          {source ? <ProductTag product={post.product} /> : null}
+          {source ? <ProductTag product={post.product} productUrl={post.productUrl} /> : null}
 
           <div className="fb-card-top">
             {isSupport || isAuthor ? (

@@ -49,6 +49,7 @@ export async function createPostAction(input: {
   type: string;
   category?: string | null;
   product?: string | null;
+  productUrl?: string | null;
   title: string;
   body: string;
 }): Promise<{ ok: true; id: string } | { ok: false; error: string; signIn?: boolean }> {
@@ -66,6 +67,7 @@ export async function createPostAction(input: {
       type: input.type,
       category: input.category,
       product: input.product,
+      productUrl: input.productUrl,
       title: input.title,
       body: input.body,
     });

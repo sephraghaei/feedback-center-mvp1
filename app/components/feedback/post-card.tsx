@@ -28,7 +28,7 @@ export default function PostCard({
   ownerActions?: boolean;
 }) {
   const cover = post.coverPath ? mediaUrl(post.coverPath) : "";
-  const brand = productBrand(post.product);
+  const brand = productBrand(post.product, post.productUrl);
   const category = post.category ? (CATEGORY_LABELS[post.category] ?? post.category) : null;
   const author = post.authorName ?? "کاربر";
   const href = `/p/${post.id}`;

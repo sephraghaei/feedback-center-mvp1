@@ -21,8 +21,14 @@ function ExternalIcon() {
   );
 }
 
-export default function ProductTag({ product }: { product: string | null }) {
-  const brand = productBrand(product);
+export default function ProductTag({
+  product,
+  productUrl,
+}: {
+  product: string | null;
+  productUrl?: string | null;
+}) {
+  const brand = productBrand(product, productUrl);
   if (!brand) return null;
 
   return (

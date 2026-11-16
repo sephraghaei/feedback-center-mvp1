@@ -1,4 +1,5 @@
 export const MAX_PRODUCT_LENGTH = 120;
+export const MAX_SITE_URL_LENGTH = 200;
 
 export type ProductParse = { ok: true; value: string | null } | { ok: false; message: string };
 
@@ -6,6 +7,13 @@ export type ProductContext = { label: string; href: string | null };
 
 const SCHEME = /^[a-z][a-z0-9+.-]*:\/\//i;
 const DOMAIN = /^[^\s/]+\.[^\s/]{2,}(?:\/.*)?$/i;
+
+function cleanText(input: string | null | undefined): string {
+  return (input ?? "")
+    .replace(/[\u0000-\u001f\u007f]/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
 
 function normalizeUrl(raw: string, withScheme: boolean): ProductParse {
   let url: URL;
@@ -24,10 +32,7 @@ function normalizeUrl(raw: string, withScheme: boolean): ProductParse {
 }
 
 export function parseProduct(input: string | null | undefined): ProductParse {
-  const text = (input ?? "")
-    .replace(/[\u0000-\u001f\u007f]/g, " ")
-    .trim()
-    .replace(/\s+/g, " ");
+  const text = cleanText(input);
   if (!text) return { ok: true, value: null };
   if (text.length > MAX_PRODUCT_LENGTH) {
     return { ok: false, message: "نام محصول یا آدرس سایت حداکثر ۱۲۰ نویسه است." };
@@ -36,6 +41,18 @@ export function parseProduct(input: string | null | undefined): ProductParse {
   if (!/\s/.test(text) && DOMAIN.test(text)) return normalizeUrl(text, false);
   if (text.includes("://")) return { ok: false, message: "آدرس سایت معتبر نیست." };
   return { ok: true, value: text };
+}
+
+export function parseSiteUrl(input: string | null | undefined): ProductParse {
+  const text = cleanText(input);
+  if (!text) return { ok: true, value: null };
+  if (text.length > MAX_SITE_URL_LENGTH) {
+    return { ok: false, message: "آدرس سایت حداکثر ۲۰۰ نویسه است." };
+  }
+  if (/\s/.test(text)) return { ok: false, message: "آدرس سایت معتبر نیست." };
+  if (SCHEME.test(text)) return normalizeUrl(text, true);
+  if (DOMAIN.test(text)) return normalizeUrl(text, false);
+  return { ok: false, message: "آدرس سایت معتبر نیست." };
 }
 
 export function productContext(value: string | null | undefined): ProductContext | null {
@@ -48,7 +65,6 @@ export function productContext(value: string | null | undefined): ProductContext
 }
 
 export type ProductBrand = {
-  label: string;
   display: string;
   href: string | null;
   host: string | null;
@@ -68,33 +84,37 @@ function hashOf(value: string): number {
   return hash;
 }
 
-export function productBrand(value: string | null | undefined): ProductBrand | null {
-  const context = productContext(value);
-  if (!context) return null;
+export function productBrand(
+  value: string | null | undefined,
+  siteValue?: string | null,
+): ProductBrand | null {
+  const name = parseProduct(value);
+  const site = parseSiteUrl(siteValue);
 
-  let host: string | null = null;
-  let origin: string | null = null;
-  if (context.href) {
-    try {
-      const url = new URL(context.href);
-      origin = url.origin;
-      host = url.hostname.replace(/^www\./i, "");
-    } catch {
-      origin = null;
-    }
+  let url: URL | null = null;
+  if (site.ok && site.value) {
+    url = new URL(site.value);
   }
 
-  const source = (host ?? context.label).trim();
-  const first = Array.from(source)[0] ?? "؟";
+  const nameValue = name.ok ? name.value : null;
+  const nameIsLink = Boolean(nameValue && SCHEME.test(nameValue));
+  if (!url && nameIsLink && nameValue) {
+    url = new URL(nameValue);
+  }
+
+  const host = url ? url.hostname.replace(/^www\./i, "") : null;
+  const display = nameValue && !nameIsLink ? nameValue : host;
+  if (!display) return null;
+
+  const first = Array.from(display)[0] ?? "؟";
   const initial = /[a-z]/i.test(first) ? first.toUpperCase() : first;
 
   return {
-    label: context.label,
-    display: host ?? context.label,
-    href: context.href,
+    display,
+    href: url ? url.toString().replace(/\/$/, "") : null,
     host,
-    origin,
+    origin: url ? url.origin : null,
     initial,
-    hue: MARK_HUES[hashOf(source.toLowerCase()) % MARK_HUES.length],
+    hue: MARK_HUES[hashOf((host ?? display).toLowerCase()) % MARK_HUES.length],
   };
 }

@@ -69,6 +69,7 @@ export const posts = pgTable(
     type: text("type").notNull(),
     category: text("category"),
     product: text("product"),
+    productUrl: text("product_url"),
     title: text("title").notNull(),
     body: text("body").notNull(),
     coverPath: text("cover_path"),

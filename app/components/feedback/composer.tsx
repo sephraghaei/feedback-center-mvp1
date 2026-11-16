@@ -5,7 +5,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPostAction } from "@/app/feedback-actions";
 import { CATEGORY_LABELS } from "@/lib/feedback/labels";
-import { MAX_PRODUCT_LENGTH, parseProduct, productBrand } from "@/lib/feedback/product";
+import {
+  MAX_PRODUCT_LENGTH,
+  MAX_SITE_URL_LENGTH,
+  parseProduct,
+  parseSiteUrl,
+  productBrand,
+} from "@/lib/feedback/product";
 import FormatToolbar from "./format-toolbar";
 import { CloseIcon, TagIcon } from "./icons";
 import Markdown from "./markdown";
@@ -21,6 +27,8 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
   const [category, setCategory] = useState("feature");
   const [product, setProduct] = useState("");
   const [productError, setProductError] = useState<string | null>(null);
+  const [siteUrl, setSiteUrl] = useState("");
+  const [siteUrlError, setSiteUrlError] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [preview, setPreview] = useState(false);
@@ -57,6 +65,8 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
     setCategory("feature");
     setProduct("");
     setProductError(null);
+    setSiteUrl("");
+    setSiteUrlError(null);
     setTitle("");
     setBody("");
     setPreview(false);
@@ -82,15 +92,21 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
     const cleanTitle = title.trim();
     const cleanBody = body.trim();
     if (!product.trim()) {
-      setProductError("نام محصول یا آدرس سایت را بنویس تا مشخص شود فید‌بک برای کجاست.");
+      setProductError("نام محصول را بنویس تا مشخص شود فید‌بک برای کجاست.");
       return;
     }
     const parsedProduct = parseProduct(product);
     if (!parsedProduct.ok || !parsedProduct.value) {
-      setProductError(parsedProduct.ok ? "نام محصول یا آدرس سایت را بنویس." : parsedProduct.message);
+      setProductError(parsedProduct.ok ? "نام محصول را بنویس." : parsedProduct.message);
       return;
     }
     setProductError(null);
+    const parsedSite = parseSiteUrl(siteUrl);
+    if (!parsedSite.ok) {
+      setSiteUrlError(parsedSite.message);
+      return;
+    }
+    setSiteUrlError(null);
     if (cleanTitle.length < 3 || cleanTitle.length > 140) {
       setError("عنوان باید بین ۳ تا ۱۴۰ نویسه باشد.");
       return;
@@ -105,6 +121,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
       type,
       category: type === "feedback" ? category : null,
       product: parsedProduct.value,
+      productUrl: parsedSite.value,
       title: cleanTitle,
       body: cleanBody,
     });
@@ -126,7 +143,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
   const signInHref = `/?next=${encodeURIComponent(pathname)}#account`;
   const clerkHref = `/sign-in?redirect_url=${encodeURIComponent(pathname)}`;
-  const previewBrand = productBrand(product);
+  const previewBrand = productBrand(product, siteUrl);
 
   return (
     <div
@@ -218,7 +235,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
             )}
 
             <label className="label" htmlFor="composer-product">
-              نام محصول یا آدرس سایت <span className="required">الزامی</span>
+              نام محصول <span className="required">الزامی</span>
             </label>
             <input
               id="composer-product"
@@ -227,16 +244,49 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
               maxLength={MAX_PRODUCT_LENGTH}
               aria-required="true"
               aria-invalid={productError ? true : undefined}
-              aria-describedby={productError ? "composer-product-error" : "composer-product-hint"}
+              aria-describedby={productError ? "composer-product-error" : undefined}
               onChange={(event) => {
                 setProduct(event.target.value);
                 if (productError) setProductError(null);
               }}
-              placeholder="مثلا: فروشگاه من یا example.com"
+              placeholder="مثلا: فروشگاه من"
             />
-            <p id="composer-product-hint" className="field-hint" style={{ marginTop: 0 }}>
-              فید‌بک به همین محصول وصل می‌شود و بالای کارتش نشان داده می‌شود.
+            {productError ? (
+              <p id="composer-product-error" className="field-error">
+                {productError}
+              </p>
+            ) : null}
+
+            <label className="label" htmlFor="composer-product-url">
+              آدرس سایت <span className="optional">اختیاری</span>
+            </label>
+            <input
+              id="composer-product-url"
+              className="input"
+              dir="ltr"
+              inputMode="url"
+              autoComplete="url"
+              value={siteUrl}
+              maxLength={MAX_SITE_URL_LENGTH}
+              aria-invalid={siteUrlError ? true : undefined}
+              aria-describedby={
+                siteUrlError ? "composer-product-url-error" : "composer-product-url-hint"
+              }
+              onChange={(event) => {
+                setSiteUrl(event.target.value);
+                if (siteUrlError) setSiteUrlError(null);
+              }}
+              placeholder="example.com"
+            />
+            <p id="composer-product-url-hint" className="field-hint" style={{ marginTop: 0 }}>
+              آدرس سایت را بده تا لوگوی خودش روی کارت فید‌بک بیاید.
             </p>
+            {siteUrlError ? (
+              <p id="composer-product-url-error" className="field-error">
+                {siteUrlError}
+              </p>
+            ) : null}
+
             {previewBrand ? (
               <div className="fb-composer-brand">
                 <ProductMark brand={previewBrand} size={30} />
@@ -244,14 +294,13 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
                   <span className="fb-composer-brand-name" dir="auto">
                     {previewBrand.display}
                   </span>
-                  <span className="field-hint">این نشان روی کارت فید‌بک می‌آید.</span>
+                  <span className="field-hint">
+                    {previewBrand.host
+                      ? "نشان همین سایت روی کارت می‌آید."
+                      : "بدون آدرس سایت فقط نام محصول نمایش داده می‌شود."}
+                  </span>
                 </span>
               </div>
-            ) : null}
-            {productError ? (
-              <p id="composer-product-error" className="field-error">
-                {productError}
-              </p>
             ) : null}
 
             <label className="label" htmlFor="composer-post-title">

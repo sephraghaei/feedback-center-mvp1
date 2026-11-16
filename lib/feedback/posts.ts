@@ -10,7 +10,7 @@ import {
   upvotes,
   users,
 } from "../db/schema";
-import { parseProduct } from "./product";
+import { parseProduct, parseSiteUrl, productContext } from "./product";
 import {
   FEEDBACK_CATEGORIES,
   FEEDBACK_STATUSES,
@@ -36,6 +36,7 @@ export type PostSummary = {
   type: string;
   category: string | null;
   product: string | null;
+  productUrl: string | null;
   title: string;
   body: string;
   coverPath: string | null;
@@ -97,6 +98,7 @@ function summarySelect(viewerId?: string) {
     type: posts.type,
     category: posts.category,
     product: posts.product,
+    productUrl: posts.productUrl,
     title: posts.title,
     body: posts.body,
     coverPath: posts.coverPath,
@@ -335,6 +337,7 @@ export async function createPost(input: {
   type: "feedback" | "support";
   category?: string | null;
   product?: string | null;
+  productUrl?: string | null;
   title: string;
   body: string;
 }): Promise<string> {
@@ -342,7 +345,17 @@ export async function createPost(input: {
   const body = cleanBody(input.body);
   const product = parseProduct(input.product);
   if (!product.ok) throw new PostError(product.message);
-  if (!product.value) throw new PostError("نام محصول یا آدرس سایت را بنویس.");
+  if (!product.value) throw new PostError("نام محصول را بنویس.");
+  const site = parseSiteUrl(input.productUrl);
+  if (!site.ok) throw new PostError(site.message);
+
+  let productName = product.value;
+  let productUrl = site.value;
+  const existingLink = productContext(productName);
+  if (existingLink?.href) {
+    if (!productUrl) productUrl = existingLink.href;
+    productName = new URL(existingLink.href).hostname.replace(/^www\./i, "");
+  }
 
   let category: string | null = null;
   if (input.type === "feedback") {
@@ -359,7 +372,8 @@ export async function createPost(input: {
         authorId: input.authorId,
         type: input.type,
         category,
-        product: product.value,
+        product: productName,
+        productUrl,
         title,
         body,
         status: input.type === "feedback" ? "new" : "open",
