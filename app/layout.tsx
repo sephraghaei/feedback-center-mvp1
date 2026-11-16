@@ -3,7 +3,7 @@ import { faIR } from "@clerk/localizations";
 import type { Metadata } from "next";
 import "@fontsource-variable/noto-kufi-arabic";
 import ClientLogger from "./components/client-logger";
-import { Estedad } from "./fonts";
+import { IRANSans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning className={Estedad.variable}>
+    <html lang="fa" dir="rtl" suppressHydrationWarning className={IRANSans.variable}>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -43,7 +43,7 @@ export default function RootLayout({
               colorSuccess: "var(--green)",
               colorDanger: "var(--red)",
               borderRadius: "0.625rem",
-              fontFamily: '"Estedad", system-ui, sans-serif',
+              fontFamily: '"IRANSans", system-ui, sans-serif',
               fontSize: "0.875rem",
             },
             elements: {

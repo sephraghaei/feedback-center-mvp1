@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { clientLogger } from "@/lib/client-logger";
-import { Estedad } from "./fonts";
+import { IRANSans } from "./fonts";
 
 export default function GlobalError({
   error,
@@ -49,7 +49,7 @@ export default function GlobalError({
           placeItems: "center",
           background: "var(--paper)",
           color: "var(--ink)",
-          fontFamily: Estedad.style.fontFamily,
+          fontFamily: IRANSans.style.fontFamily,
           textAlign: "center",
           padding: "2rem",
         }}
