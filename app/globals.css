@@ -20,6 +20,10 @@
   --clerk-primary: #2563eb;
   --green: #1f7a44;
   --green-soft: #e8f6ee;
+  --green-line: #cfe8da;
+  --amber: #a16207;
+  --amber-soft: #fdf6e3;
+  --amber-line: #f0dfb0;
   --red: #b42318;
   --red-soft: #fdf0ef;
   --red-line: #f7cfcb;
@@ -79,6 +83,10 @@
   --clerk-primary: #e4e9f2;
   --green: #7fd3a3;
   --green-soft: rgba(127, 211, 163, 0.11);
+  --green-line: rgba(127, 211, 163, 0.28);
+  --amber: #f0c96b;
+  --amber-soft: rgba(240, 201, 107, 0.12);
+  --amber-line: rgba(240, 201, 107, 0.3);
   --red: #ef9a94;
   --red-soft: rgba(239, 154, 148, 0.11);
   --red-line: rgba(239, 154, 148, 0.28);

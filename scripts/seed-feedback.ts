@@ -77,7 +77,7 @@ async function main(): Promise<void> {
       {
         authorId: sepideh.id,
         type: "feedback",
-        category: "feature",
+        category: "improvement",
         title: "پیگیری وضعیت درخواست‌ها در یک صفحه",
         product: "دستیار",
         body: "هر بار باید بین ایمیل و پیام‌ها دنبال پاسخ بگردم.\n\nیک صفحه می‌خواهم که همه درخواست‌هایم با **وضعیت به‌روز** در آن باشد.",
@@ -110,7 +110,7 @@ async function main(): Promise<void> {
       {
         authorId: sepideh.id,
         type: "feedback",
-        category: "feature",
+        category: "improvement",
         title: "لینک عمومی برای اشتراک‌گذاری نقشه راه",
         product: "دستیار",
         body: "می‌خواهم نقشه راه را با هم‌تیمی‌ها به اشتراک بگذارم. یک لینک کوتاه و ثابت برای این کار کافی است.",
@@ -154,7 +154,7 @@ async function main(): Promise<void> {
       {
         authorId: reza.id,
         type: "feedback",
-        category: "feature",
+        category: "improvement",
         title: "تاریخ شمسی روی کارت‌های فید",
         product: "دستیار",
         body: "تاریخ‌ها به شمسی باشند تا خواندنشان برای تیم ما ساده‌تر شود.",

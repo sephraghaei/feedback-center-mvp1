@@ -47,6 +47,7 @@ export async function saveProfileAction(input: unknown): Promise<Result> {
 
 export async function createPostAction(input: {
   type: string;
+  category?: string | null;
   product?: string | null;
   productUrl?: string | null;
   title: string;
@@ -64,6 +65,7 @@ export async function createPostAction(input: {
     const id = await createPost({
       authorId: viewer.userId,
       type: input.type,
+      category: input.category,
       product: input.product,
       productUrl: input.productUrl,
       title: input.title,

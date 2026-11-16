@@ -567,13 +567,65 @@
   padding: 10px 12px;
   border: 1px solid var(--hairline);
   border-radius: 12px;
-  background: var(--surface);
+  background-color: var(--surface);
   transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.kind-bug {
+  --kind: var(--red);
+  --kind-soft: var(--red-soft);
+  --kind-line: var(--red-line);
+}
+
+.kind-praise {
+  --kind: var(--green);
+  --kind-soft: var(--green-soft);
+  --kind-line: var(--green-line);
+}
+
+.kind-improvement {
+  --kind: var(--amber);
+  --kind-soft: var(--amber-soft);
+  --kind-line: var(--amber-line);
+}
+
+.fb-card.kind-bug,
+.fb-card.kind-praise,
+.fb-card.kind-improvement {
+  border-inline-start: 3px solid var(--kind);
+  background-image: linear-gradient(to left, var(--kind-soft), transparent 46%);
+}
+
+.fb-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 0.12rem 0.5rem;
+  border: 1px solid var(--kind-line);
+  border-radius: var(--pill);
+  background: var(--kind-soft);
+  color: var(--kind);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.7;
+  white-space: nowrap;
+}
+
+.fb-kind svg {
+  width: 12px;
+  height: 12px;
 }
 
 .fb-card:hover {
   border-color: var(--hairline-strong);
-  background: color-mix(in srgb, var(--wash) 45%, var(--surface));
+  background-color: color-mix(in srgb, var(--wash) 45%, var(--surface));
+}
+
+.fb-card.kind-bug:hover,
+.fb-card.kind-praise:hover,
+.fb-card.kind-improvement:hover {
+  border-inline-start-color: var(--kind);
 }
 
 .fb-card:has(.fb-card-title a:focus-visible) {
@@ -638,16 +690,26 @@
   color: var(--ink-4);
 }
 
-.fb-card-brand {
-  display: inline-flex;
+.fb-card-head {
+  display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
-  color: var(--ink-3);
+  padding-bottom: 2px;
 }
 
-.fb-card-brand .fb-mark {
-  border-radius: 5px;
+.fb-card-company {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  color: var(--ink-2);
+}
+
+.fb-card-company .fb-mark {
+  border-radius: 7px;
+  box-shadow: 0 0 0 1px var(--hairline);
 }
 
 .fb-card-date {
@@ -663,9 +725,10 @@
 }
 
 .fb-card-product {
-  max-width: 11rem;
+  max-width: 100%;
   overflow: hidden;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -2348,6 +2411,49 @@ a.fb-product-name:hover {
   background: var(--surface);
   color: var(--ink);
   box-shadow: var(--shadow-sm);
+}
+
+.fb-kind-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fb-kind-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.fb-kind-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink-3);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.fb-kind-option:hover {
+  border-color: var(--kind-line);
+  background: var(--kind-soft);
+  color: var(--kind);
+}
+
+.fb-kind-option.active {
+  border-color: var(--kind);
+  background: var(--kind-soft);
+  color: var(--kind);
+  font-weight: 600;
 }
 
 .fb-form {
@@ -5197,6 +5303,14 @@ a.fb-product-name:hover {
 
   .fb-card-excerpt {
     font-size: 0.84rem;
+  }
+
+  .fb-card-product {
+    font-size: 0.86rem;
+  }
+
+  .fb-kind {
+    font-size: 0.74rem;
   }
 }
 

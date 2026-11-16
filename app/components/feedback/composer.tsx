@@ -11,18 +11,26 @@ import {
   parseSiteUrl,
   productBrand,
 } from "@/lib/feedback/product";
+import { KIND_LABELS, type FeedbackKind } from "@/lib/feedback/labels";
 import FormatToolbar from "./format-toolbar";
-import { CloseIcon } from "./icons";
+import { AlertIcon, BulbIcon, CloseIcon, HeartIcon } from "./icons";
 import Markdown from "./markdown";
 import ProductMark from "./product-mark";
 
 type HeaderViewer = { name: string; role: "customer" | "admin" } | null;
+
+const KIND_OPTIONS = [
+  { value: "bug", label: KIND_LABELS.bug, Icon: AlertIcon },
+  { value: "praise", label: KIND_LABELS.praise, Icon: HeartIcon },
+  { value: "improvement", label: KIND_LABELS.improvement, Icon: BulbIcon },
+] as const;
 
 export default function Composer({ viewer }: { viewer: HeaderViewer }) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<"feedback" | "support">("feedback");
+  const [kind, setKind] = useState<FeedbackKind>("improvement");
   const [product, setProduct] = useState("");
   const [productError, setProductError] = useState<string | null>(null);
   const [siteUrl, setSiteUrl] = useState("");
@@ -60,6 +68,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
   function resetDraft() {
     setType("feedback");
+    setKind("improvement");
     setProduct("");
     setProductError(null);
     setSiteUrl("");
@@ -116,6 +125,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
     setSubmitting(true);
     const result = await createPostAction({
       type,
+      category: kind,
       product: parsedProduct.value,
       productUrl: parsedSite.value,
       title: cleanTitle,
@@ -208,7 +218,27 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
               <p className="fb-note" style={{ marginTop: 0 }}>
                 این درخواست عمومی نمی‌شود و فقط نویسنده و مدیر آن را می‌بینند.
               </p>
-            ) : null}
+            ) : (
+              <div className="fb-kind-field">
+                <span className="label" id="composer-kind-label">
+                  نوع فید‌بک
+                </span>
+                <div className="fb-kind-picker" role="group" aria-labelledby="composer-kind-label">
+                  {KIND_OPTIONS.map(({ value, label, Icon }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      aria-pressed={kind === value}
+                      className={`fb-kind-option kind-${value} ${kind === value ? "active" : ""}`}
+                      onClick={() => setKind(value)}
+                    >
+                      <Icon size={15} />
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <label className="label" htmlFor="composer-product">
               نام محصول <span className="required">الزامی</span>

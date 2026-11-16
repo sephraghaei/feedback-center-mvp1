@@ -16,6 +16,7 @@ import {
   ROADMAP_STATUSES,
   SUPPORT_STATUSES,
 } from "./constants";
+import { isFeedbackKind, type FeedbackKind } from "./labels";
 
 export {
   FEEDBACK_STATUSES,
@@ -340,9 +341,16 @@ function cleanBody(value: string): string {
   return body;
 }
 
+function cleanCategory(value: string | null | undefined): FeedbackKind {
+  if (!value) return "improvement";
+  if (!isFeedbackKind(value)) throw new PostError("نوع فید‌بک باید خطا، تشکر یا بهبود باشد.");
+  return value;
+}
+
 export async function createPost(input: {
   authorId: string;
   type: "feedback" | "support";
+  category?: string | null;
   product?: string | null;
   productUrl?: string | null;
   title: string;
@@ -350,6 +358,7 @@ export async function createPost(input: {
 }): Promise<string> {
   const title = cleanTitle(input.title);
   const body = cleanBody(input.body);
+  const category = input.type === "feedback" ? cleanCategory(input.category) : null;
   const product = parseProduct(input.product);
   if (!product.ok) throw new PostError(product.message);
   if (!product.value) throw new PostError("نام محصول را بنویس.");
@@ -370,6 +379,7 @@ export async function createPost(input: {
       .values({
         authorId: input.authorId,
         type: input.type,
+        category,
         product: productName,
         productUrl,
         title,

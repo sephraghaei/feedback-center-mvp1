@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { excerpt, type PostSummary } from "@/lib/feedback/posts";
-import { TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
+import { TYPE_LABELS, faDate, faNumber, feedbackKind } from "@/lib/feedback/labels";
 import { productBrand } from "@/lib/feedback/product";
 import ProductMark from "./product-mark";
 import StatusChip from "./status-chip";
@@ -8,6 +8,7 @@ import VoteButton from "./vote-button";
 import PostOwnerActions from "./post-owner-actions";
 import QuickComment from "./quick-comment";
 import ShareButton from "./share-button";
+import FeedbackKindBadge from "./kind-badge";
 import { CommentIcon } from "./icons";
 
 export default function PostCard({
@@ -28,9 +29,10 @@ export default function PostCard({
   const brand = productBrand(post.product, post.productUrl);
   const href = `/p/${post.id}`;
   const snippet = excerpt(post.body);
+  const kind = feedbackKind(post.type, post.category);
 
   return (
-    <article className="fb-card">
+    <article className={`fb-card${kind ? ` kind-${kind}` : ""}`}>
       {vote ? (
         <div className="fb-card-vote">
           <VoteButton
@@ -44,16 +46,10 @@ export default function PostCard({
       ) : null}
 
       <div className="fb-card-main">
-        <h3 className="fb-card-title">
-          <Link href={href}>{post.title}</Link>
-        </h3>
-
-        {snippet ? <p className="fb-card-excerpt">{snippet}</p> : null}
-
-        <p className="fb-card-meta">
-          <span className="fb-card-brand">
+        <div className="fb-card-head">
+          <span className="fb-card-company">
             {brand ? (
-              <ProductMark brand={brand} size={16} />
+              <ProductMark brand={brand} size={28} />
             ) : (
               <span className="fb-mark fb-mark-plain" aria-hidden="true">
                 ؟
@@ -64,6 +60,16 @@ export default function PostCard({
             </span>
           </span>
 
+          {kind ? <FeedbackKindBadge kind={kind} /> : null}
+        </div>
+
+        <h3 className="fb-card-title">
+          <Link href={href}>{post.title}</Link>
+        </h3>
+
+        {snippet ? <p className="fb-card-excerpt">{snippet}</p> : null}
+
+        <p className="fb-card-meta">
           {showType ? (
             <span className="fb-card-type">
               <span className="fb-dot" aria-hidden="true" />

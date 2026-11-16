@@ -281,3 +281,31 @@ export function SmileIcon(props: IconProps) {
     </Icon>
   );
 }
+
+export function AlertIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3.7 2.6 19.2a1.5 1.5 0 0 0 1.3 2.3h16.2a1.5 1.5 0 0 0 1.3-2.3L12 3.7z" />
+      <path d="M12 9.4v4.6" />
+      <path d="M12 17.6h.01" />
+    </Icon>
+  );
+}
+
+export function HeartIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M20.8 5.7a5.6 5.6 0 0 0-7.9 0L12 6.6l-.9-.9a5.6 5.6 0 1 0-7.9 7.9l.9.9L12 22l7.9-7.5.9-.9a5.6 5.6 0 0 0 0-7.9z" />
+    </Icon>
+  );
+}
+
+export function BulbIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M9 18h6" />
+      <path d="M10 21h4" />
+      <path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z" />
+    </Icon>
+  );
+}

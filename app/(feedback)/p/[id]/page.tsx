@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import AdminPostActions from "@/app/components/feedback/admin-post-actions";
 import Avatar from "@/app/components/feedback/avatar";
 import CommentSection from "@/app/components/feedback/comment-section";
+import FeedbackKindBadge from "@/app/components/feedback/kind-badge";
 import Markdown from "@/app/components/feedback/markdown";
 import MoveMenu from "@/app/components/feedback/move-menu";
 import PostOwnerActions from "@/app/components/feedback/post-owner-actions";
@@ -13,7 +14,7 @@ import StatusChip from "@/app/components/feedback/status-chip";
 import VoteButton from "@/app/components/feedback/vote-button";
 import { CommentIcon, VoteUpIcon } from "@/app/components/feedback/icons";
 import { listComments } from "@/lib/feedback/comments";
-import { TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
+import { TYPE_LABELS, faDate, faNumber, feedbackKind } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
 import { productContext } from "@/lib/feedback/product";
 import { getPostDetail, isUuid, listFeed } from "@/lib/feedback/posts";
@@ -44,6 +45,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
   const isAuthor = viewer?.userId === post.authorId;
   const cover = post.coverPath ? mediaUrl(post.coverPath) : "";
   const isSupport = post.type === "support";
+  const kind = feedbackKind(post.type, post.category);
   const showVote = !isSupport && !post.hidden;
   const source = productContext(post.product);
 
@@ -77,6 +79,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           {source ? <ProductTag product={post.product} productUrl={post.productUrl} /> : null}
 
           <div className="fb-card-top">
+            {kind ? <FeedbackKindBadge kind={kind} /> : null}
             {isSupport || isAuthor ? (
               <span className="fb-chip">{TYPE_LABELS[post.type] ?? post.type}</span>
             ) : null}
