@@ -1,10 +1,7 @@
-import type { CSSProperties } from "react";
 import Link from "next/link";
-import { excerpt, type PostSummary } from "@/lib/feedback/posts";
+import type { PostSummary } from "@/lib/feedback/posts";
 import { TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
-import { mediaUrl } from "@/lib/feedback/media";
 import { productBrand } from "@/lib/feedback/product";
-import Avatar from "./avatar";
 import ProductMark from "./product-mark";
 import StatusChip from "./status-chip";
 import VoteButton from "./vote-button";
@@ -28,118 +25,103 @@ export default function PostCard({
   vote?: boolean;
   ownerActions?: boolean;
 }) {
-  const cover = post.coverPath ? mediaUrl(post.coverPath) : "";
   const brand = productBrand(post.product, post.productUrl);
-  const author = post.authorName ?? "کاربر";
   const href = `/p/${post.id}`;
 
   return (
-    <article
-      className="fb-card"
-      data-spotlight
-      style={brand ? ({ "--card-hue": brand.hue } as CSSProperties) : undefined}
-    >
-      {cover ? (
-        <Link href={href} aria-label={post.title} className="fb-card-cover-link">
-          <img className="fb-cover" src={cover} alt="" loading="lazy" />
-        </Link>
+    <article className="fb-card">
+      {vote ? (
+        <div className="fb-card-vote">
+          <VoteButton
+            postId={post.id}
+            count={post.upvotes}
+            upvoted={post.viewerUpvoted}
+            signedIn={signedIn}
+            nextPath={nextPath}
+          />
+        </div>
       ) : null}
 
-      <div className="fb-card-body">
-        <div className="fb-card-head">
-          <span className="fb-card-mark">
+      <div className="fb-card-main">
+        <h3 className="fb-card-title">
+          <Link href={href}>{post.title}</Link>
+        </h3>
+
+        <p className="fb-card-meta">
+          <span className="fb-card-brand">
             {brand ? (
-              <ProductMark brand={brand} size={38} />
+              <ProductMark brand={brand} size={16} />
             ) : (
               <span className="fb-mark fb-mark-plain" aria-hidden="true">
                 ؟
               </span>
             )}
-          </span>
-
-          <div className="fb-card-id">
             <span className="fb-card-product" dir="auto">
               {brand?.display ?? "بدون محصول"}
             </span>
-            <span className="fb-card-context">
-              {showType ? (
-                <>
-                  <span>{TYPE_LABELS[post.type] ?? post.type}</span>
-                  <span className="fb-dot" aria-hidden="true" />
-                </>
-              ) : null}
-              <time dateTime={new Date(post.createdAt).toISOString()}>{faDate(post.createdAt)}</time>
-            </span>
-          </div>
+          </span>
 
-          <div className="fb-card-status">
+          {showType ? (
+            <span className="fb-card-type">
+              <span className="fb-dot" aria-hidden="true" />
+              <span>{TYPE_LABELS[post.type] ?? post.type}</span>
+            </span>
+          ) : null}
+
+          <span className="fb-card-date">
+            <span className="fb-dot" aria-hidden="true" />
+            <time dateTime={new Date(post.createdAt).toISOString()}>{faDate(post.createdAt)}</time>
+          </span>
+
+          <span className="fb-card-status">
             <StatusChip status={post.status} />
             {post.hidden ? <span className="fb-chip urgent">پنهان</span> : null}
-          </div>
-        </div>
-
-        <h3 className="fb-card-title">
-          <Link href={href}>{post.title}</Link>
-        </h3>
-
-        <p className="fb-excerpt">{excerpt(post.body)}</p>
-
-        <div className="fb-card-foot">
-          <span className="fb-card-author">
-            <Avatar name={author} src={post.authorAvatarPath ? mediaUrl(post.authorAvatarPath) : null} size={22} />
-            <span className="fb-author">{author}</span>
           </span>
-          {ownerActions ? (
-            <PostOwnerActions
+        </p>
+      </div>
+
+      <div className="fb-card-rail">
+        {ownerActions ? (
+          <PostOwnerActions
+            postId={post.id}
+            redirectTo={nextPath}
+            label={post.type === "support" ? "حذف درخواست" : "حذف فید‌بک"}
+            confirmText={
+              post.type === "support"
+                ? "این درخواست پشتیبانی برای همیشه حذف شود؟"
+                : "این فید‌بک با همه کامنت‌هایش برای همیشه حذف شود؟"
+            }
+          />
+        ) : null}
+
+        {post.type === "feedback" ? (
+          post.hidden ? (
+            <Link
+              href={`${href}#comments`}
+              className="fb-action-btn"
+              aria-label={`${faNumber(post.commentCount)} کامنت`}
+              title="دیدن کامنت‌ها"
+            >
+              <CommentIcon size={15} />
+              <span>{faNumber(post.commentCount)}</span>
+            </Link>
+          ) : (
+            <QuickComment
               postId={post.id}
-              redirectTo={nextPath}
-              label={post.type === "support" ? "حذف درخواست" : "حذف فید‌بک"}
-              confirmText={
-                post.type === "support"
-                  ? "این درخواست پشتیبانی برای همیشه حذف شود؟"
-                  : "این فید‌بک با همه کامنت‌هایش برای همیشه حذف شود؟"
-              }
+              count={post.commentCount}
+              signedIn={signedIn}
+              nextPath={nextPath}
             />
-          ) : null}
-          <div className="fb-card-actions">
-            {vote ? (
-              <VoteButton
-                postId={post.id}
-                count={post.upvotes}
-                upvoted={post.viewerUpvoted}
-                signedIn={signedIn}
-                nextPath={nextPath}
-              />
-            ) : (
-              <Link href={href} className="fb-card-open">
-                مشاهده
-              </Link>
-            )}
-            {post.type === "feedback" ? (
-              <>
-                {post.hidden ? (
-                  <Link
-                    href={`${href}#comments`}
-                    className="fb-action-btn"
-                    aria-label={`${faNumber(post.commentCount)} کامنت`}
-                    title="دیدن کامنت‌ها"
-                  >
-                    <CommentIcon size={15} />
-                    <span>{faNumber(post.commentCount)}</span>
-                  </Link>
-                ) : (
-                  <QuickComment
-                    postId={post.id}
-                    count={post.commentCount}
-                    signedIn={signedIn}
-                    nextPath={nextPath}
-                  />
-                )}
-                {post.hidden ? null : <ShareButton path={href} title={post.title} />}
-              </>
-            ) : null}
-          </div>
-        </div>
+          )
+        ) : (
+          <Link href={href} className="fb-card-open">
+            مشاهده
+          </Link>
+        )}
+
+        {post.type === "feedback" && !post.hidden ? (
+          <ShareButton path={href} title={post.title} />
+        ) : null}
       </div>
     </article>
   );

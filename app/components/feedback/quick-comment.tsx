@@ -56,10 +56,11 @@ export default function QuickComment({
       return;
     }
 
-    const rect = trigger.getBoundingClientRect();
+    const anchor = trigger.closest<HTMLElement>(".fb-card") ?? trigger;
+    const rect = anchor.getBoundingClientRect();
     const width = panel.offsetWidth;
     const height = panel.offsetHeight;
-    const x = Math.max(EDGE, Math.min(rect.left, window.innerWidth - width - EDGE));
+    const x = Math.max(EDGE, Math.min(trigger.getBoundingClientRect().left, window.innerWidth - width - EDGE));
     let y = rect.bottom + GAP;
     let above = false;
 
@@ -274,6 +275,7 @@ export default function QuickComment({
       >
         <CommentIcon size={15} />
         <span className={`fb-action-count ${bump ? "bump" : ""}`}>{faNumber(total)}</span>
+        <span className="fb-action-label">کامنت</span>
       </button>
       {panel}
       <span className="sr-only" role="status">
