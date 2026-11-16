@@ -1,9 +1,8 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { saveProfileAction } from "@/app/feedback-actions";
-import { AVATAR_MAX_BYTES, AVATAR_TYPES } from "@/lib/feedback/constants";
 import { mediaUrl } from "@/lib/feedback/media";
 import { toPersianDigits } from "@/lib/phone";
 import { MAX_BIO_LENGTH, SEX_OPTIONS } from "@/lib/profile";
@@ -17,13 +16,6 @@ type ProfileValues = {
   sex: string;
   avatarPath: string | null;
 };
-
-type UploadResponse = {
-  files?: { path: string }[];
-  message?: string;
-};
-
-const UPLOAD_ACCEPT = AVATAR_TYPES.join(",");
 
 export default function ProfileEditor({
   profile,
@@ -39,16 +31,13 @@ export default function ProfileEditor({
   children?: ReactNode;
 }) {
   const router = useRouter();
-  const fileRef = useRef<HTMLInputElement>(null);
   const [values, setValues] = useState<ProfileValues>(profile);
   const [draft, setDraft] = useState<ProfileValues>(profile);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const avatarSrc = values.avatarPath ? mediaUrl(values.avatarPath) || null : null;
-  const draftAvatarSrc = draft.avatarPath ? mediaUrl(draft.avatarPath) || null : null;
 
   function startEditing() {
     setDraft(values);
@@ -66,57 +55,9 @@ export default function ProfileEditor({
     setDraft((current) => ({ ...current, ...patchValue }));
   }
 
-  function pickAvatar(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-    if (!AVATAR_TYPES.includes(file.type)) {
-      setError("برای عکس پروفایل فقط PNG، JPG، WebP یا GIF مجاز است.");
-      return;
-    }
-    if (file.size > AVATAR_MAX_BYTES) {
-      setError("حجم عکس پروفایل باید کمتر از ۴ مگابایت باشد.");
-      return;
-    }
-
-    setError(null);
-    setProgress(0);
-    const form = new FormData();
-    form.append("files", file);
-    form.append("kind", "avatar");
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/uploads");
-    xhr.upload.onprogress = (progressEvent) => {
-      if (!progressEvent.lengthComputable) return;
-      setProgress(Math.round((progressEvent.loaded / progressEvent.total) * 100));
-    };
-    xhr.onload = () => {
-      let data: UploadResponse = {};
-      try {
-        data = JSON.parse(xhr.responseText) as UploadResponse;
-      } catch {
-        data = {};
-      }
-      const uploaded = data.files?.[0];
-      if (xhr.status === 200 && uploaded) {
-        patch({ avatarPath: uploaded.path });
-        setProgress(null);
-        return;
-      }
-      setProgress(null);
-      setError(data.message ?? "بارگذاری عکس انجام نشد.");
-    };
-    xhr.onerror = () => {
-      setProgress(null);
-      setError("بارگذاری عکس انجام نشد. اتصال را بررسی کن.");
-    };
-    xhr.send(form);
-  }
-
   async function save(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (saving || progress !== null) return;
+    if (saving) return;
     setSaving(true);
     setError(null);
 
@@ -146,49 +87,11 @@ export default function ProfileEditor({
         <div className="fb-profile-avatar-wrap">
           <Avatar
             name={editing ? draft.name : values.name}
-            src={editing ? draftAvatarSrc : avatarSrc}
+            src={avatarSrc}
             size={96}
             className="fb-profile-avatar"
           />
-          {editing ? (
-            <button
-              type="button"
-              className="fb-profile-avatar-btn"
-              onClick={() => fileRef.current?.click()}
-              disabled={progress !== null || saving}
-            >
-              تغییر عکس
-            </button>
-          ) : null}
-          <input
-            ref={fileRef}
-            type="file"
-            accept={UPLOAD_ACCEPT}
-            className="sr-only"
-            onChange={pickAvatar}
-            tabIndex={-1}
-            aria-hidden="true"
-          />
         </div>
-        {editing ? (
-          <div className="fb-profile-avatar-meta">
-            {progress !== null ? (
-              <span className="field-hint">بارگذاری {toPersianDigits(String(progress))}٪</span>
-            ) : (
-              <span className="field-hint">PNG، JPG یا WebP تا ۴ مگابایت</span>
-            )}
-            {draft.avatarPath ? (
-              <button
-                type="button"
-                className="fb-profile-avatar-remove"
-                onClick={() => patch({ avatarPath: null })}
-                disabled={saving}
-              >
-                حذف عکس
-              </button>
-            ) : null}
-          </div>
-        ) : null}
       </div>
 
       <div className="fb-profile-identity">
@@ -271,7 +174,7 @@ export default function ProfileEditor({
               <button
                 type="submit"
                 className="fb-btn fb-btn-primary"
-                disabled={saving || progress !== null || draft.name.trim().length < 2}
+                disabled={saving || draft.name.trim().length < 2}
               >
                 {saving ? "در حال ذخیره..." : "ذخیره تغییرات"}
               </button>

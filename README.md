@@ -40,7 +40,7 @@ Login works with a phone number through Kavenegar SMS or with an email through R
 
 Email and Google sign-in run through Clerk. `npx clerk init` writes development keys to `.env.local` (gitignored); in production set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` from the Clerk dashboard. The interface stays Persian and RTL through the `faIR` localization. Clerk users are linked to the same `users`/`profiles` tables by `clerk_id`, so the profile step and account card behave the same as phone login.
 
-Feedback attachments are stored in Supabase Storage. Set `SUPABASE_SERVICE_ROLE_KEY` from Supabase Project Settings, then API to enable uploads; it is server only and must never be a `NEXT_PUBLIC_*` variable. The app creates the public `post-media` bucket on first upload. Without the key the rest of the site works, but the composer answers that storage is not configured on the server. Files are limited to 5 per post, 10 MB each, images and PDF.
+File uploads are disabled: the composer has no attachments and profiles have no avatar upload. Existing media URLs still render through `NEXT_PUBLIC_SUPABASE_URL`, and no server-only Supabase key is needed.
 
 ## Admin panel
 
@@ -63,7 +63,6 @@ BETTER_AUTH_URL
 DATABASE_URL
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-SUPABASE_SERVICE_ROLE_KEY
 BETTER_AUTH_SECRET
 ADMIN_PASSWORD
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY

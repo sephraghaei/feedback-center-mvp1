@@ -18,7 +18,7 @@ import { getProfile } from "@/lib/user-store";
 import { OTP_LENGTH } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "مرکز فید‌بک | وسا",
+  title: "وسا",
   description: "فید‌بک کاربران و تغییرات منتشر شده در یک جا، شفاف و بدون واسطه. نقشه راه هم به زودی اضافه می‌شود.",
 };
 
@@ -62,11 +62,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           <span className="fb-aura-grid" />
         </div>
         <div className="fb-hero-inner">
-          <p className="fb-eyebrow fb-eyebrow-chip">
-            <BrandMark className="eyebrow-mark" simple />
-            <span>مرکز فید‌بک</span>
-            <span className="fb-live-dot" aria-hidden="true" />
-          </p>
           <h1 className="fb-title">
             <span className="sr-only">به هر وب‌سایت، اپلیکیشن، فروشگاه یا محصولی فیدبک بده.</span>
             <span className="fb-title-line" aria-hidden="true">

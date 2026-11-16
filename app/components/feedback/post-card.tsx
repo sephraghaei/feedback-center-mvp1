@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { excerpt, type PostSummary } from "@/lib/feedback/posts";
-import { CATEGORY_LABELS, TYPE_LABELS, faDate } from "@/lib/feedback/labels";
+import { CATEGORY_LABELS, TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
 import { productBrand } from "@/lib/feedback/product";
 import Avatar from "./avatar";
@@ -9,6 +9,8 @@ import ProductMark from "./product-mark";
 import StatusChip from "./status-chip";
 import VoteButton from "./vote-button";
 import PostOwnerActions from "./post-owner-actions";
+import ShareButton from "./share-button";
+import { CommentIcon } from "./icons";
 
 export default function PostCard({
   post,
@@ -105,19 +107,35 @@ export default function PostCard({
               }
             />
           ) : null}
-          {vote ? (
-            <VoteButton
-              postId={post.id}
-              count={post.upvotes}
-              upvoted={post.viewerUpvoted}
-              signedIn={signedIn}
-              nextPath={nextPath}
-            />
-          ) : (
-            <Link href={href} className="fb-card-open">
-              مشاهده
-            </Link>
-          )}
+          <div className="fb-card-actions">
+            {vote ? (
+              <VoteButton
+                postId={post.id}
+                count={post.upvotes}
+                upvoted={post.viewerUpvoted}
+                signedIn={signedIn}
+                nextPath={nextPath}
+              />
+            ) : (
+              <Link href={href} className="fb-card-open">
+                مشاهده
+              </Link>
+            )}
+            {post.type === "feedback" ? (
+              <>
+                <Link
+                  href={`${href}#comments`}
+                  className="fb-action-btn"
+                  aria-label={`${faNumber(post.commentCount)} کامنت`}
+                  title="دیدن کامنت‌ها"
+                >
+                  <CommentIcon size={15} />
+                  <span>{faNumber(post.commentCount)}</span>
+                </Link>
+                {post.hidden ? null : <ShareButton path={href} title={post.title} />}
+              </>
+            ) : null}
+          </div>
         </div>
       </div>
     </article>

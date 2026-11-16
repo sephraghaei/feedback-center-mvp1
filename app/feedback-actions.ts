@@ -12,12 +12,10 @@ import {
   removePost,
   setPostHidden,
   toggleUpvote,
-  type AttachmentInput,
 } from "@/lib/feedback/posts";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
-import { deleteObject } from "@/lib/feedback/storage";
 import { validateProfile } from "@/lib/profile";
-import { getProfile, saveProfile } from "@/lib/user-store";
+import { saveProfile } from "@/lib/user-store";
 
 type Result = { ok: true } | { ok: false; error: string };
 
@@ -39,15 +37,7 @@ export async function saveProfileAction(input: unknown): Promise<Result> {
   }
 
   try {
-    const previous = await getProfile(viewer.userId);
     await saveProfile(viewer.userId, profile);
-    if (
-      previous?.avatarPath &&
-      previous.avatarPath !== profile.avatarPath &&
-      previous.avatarPath.startsWith(`avatars/${viewer.userId}/`)
-    ) {
-      await deleteObject(previous.avatarPath);
-    }
     revalidatePath("/", "layout");
     return { ok: true };
   } catch (error) {
@@ -61,8 +51,6 @@ export async function createPostAction(input: {
   product?: string | null;
   title: string;
   body: string;
-  attachments: AttachmentInput[];
-  coverPath?: string | null;
 }): Promise<{ ok: true; id: string } | { ok: false; error: string; signIn?: boolean }> {
   const viewer = await getViewer();
   if (!viewer) {
@@ -80,8 +68,6 @@ export async function createPostAction(input: {
       product: input.product,
       title: input.title,
       body: input.body,
-      attachments: Array.isArray(input.attachments) ? input.attachments : [],
-      coverPath: input.coverPath,
     });
     revalidatePath("/feed");
     revalidatePath("/roadmap");

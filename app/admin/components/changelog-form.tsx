@@ -58,7 +58,7 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
           id="entry-title"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="مثلا: ارسال پیوست حالا ساده‌تر شد"
+          placeholder="مثلا: جستجوی فیدبک‌ها حالا ساده‌تر شد"
           maxLength={140}
           minLength={3}
           required

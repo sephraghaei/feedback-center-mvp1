@@ -9,8 +9,10 @@ import Markdown from "@/app/components/feedback/markdown";
 import MoveMenu from "@/app/components/feedback/move-menu";
 import PostOwnerActions from "@/app/components/feedback/post-owner-actions";
 import ProductTag from "@/app/components/feedback/product-tag";
+import ShareButton from "@/app/components/feedback/share-button";
 import StatusChip from "@/app/components/feedback/status-chip";
 import VoteButton from "@/app/components/feedback/vote-button";
+import { CommentIcon, VoteUpIcon } from "@/app/components/feedback/icons";
 import { listComments } from "@/lib/feedback/comments";
 import { CATEGORY_LABELS, TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
@@ -112,15 +114,6 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             <span className="fb-author">{post.authorName ?? "کاربر"}</span>
             <span className="fb-dot" aria-hidden="true" />
             <time dateTime={post.createdAt.toISOString()}>{faDate(post.createdAt)}</time>
-            {showVote ? (
-              <VoteButton
-                postId={post.id}
-                count={post.upvotes}
-                upvoted={post.viewerUpvoted}
-                signedIn={Boolean(viewer)}
-                nextPath={`/p/${post.id}`}
-              />
-            ) : null}
           </div>
         </header>
 
@@ -132,6 +125,30 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           </div>
           <Markdown source={post.body} />
         </section>
+
+        {isSupport ? null : (
+          <div className="fb-detail-actions">
+            {showVote ? (
+              <VoteButton
+                postId={post.id}
+                count={post.upvotes}
+                upvoted={post.viewerUpvoted}
+                signedIn={Boolean(viewer)}
+                nextPath={`/p/${post.id}`}
+              />
+            ) : null}
+            <a
+              href="#comments"
+              className="fb-action-btn"
+              aria-label={`${faNumber(post.commentCount)} کامنت`}
+              title="رفتن به گفتگو"
+            >
+              <CommentIcon size={15} />
+              <span>{faNumber(post.commentCount)}</span>
+            </a>
+            {post.hidden ? null : <ShareButton path={`/p/${post.id}`} title={post.title} label />}
+          </div>
+        )}
 
       {post.attachments.length > 0 ? (
         <div className="fb-attachments">
@@ -213,20 +230,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
                 <Link key={item.id} href={`/p/${item.id}`} className="fb-related-row">
                   <strong>{item.title}</strong>
                   <span className="fb-related-votes">
-                    <svg
-                      width="11"
-                      height="11"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="M12 19V5" />
-                      <path d="M5 12l7-7 7 7" />
-                    </svg>
+                    <VoteUpIcon size={11} />
                     {faNumber(item.upvotes)}
                   </span>
                 </Link>

@@ -8,7 +8,9 @@ import type { CommentView } from "@/lib/feedback/comments";
 import { faDate, faNumber } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
 import Avatar from "./avatar";
-import EmojiPicker from "./emoji-picker";
+import FormatToolbar from "./format-toolbar";
+import { CommentIcon, ReplyIcon, TrashIcon, VoteDownIcon, VoteUpIcon } from "./icons";
+import Markdown from "./markdown";
 
 function CommentComposer({
   value,
@@ -35,18 +37,6 @@ function CommentComposer({
 }) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  function insertEmoji(emoji: string) {
-    const el = inputRef.current;
-    const start = el?.selectionStart ?? value.length;
-    const end = el?.selectionEnd ?? start;
-    onChange(value.slice(0, start) + emoji + value.slice(end));
-    requestAnimationFrame(() => {
-      el?.focus();
-      const position = start + emoji.length;
-      el?.setSelectionRange(position, position);
-    });
-  }
-
   return (
     <form className={`fb-comment-form ${compact ? "compact" : ""}`} onSubmit={onSubmit}>
       <textarea
@@ -60,10 +50,10 @@ function CommentComposer({
         aria-label={submitLabel}
         autoFocus={autoFocus}
       />
+      <FormatToolbar value={value} onChange={onChange} textareaRef={inputRef} compact />
       <div className="fb-comment-form-foot">
         <span className="fb-comment-hint">{faNumber(value.trim().length)} از ۲۰۰۰ نویسه</span>
         <div className="fb-comment-foot-actions">
-          <EmojiPicker onPick={insertEmoji} />
           {onCancel ? (
             <button type="button" className="fb-btn fb-btn-ghost fb-btn-sm" onClick={onCancel}>
               بی‌خیال
@@ -120,7 +110,7 @@ function CommentRow({
           {item.authorId === postAuthorId ? <span className="fb-comment-badge">نویسنده</span> : null}
           <time dateTime={new Date(item.createdAt).toISOString()}>{faDate(item.createdAt)}</time>
         </div>
-        <p className="fb-comment-body">{item.body}</p>
+        <Markdown source={item.body} className="fb-prose fb-comment-body" />
         <div className="fb-comment-actions">
           <div className={`fb-cvote ${item.myVote === 1 ? "up" : item.myVote === -1 ? "down" : ""}`}>
             <button
@@ -132,20 +122,7 @@ function CommentRow({
               aria-label="رای مثبت به این کامنت"
               title="رای مثبت"
             >
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 19V5" />
-                <path d="M5 12l7-7 7 7" />
-              </svg>
+              <VoteUpIcon size={13} />
             </button>
             <span className="fb-cvote-score">{faNumber(item.score)}</span>
             <button
@@ -157,24 +134,12 @@ function CommentRow({
               aria-label="رای منفی به این کامنت"
               title="رای منفی"
             >
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 5v14" />
-                <path d="M19 12l-7 7-7-7" />
-              </svg>
+              <VoteDownIcon size={13} />
             </button>
           </div>
           {onReply ? (
             <button type="button" className="fb-comment-reply-btn" onClick={onReply}>
+              <ReplyIcon size={13} />
               پاسخ
             </button>
           ) : null}
@@ -187,6 +152,7 @@ function CommentRow({
               aria-label="حذف این کامنت"
               title="حذف کامنت"
             >
+              <TrashIcon size={13} />
               {deleting ? "در حال حذف..." : "حذف"}
             </button>
           ) : null}
@@ -361,9 +327,12 @@ export default function CommentSection({
   }
 
   return (
-    <section className="fb-comments" aria-labelledby="comments-title">
+    <section className="fb-comments" id="comments" aria-labelledby="comments-title">
       <div className="fb-comments-head">
-        <h2 id="comments-title">گفتگو</h2>
+        <h2 id="comments-title">
+          <CommentIcon size={16} />
+          گفتگو
+        </h2>
         <span className="fb-comments-count">{faNumber(items.length)} کامنت</span>
       </div>
 

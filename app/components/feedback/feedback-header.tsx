@@ -8,6 +8,7 @@ import { ClerkSignOutButton, LogoutButton } from "../logout-buttons";
 import ThemeToggle from "../theme-toggle";
 import { mediaUrl } from "@/lib/feedback/media";
 import Avatar from "./avatar";
+import { ChevronDownIcon, CompassIcon, MenuIcon, PlusIcon } from "./icons";
 
 type HeaderViewer = {
   name: string;
@@ -103,20 +104,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
             aria-label="آموزش سریع سایت"
             title="آموزش سریع"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="9" />
-              <path d="M15.5 8.5l-1.9 5.1-5.1 1.9 1.9-5.1z" />
-            </svg>
+            <CompassIcon size={16} />
             <span>آموزش</span>
           </button>
           {admin ? (
@@ -141,20 +129,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
                   size={24}
                 />
                 <span className="fb-profile-name">{viewer.name}</span>
-                <svg
-                  className="fb-profile-caret"
-                  width="10"
-                  height="10"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
+                <ChevronDownIcon size={10} className="fb-profile-caret" />
               </button>
 
               {profileOpen ? (
@@ -186,6 +161,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
               window.dispatchEvent(new Event("fc:open-composer"));
             }}
           >
+            <PlusIcon size={15} />
             ثبت فید‌بک
           </button>
           <button
@@ -195,11 +171,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-              <path d="M4 6h16" />
-              <path d="M4 12h16" />
-              <path d="M4 18h16" />
-            </svg>
+            <MenuIcon size={18} />
           </button>
         </div>
       </div>

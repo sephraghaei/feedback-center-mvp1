@@ -4,41 +4,14 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPostAction } from "@/app/feedback-actions";
-import {
-  ALLOWED_UPLOAD_TYPES,
-  MAX_FILES,
-  MAX_FILE_BYTES,
-} from "@/lib/feedback/constants";
 import { CATEGORY_LABELS } from "@/lib/feedback/labels";
 import { MAX_PRODUCT_LENGTH, parseProduct, productBrand } from "@/lib/feedback/product";
-import { mediaUrl } from "@/lib/feedback/media";
-import EmojiPicker from "./emoji-picker";
+import FormatToolbar from "./format-toolbar";
+import { CloseIcon, TagIcon } from "./icons";
 import Markdown from "./markdown";
 import ProductMark from "./product-mark";
 
 type HeaderViewer = { name: string; role: "customer" | "admin" } | null;
-
-type UploadEntry = {
-  key: string;
-  name: string;
-  type: string;
-  size: number;
-  progress: number;
-  path?: string;
-  error?: string;
-};
-
-type UploadResponse = {
-  files?: { path: string; fileName: string; fileType: string; size: number }[];
-  message?: string;
-};
-
-const UPLOAD_ACCEPT = ALLOWED_UPLOAD_TYPES.join(",");
-
-function newKey(): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
-  return `f-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
 
 export default function Composer({ viewer }: { viewer: HeaderViewer }) {
   const pathname = usePathname();
@@ -51,8 +24,6 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [preview, setPreview] = useState(false);
-  const [files, setFiles] = useState<UploadEntry[]>([]);
-  const [coverPath, setCoverPath] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [signInRequired, setSignInRequired] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -89,8 +60,6 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
     setTitle("");
     setBody("");
     setPreview(false);
-    setFiles([]);
-    setCoverPath(null);
     setError(null);
     setSignInRequired(false);
   }
@@ -99,116 +68,6 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
     if (submitting) return;
     setOpen(false);
     setError(null);
-  }
-
-  function updateEntry(key: string, patch: Partial<UploadEntry>) {
-    setFiles((current) => current.map((entry) => (entry.key === key ? { ...entry, ...patch } : entry)));
-  }
-
-  function uploadOne(file: File) {
-    const key = newKey();
-    setFiles((current) => [
-      ...current,
-      { key, name: file.name, type: file.type, size: file.size, progress: 0 },
-    ]);
-
-    const form = new FormData();
-    form.append("files", file);
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/uploads");
-    xhr.upload.onprogress = (event) => {
-      if (!event.lengthComputable) return;
-      updateEntry(key, { progress: Math.round((event.loaded / event.total) * 100) });
-    };
-    xhr.onload = () => {
-      let data: UploadResponse = {};
-      try {
-        data = JSON.parse(xhr.responseText) as UploadResponse;
-      } catch {
-        updateEntry(key, { error: "پاسخ سرور نامعتبر بود." });
-        return;
-      }
-      const uploaded = data.files?.[0];
-      if (xhr.status === 200 && uploaded) {
-        updateEntry(key, { progress: 100, path: uploaded.path, type: uploaded.fileType, size: uploaded.size });
-        if (uploaded.fileType.startsWith("image/")) {
-          setCoverPath((current) => current ?? uploaded.path);
-        }
-        return;
-      }
-      updateEntry(key, { error: data.message ?? "بارگذاری انجام نشد." });
-    };
-    xhr.onerror = () => updateEntry(key, { error: "بارگذاری انجام نشد. اتصال را بررسی کن." });
-    xhr.send(form);
-  }
-
-  function pickFiles(event: React.ChangeEvent<HTMLInputElement>) {
-    const list = Array.from(event.target.files ?? []);
-    event.target.value = "";
-    if (list.length === 0) return;
-
-    const room = MAX_FILES - files.length;
-    if (room <= 0) {
-      setError(`حداکثر ${MAX_FILES} فایل برای هر فید‌بک مجاز است.`);
-      return;
-    }
-
-    for (const file of list.slice(0, room)) {
-      if (!ALLOWED_UPLOAD_TYPES.includes(file.type)) {
-        setError("فقط تصویر (PNG، JPG، WebP، GIF) یا PDF مجاز است.");
-        continue;
-      }
-      if (file.size > MAX_FILE_BYTES) {
-        setError("حجم هر فایل باید کمتر از ۱۰ مگابایت باشد.");
-        continue;
-      }
-      uploadOne(file);
-    }
-    if (list.length > room) setError(`فقط ${room} فایل دیگر جا دارد.`);
-  }
-
-  function removeFile(key: string) {
-    const target = files.find((entry) => entry.key === key);
-    setFiles((current) => current.filter((entry) => entry.key !== key));
-    if (target?.path && coverPath === target.path) setCoverPath(null);
-  }
-
-  function surround(before: string, after = before) {
-    const el = editorRef.current;
-    if (!el) return;
-    const start = el.selectionStart;
-    const end = el.selectionEnd;
-    const selected = body.slice(start, end) || "متن";
-    setBody(body.slice(0, start) + before + selected + after + body.slice(end));
-    requestAnimationFrame(() => {
-      el.focus();
-      el.setSelectionRange(start + before.length, start + before.length + selected.length);
-    });
-  }
-
-  function prefixLine(prefix: string) {
-    const el = editorRef.current;
-    if (!el) return;
-    const start = el.selectionStart;
-    const lineStart = body.lastIndexOf("\n", start - 1) + 1;
-    setBody(body.slice(0, lineStart) + prefix + body.slice(lineStart));
-    requestAnimationFrame(() => {
-      el.focus();
-      el.setSelectionRange(start + prefix.length, start + prefix.length);
-    });
-  }
-
-  function insertEmoji(emoji: string) {
-    const el = editorRef.current;
-    const start = el?.selectionStart ?? body.length;
-    const end = el?.selectionEnd ?? start;
-    setBody(body.slice(0, start) + emoji + body.slice(end));
-    requestAnimationFrame(() => {
-      el?.focus();
-      const position = start + emoji.length;
-      el?.setSelectionRange(position, position);
-    });
   }
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -240,14 +99,6 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
       setError("متن فید‌بک باید حداقل ۱۰ نویسه باشد.");
       return;
     }
-    if (files.some((entry) => !entry.path && !entry.error)) {
-      setError("صبر کن تا بارگذاری فایل‌ها تمام شود.");
-      return;
-    }
-
-    const attachments = files
-      .filter((entry): entry is UploadEntry & { path: string } => Boolean(entry.path))
-      .map((entry) => ({ path: entry.path, fileName: entry.name, fileType: entry.type, size: entry.size }));
 
     setSubmitting(true);
     const result = await createPostAction({
@@ -256,8 +107,6 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
       product: parsedProduct.value,
       title: cleanTitle,
       body: cleanBody,
-      attachments,
-      coverPath,
     });
     setSubmitting(false);
 
@@ -275,7 +124,6 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
   if (!open) return null;
 
-  const uploading = files.some((entry) => !entry.path && !entry.error);
   const signInHref = `/?next=${encodeURIComponent(pathname)}#account`;
   const clerkHref = `/sign-in?redirect_url=${encodeURIComponent(pathname)}`;
   const previewBrand = productBrand(product);
@@ -296,8 +144,15 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
             </h2>
             <p className="modal-hint">فید‌بک محصول را عمومی بنویس، یا درخواست شخصی را فقط برای مدیر بفرست.</p>
           </div>
-          <button type="button" className="fb-btn fb-btn-ghost fb-btn-sm" onClick={close} disabled={submitting}>
-            بستن
+          <button
+            type="button"
+            className="fb-icon-btn"
+            onClick={close}
+            disabled={submitting}
+            aria-label="بستن"
+            title="بستن"
+          >
+            <CloseIcon size={18} />
           </button>
         </div>
 
@@ -342,7 +197,10 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
               </p>
             ) : (
               <label className="label" htmlFor="composer-category">
-                دسته
+                <span className="fb-field-label">
+                  <TagIcon size={13} />
+                  دسته
+                </span>
                 <select
                   id="composer-category"
                   className="input"
@@ -397,7 +255,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
             ) : null}
 
             <label className="label" htmlFor="composer-post-title">
-              عنوان
+              عنوان <span className="required">الزامی</span>
             </label>
             <input
               id="composer-post-title"
@@ -438,93 +296,17 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
               </div>
             ) : (
               <>
-                <div className="fb-toolbar" role="toolbar" aria-label="قالب‌بندی">
-                  <button type="button" className="fb-tool" onClick={() => prefixLine("## ")} title="عنوان">
-                    H
-                  </button>
-                  <button type="button" className="fb-tool" onClick={() => surround("**")} title="ضخیم">
-                    <strong>B</strong>
-                  </button>
-                  <button type="button" className="fb-tool" onClick={() => surround("_")} title="مورب">
-                    <em>I</em>
-                  </button>
-                  <button type="button" className="fb-tool" onClick={() => prefixLine("- ")} title="فهرست">
-                    فهرست
-                  </button>
-                  <button type="button" className="fb-tool" onClick={() => surround("[", "](https://)")} title="پیوند">
-                    پیوند
-                  </button>
-                  <button type="button" className="fb-tool" onClick={() => surround("`")} title="کد درون‌خطی">
-                    <code>{"`"}</code>
-                  </button>
-                  <EmojiPicker onPick={insertEmoji} />
-                </div>
                 <textarea
                   ref={editorRef}
                   className="input fb-textarea"
                   value={body}
                   onChange={(event) => setBody(event.target.value)}
-                  placeholder={"جزئیات را بنویس. مارک‌داون ساده پشتیبانی می‌شود: ## عنوان، **ضخیم**، - فهرست"}
+                  placeholder="جزئیات را بنویس و از نوار پایین برای عنوان، فهرست، پیوند و بقیه قالب‌بندی‌ها استفاده کن."
                   aria-label="متن فید‌بک"
                 />
+                <FormatToolbar value={body} onChange={setBody} textareaRef={editorRef} />
               </>
             )}
-
-            <div className="fb-editor-tabs">
-              <span className="label">پیوست‌ها</span>
-              <span className="field-hint">تصویر یا PDF، تا ۵ فایل و ۱۰ مگابایت هر فایل</span>
-            </div>
-
-            <label className="fb-dropzone">
-              <input type="file" multiple accept={UPLOAD_ACCEPT} onChange={pickFiles} />
-              <span>{files.length >= MAX_FILES ? "ظرفیت پیوست پر شد." : "فایل‌ها را انتخاب کن یا همین‌جا رها کن."}</span>
-              <span className="field-hint">تصویر اول به عنوان کاور استفاده می‌شود.</span>
-            </label>
-
-            {files.length > 0 ? (
-              <div className="fb-files">
-                {files.map((entry) => (
-                  <div key={entry.key} className="fb-file">
-                    {entry.path && entry.type.startsWith("image/") ? (
-                      <img className="fb-file-thumb" src={mediaUrl(entry.path)} alt="" />
-                    ) : (
-                      <span className="fb-file-thumb">{entry.type === "application/pdf" ? "PDF" : "فایل"}</span>
-                    )}
-                    <div style={{ minWidth: 0 }}>
-                      <div className="fb-file-name">{entry.name}</div>
-                      {entry.error ? (
-                        <div className="field-hint" style={{ color: "var(--red)" }}>
-                          {entry.error}
-                        </div>
-                      ) : entry.path ? (
-                        <div className="field-hint">
-                          {entry.type.startsWith("image/") && coverPath === entry.path ? "کاور انتخاب شده" : "بارگذاری شد"}
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="fb-file-actions">
-                      {entry.path && entry.type.startsWith("image/") ? (
-                        <button
-                          type="button"
-                          className={coverPath === entry.path ? "cover-on" : ""}
-                          onClick={() => setCoverPath(entry.path ?? null)}
-                        >
-                          {coverPath === entry.path ? "کاور" : "انتخاب کاور"}
-                        </button>
-                      ) : null}
-                      <button type="button" onClick={() => removeFile(entry.key)}>
-                        حذف
-                      </button>
-                    </div>
-                    {!entry.path && !entry.error ? (
-                      <div className="fb-progress">
-                        <span style={{ width: `${entry.progress}%` }} />
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-            ) : null}
 
             {error ? <div className="fb-alert">{error}</div> : null}
 
@@ -534,9 +316,14 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
                   ? "فید‌بک محصول عمومی است و همه می‌بینند."
                   : "درخواست شخصی فقط برای تو و مدیر نمایش داده می‌شود."}
               </p>
-              <button type="submit" className="fb-btn fb-btn-primary" disabled={submitting || uploading}>
-                {submitting ? "در حال ثبت..." : uploading ? "در حال بارگذاری..." : "ثبت"}
-              </button>
+              <div className="fb-modal-actions">
+                <button type="button" className="fb-btn fb-btn-ghost" onClick={close} disabled={submitting}>
+                  بی‌خیال
+                </button>
+                <button type="submit" className="fb-btn fb-btn-primary" disabled={submitting}>
+                  {submitting ? "در حال ثبت..." : "انتشار فید‌بک"}
+                </button>
+              </div>
             </div>
           </form>
         )}

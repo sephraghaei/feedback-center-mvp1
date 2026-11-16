@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { faNumber } from "@/lib/feedback/labels";
+import { CloseIcon } from "./icons";
 
 type StepDef = {
   id: string;
@@ -431,19 +432,7 @@ export default function SiteTour() {
               onClick={() => close()}
               aria-label="بستن آموزش"
             >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                aria-hidden="true"
-              >
-                <path d="M6 6l12 12" />
-                <path d="M18 6L6 18" />
-              </svg>
+              <CloseIcon size={14} />
             </button>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toggleUpvoteAction } from "@/app/feedback-actions";
 import { faNumber } from "@/lib/feedback/labels";
+import { VoteUpIcon } from "./icons";
 
 export default function VoteButton({
   postId,
@@ -54,17 +55,14 @@ export default function VoteButton({
   return (
     <button
       type="button"
-      className={`fb-vote ${state.upvoted ? "on" : ""}`}
+      className={`fb-action-btn fb-vote ${state.upvoted ? "on" : ""}`}
       onClick={vote}
       disabled={busy}
       aria-pressed={state.upvoted}
       aria-label={state.upvoted ? "برداشتن رای" : "رای دادن"}
       title={error ?? (signedIn ? (state.upvoted ? "برداشتن رای" : "رای دادن") : "برای رای دادن وارد شو")}
     >
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M12 19V5" />
-        <path d="M5 12l7-7 7 7" />
-      </svg>
+      <VoteUpIcon size={15} />
       <span>{faNumber(state.count)}</span>
     </button>
   );

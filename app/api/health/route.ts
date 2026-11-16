@@ -10,6 +10,7 @@ type TableState = {
   users: boolean;
   profiles: boolean;
   verifications: boolean;
+  attachments: boolean;
 };
 
 const headers = { "cache-control": "no-store" };
@@ -66,7 +67,8 @@ export async function GET(): Promise<Response> {
           )
         ) as users,
         to_regclass('public.profiles') is not null as profiles,
-        to_regclass('public.verifications') is not null as verifications
+        to_regclass('public.verifications') is not null as verifications,
+        to_regclass('public.attachments') is not null as attachments
     `);
 
     const row = result.rows[0] as TableState | undefined;
@@ -74,8 +76,9 @@ export async function GET(): Promise<Response> {
       users: Boolean(row?.users),
       profiles: Boolean(row?.profiles),
       verifications: Boolean(row?.verifications),
+      attachments: Boolean(row?.attachments),
     };
-    const ok = tables.users && tables.profiles && tables.verifications;
+    const ok = tables.users && tables.profiles && tables.verifications && tables.attachments;
 
     return response({ ok, database: "connected", tables }, ok ? 200 : 503);
   } catch (error) {

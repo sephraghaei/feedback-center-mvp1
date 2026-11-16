@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { SmileIcon } from "./icons";
 
 const EMOJIS = [
   "😀",
@@ -126,17 +127,7 @@ export default function EmojiPicker({ onPick }: { onPick: (emoji: string) => voi
         title="ایموجی"
         onClick={() => setOpen((current) => !current)}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
-          <circle cx="9" cy="10" r="1.1" fill="currentColor" />
-          <circle cx="15" cy="10" r="1.1" fill="currentColor" />
-          <path
-            d="M8.2 14.2c.9 1.5 2.2 2.3 3.8 2.3s2.9-.8 3.8-2.3"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
-        </svg>
+        <SmileIcon size={16} />
       </button>
 
       {open ? (

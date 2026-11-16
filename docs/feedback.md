@@ -17,7 +17,7 @@ The feedback surfaces are RTL and Persian like the rest of the app. Guests can r
 | `/admin/posts` | admin | Feedback moderation: move status, hide, delete |
 | `/admin/changelog` | admin | Publish entries and link the feedback they resolve |
 
-`/api/uploads` accepts multipart uploads from the composer.
+There is no upload endpoint. The composer sends text only and the profile editor keeps the current avatar.
 
 ## Post model
 
@@ -47,11 +47,7 @@ update users set role = 'admin' where phone = '09...';
 
 ## Uploads
 
-Uploads go to Supabase Storage through the REST API on the server, using `SUPABASE_SERVICE_ROLE_KEY`. That key is server only and must never be exposed as `NEXT_PUBLIC_*`. The route creates the public `post-media` bucket on first use with the allowed MIME types and the 10 MB limit.
-
-Without the key, `GET` pages still work and the composer reports that storage is not configured on the server (503). Image uploads and covers stay disabled until the variable exists.
-
-The first image among the uploaded files becomes the post cover. Public URLs are built from `NEXT_PUBLIC_SUPABASE_URL`, so the browser never needs the service key.
+Uploads are disabled by request. The composer accepts text only and the profile editor does not change avatars, so there is no `/api/uploads` route and no server-side storage key. Existing covers and attachments from before the removal still render, with public URLs built from `NEXT_PUBLIC_SUPABASE_URL`.
 
 ## Changelog
 

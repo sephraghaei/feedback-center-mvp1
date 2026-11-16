@@ -10,12 +10,10 @@ import {
   upvotes,
   users,
 } from "../db/schema";
-import { ALLOWED_TYPES } from "./storage";
 import { parseProduct } from "./product";
 import {
   FEEDBACK_CATEGORIES,
   FEEDBACK_STATUSES,
-  MAX_FILES,
   ROADMAP_STATUSES,
   SUPPORT_STATUSES,
 } from "./constants";
@@ -49,6 +47,7 @@ export type PostSummary = {
   authorAvatarPath: string | null;
   upvotes: number;
   viewerUpvoted: boolean;
+  commentCount: number;
 };
 
 export type PostAttachment = {
@@ -67,13 +66,6 @@ export type PostDetail = PostSummary & {
 
 export type SupportRow = PostSummary & { authorEmail: string | null; adminReply: string | null };
 
-export type AttachmentInput = {
-  path: string;
-  fileName: string;
-  fileType: string;
-  size: number;
-};
-
 export class PostError extends Error {}
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -84,6 +76,10 @@ export function isUuid(value: string): boolean {
 
 function upvoteCount() {
   return sql<number>`(select count(*)::int from ${upvotes} where ${upvotes.postId} = ${posts.id})`;
+}
+
+function commentCount() {
+  return sql<number>`(select count(*)::int from ${comments} where ${comments.postId} = ${posts.id})`;
 }
 
 function viewerVoted(viewerId?: string) {
@@ -112,6 +108,7 @@ function summarySelect(viewerId?: string) {
     authorAvatarPath: profiles.avatarPath,
     upvotes: upvoteCount(),
     viewerUpvoted: viewerVoted(viewerId),
+    commentCount: commentCount(),
   };
 }
 
@@ -332,8 +329,6 @@ export async function createPost(input: {
   product?: string | null;
   title: string;
   body: string;
-  attachments: AttachmentInput[];
-  coverPath?: string | null;
 }): Promise<string> {
   const title = cleanTitle(input.title);
   const body = cleanBody(input.body);
@@ -349,21 +344,6 @@ export async function createPost(input: {
     category = input.category;
   }
 
-  const files = input.attachments.slice(0, MAX_FILES);
-  for (const file of files) {
-    if (!file.path.startsWith(`posts/${input.authorId}/`)) {
-      throw new PostError("فایل پیوست معتبر نیست.");
-    }
-    if (!ALLOWED_TYPES[file.fileType]) {
-      throw new PostError("نوع فایل پیوست مجاز نیست.");
-    }
-  }
-
-  const cover =
-    input.coverPath && files.some((file) => file.path === input.coverPath)
-      ? input.coverPath
-      : (files.find((file) => file.fileType.startsWith("image/"))?.path ?? null);
-
   return getDb().transaction(async (tx) => {
     const [row] = await tx
       .insert(posts)
@@ -374,24 +354,11 @@ export async function createPost(input: {
         product: product.value,
         title,
         body,
-        coverPath: cover,
         status: input.type === "feedback" ? "new" : "open",
       })
       .returning({ id: posts.id });
 
     if (!row) throw new PostError("ثبت فید‌بک انجام نشد.");
-
-    if (files.length > 0) {
-      await tx.insert(attachments).values(
-        files.map((file) => ({
-          postId: row.id,
-          path: file.path,
-          fileName: file.fileName.slice(0, 200),
-          fileType: file.fileType,
-          size: file.size,
-        })),
-      );
-    }
 
     return row.id;
   });
