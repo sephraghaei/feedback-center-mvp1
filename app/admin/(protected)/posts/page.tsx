@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "../../components/bits";
 import PostAdminActions from "../../components/post-admin-actions";
-import { CATEGORY_LABELS, STATUS_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
+import { STATUS_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { listFeedbackForAdmin } from "@/lib/feedback/posts";
 import { toPersianDigits } from "@/lib/phone";
 
@@ -36,12 +36,11 @@ export default async function AdminPostsPage() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th style={{ width: "34%" }}>فید‌بک</th>
-                <th style={{ width: "11%" }}>دسته</th>
-                <th style={{ width: "11%" }}>وضعیت</th>
-                <th style={{ width: "7%" }}>رای</th>
-                <th style={{ width: "12%" }}>تاریخ</th>
-                <th style={{ width: "25%" }}>اقدامات</th>
+                <th style={{ width: "40%" }}>فید‌بک</th>
+                <th style={{ width: "12%" }}>وضعیت</th>
+                <th style={{ width: "8%" }}>رای</th>
+                <th style={{ width: "14%" }}>تاریخ</th>
+                <th style={{ width: "26%" }}>اقدامات</th>
               </tr>
             </thead>
             <tbody>
@@ -61,9 +60,6 @@ export default async function AdminPostsPage() {
                         </span>
                       ) : null}
                     </div>
-                  </td>
-                  <td style={{ whiteSpace: "nowrap" }}>
-                    {post.category ? CATEGORY_LABELS[post.category] ?? post.category : "بی‌دسته"}
                   </td>
                   <td style={{ whiteSpace: "nowrap" }}>
                     <span className="badge">{STATUS_LABELS[post.status] ?? post.status}</span>

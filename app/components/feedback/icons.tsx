@@ -262,6 +262,15 @@ export function CodeBlockIcon(props: IconProps) {
   );
 }
 
+export function SendIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M22 2L11 13" />
+      <path d="M22 2l-7 20-4-9-9-4z" />
+    </Icon>
+  );
+}
+
 export function SmileIcon(props: IconProps) {
   return (
     <Icon {...props}>

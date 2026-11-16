@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Markdown from "@/app/components/feedback/markdown";
 import StatusChip from "@/app/components/feedback/status-chip";
 import { getChangelogEntry } from "@/lib/feedback/changelog";
-import { CATEGORY_LABELS, faDate } from "@/lib/feedback/labels";
+import { faDate } from "@/lib/feedback/labels";
 
 export const metadata: Metadata = {
   title: "ورودی تغییرات | وسا",
@@ -37,7 +37,6 @@ export default async function ChangelogEntryPage({ params }: { params: Promise<{
             <div className="fb-linked">
               {entry.posts.map((post) => (
                 <Link key={post.id} href={`/p/${post.id}`}>
-                  {post.category ? `${CATEGORY_LABELS[post.category]} · ` : ""}
                   {post.title}
                 </Link>
               ))}

@@ -12,7 +12,6 @@ export type ChangelogEntry = {
 export type ChangelogLinkedPost = {
   id: string;
   title: string;
-  category: string | null;
 };
 
 export type ChangelogDetail = ChangelogEntry & { posts: ChangelogLinkedPost[] };
@@ -45,7 +44,7 @@ export async function getChangelogEntry(id: string): Promise<ChangelogDetail | n
   if (!entry) return null;
 
   const linked = await getDb()
-    .select({ id: posts.id, title: posts.title, category: posts.category })
+    .select({ id: posts.id, title: posts.title })
     .from(changelogPosts)
     .innerJoin(posts, eq(posts.id, changelogPosts.postId))
     .where(eq(changelogPosts.entryId, id));
@@ -55,7 +54,7 @@ export async function getChangelogEntry(id: string): Promise<ChangelogDetail | n
 
 export async function resolveableFeedback(): Promise<ChangelogLinkedPost[]> {
   return getDb()
-    .select({ id: posts.id, title: posts.title, category: posts.category })
+    .select({ id: posts.id, title: posts.title })
     .from(posts)
     .where(eq(posts.type, "feedback"))
     .orderBy(desc(posts.createdAt))

@@ -3,9 +3,10 @@ import Link from "next/link";
 import BrandMark from "@/app/components/brand-mark";
 import ComposerButton from "@/app/components/feedback/composer-button";
 import CountUp from "@/app/components/feedback/count-up";
+import CompanyFilter from "@/app/components/feedback/company-filter";
 import PostCard from "@/app/components/feedback/post-card";
-import { CATEGORY_LABELS, STATUS_LABELS, faNumber } from "@/lib/feedback/labels";
-import { FEEDBACK_CATEGORIES, FEEDBACK_STATUSES, listFeed } from "@/lib/feedback/posts";
+import { faNumber } from "@/lib/feedback/labels";
+import { listFeed, listFeedCompanies } from "@/lib/feedback/posts";
 import { getViewer } from "@/lib/feedback/viewer";
 
 export const metadata: Metadata = {
@@ -13,13 +14,12 @@ export const metadata: Metadata = {
   description: "فید‌بک محصول را بخوان، رای بده و وضعیتش را دنبال کن. نقشه راه هم به زودی می‌آید.",
 };
 
-type Search = { category?: string; status?: string; sort?: string };
+type Search = { company?: string; sort?: string };
 
 function feedHref(current: Search, patch: Search): string {
   const next = { ...current, ...patch };
   const query = new URLSearchParams();
-  if (next.category) query.set("category", next.category);
-  if (next.status) query.set("status", next.status);
+  if (next.company) query.set("company", next.company);
   if (next.sort === "newest") query.set("sort", "newest");
   const text = query.toString();
   return text ? `/feed?${text}` : "/feed";
@@ -29,19 +29,20 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
   const params = await searchParams;
   const viewer = await getViewer();
   const sort = params.sort === "newest" ? "newest" : "votes";
-  const posts = await listFeed({
-    category: params.category,
-    status: params.status,
-    sort,
-    viewerId: viewer?.userId,
-  });
+  const [posts, companies] = await Promise.all([
+    listFeed({
+      product: params.company,
+      sort,
+      viewerId: viewer?.userId,
+    }),
+    listFeedCompanies(),
+  ]);
 
   const current: Search = {
-    category: params.category,
-    status: params.status,
+    company: params.company,
     sort: sort === "newest" ? "newest" : undefined,
   };
-  const filtered = Boolean(params.category || params.status);
+  const filtered = Boolean(params.company);
 
   return (
     <>
@@ -77,35 +78,13 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
       </section>
 
       <div className="fb-toolbar-row">
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-          <div className="fb-filters" aria-label="فیلتر دسته">
-            <Link href={feedHref(current, { category: undefined })} className={`fb-filter ${!params.category ? "active" : ""}`}>
-              همه دسته‌ها
-            </Link>
-            {FEEDBACK_CATEGORIES.map((category) => (
-              <Link
-                key={category}
-                href={feedHref(current, { category })}
-                className={`fb-filter ${params.category === category ? "active" : ""}`}
-              >
-                {CATEGORY_LABELS[category]}
-              </Link>
-            ))}
-          </div>
-          <div className="fb-filters" aria-label="فیلتر وضعیت">
-            <Link href={feedHref(current, { status: undefined })} className={`fb-filter ${!params.status ? "active" : ""}`}>
-              همه وضعیت‌ها
-            </Link>
-            {FEEDBACK_STATUSES.map((status) => (
-              <Link
-                key={status}
-                href={feedHref(current, { status })}
-                className={`fb-filter ${params.status === status ? "active" : ""}`}
-              >
-                {STATUS_LABELS[status]}
-              </Link>
-            ))}
-          </div>
+        <div className="fb-toolbar-filters">
+          <CompanyFilter
+            companies={companies}
+            selected={params.company}
+            sort={sort === "newest" ? "newest" : undefined}
+          />
+
           <div className="fb-sort" aria-label="ترتیب فید‌بک‌ها">
             <span className="fb-sort-label">ترتیب</span>
             <Link
@@ -118,7 +97,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
               href={feedHref(current, { sort: "newest" })}
               className={`fb-filter ${sort === "newest" ? "active" : ""}`}
             >
-              تازه
+              تازه‌ها
             </Link>
           </div>
         </div>

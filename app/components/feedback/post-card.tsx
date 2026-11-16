@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { excerpt, type PostSummary } from "@/lib/feedback/posts";
-import { CATEGORY_LABELS, TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
+import { TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
 import { productBrand } from "@/lib/feedback/product";
 import Avatar from "./avatar";
@@ -9,6 +9,7 @@ import ProductMark from "./product-mark";
 import StatusChip from "./status-chip";
 import VoteButton from "./vote-button";
 import PostOwnerActions from "./post-owner-actions";
+import QuickComment from "./quick-comment";
 import ShareButton from "./share-button";
 import { CommentIcon } from "./icons";
 
@@ -29,7 +30,6 @@ export default function PostCard({
 }) {
   const cover = post.coverPath ? mediaUrl(post.coverPath) : "";
   const brand = productBrand(post.product, post.productUrl);
-  const category = post.category ? (CATEGORY_LABELS[post.category] ?? post.category) : null;
   const author = post.authorName ?? "کاربر";
   const href = `/p/${post.id}`;
 
@@ -65,12 +65,6 @@ export default function PostCard({
               {showType ? (
                 <>
                   <span>{TYPE_LABELS[post.type] ?? post.type}</span>
-                  <span className="fb-dot" aria-hidden="true" />
-                </>
-              ) : null}
-              {category ? (
-                <>
-                  <span>{category}</span>
                   <span className="fb-dot" aria-hidden="true" />
                 </>
               ) : null}
@@ -123,15 +117,24 @@ export default function PostCard({
             )}
             {post.type === "feedback" ? (
               <>
-                <Link
-                  href={`${href}#comments`}
-                  className="fb-action-btn"
-                  aria-label={`${faNumber(post.commentCount)} کامنت`}
-                  title="دیدن کامنت‌ها"
-                >
-                  <CommentIcon size={15} />
-                  <span>{faNumber(post.commentCount)}</span>
-                </Link>
+                {post.hidden ? (
+                  <Link
+                    href={`${href}#comments`}
+                    className="fb-action-btn"
+                    aria-label={`${faNumber(post.commentCount)} کامنت`}
+                    title="دیدن کامنت‌ها"
+                  >
+                    <CommentIcon size={15} />
+                    <span>{faNumber(post.commentCount)}</span>
+                  </Link>
+                ) : (
+                  <QuickComment
+                    postId={post.id}
+                    count={post.commentCount}
+                    signedIn={signedIn}
+                    nextPath={nextPath}
+                  />
+                )}
                 {post.hidden ? null : <ShareButton path={href} title={post.title} />}
               </>
             ) : null}

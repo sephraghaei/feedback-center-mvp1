@@ -10,7 +10,7 @@ import { HeroCommentScene, HeroTicker } from "@/app/components/feedback/hero-com
 import HomeStory from "@/app/components/feedback/home-story";
 import PostCard from "@/app/components/feedback/post-card";
 import RotatingWord from "@/app/components/feedback/rotating-word";
-import { CATEGORY_LABELS, STATUS_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
+import { STATUS_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { listChangelog } from "@/lib/feedback/changelog";
 import { ROADMAP_STATUSES, countFeedback, listFeed, listRoadmap } from "@/lib/feedback/posts";
 import { getViewer } from "@/lib/feedback/viewer";
@@ -188,9 +188,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
                         {post.title}
                       </Link>
                       <div className="fb-mini-meta">
-                        {post.category ? (
-                          <span className="fb-chip">{CATEGORY_LABELS[post.category]}</span>
-                        ) : null}
                         <span>{faNumber(post.upvotes)} رای</span>
                       </div>
                     </article>

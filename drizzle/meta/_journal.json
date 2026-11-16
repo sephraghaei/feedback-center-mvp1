@@ -71,6 +71,13 @@
       "when": 1794826262714,
       "tag": "0009_chilly_green_goblin",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794831652585,
+      "tag": "0010_cooing_franklin_storm",
+      "breakpoints": true
     }
   ]
 }

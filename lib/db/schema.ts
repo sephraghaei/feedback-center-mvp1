@@ -86,7 +86,6 @@ export const posts = pgTable(
       "posts_shape_check",
       sql`(
         ${table.type} = 'feedback'
-        and ${table.category} in ('bug', 'feature', 'improvement')
         and ${table.status} in ('new', 'planned', 'in_progress', 'shipped')
       ) or (
         ${table.type} = 'support'

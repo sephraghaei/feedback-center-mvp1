@@ -1,9 +1,3 @@
-export const CATEGORY_LABELS: Record<string, string> = {
-  bug: "باگ",
-  feature: "درخواست قابلیت",
-  improvement: "بهبود",
-};
-
 export const STATUS_LABELS: Record<string, string> = {
   new: "جدید",
   planned: "برنامه‌ریزی شده",

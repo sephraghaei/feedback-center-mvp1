@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, ne, sql } from "drizzle-orm";
 import { getDb } from "../db";
 import {
   attachments,
@@ -12,20 +12,17 @@ import {
 } from "../db/schema";
 import { parseProduct, parseSiteUrl, productContext } from "./product";
 import {
-  FEEDBACK_CATEGORIES,
   FEEDBACK_STATUSES,
   ROADMAP_STATUSES,
   SUPPORT_STATUSES,
 } from "./constants";
 
 export {
-  FEEDBACK_CATEGORIES,
   FEEDBACK_STATUSES,
   ROADMAP_STATUSES,
   SUPPORT_STATUSES,
 } from "./constants";
 export type {
-  FeedbackCategory,
   FeedbackStatus,
   RoadmapStatus,
   SupportStatus,
@@ -132,7 +129,6 @@ export function excerpt(body: string): string {
 export type FeedSort = "votes" | "newest";
 
 export async function listFeed(options: {
-  category?: string;
   status?: string;
   product?: string | null;
   excludeId?: string;
@@ -154,9 +150,6 @@ export async function listFeed(options: {
       and(
         eq(posts.type, "feedback"),
         eq(posts.hidden, false),
-        options.category && (FEEDBACK_CATEGORIES as readonly string[]).includes(options.category)
-          ? eq(posts.category, options.category)
-          : undefined,
         options.status && (FEEDBACK_STATUSES as readonly string[]).includes(options.status)
           ? eq(posts.status, options.status)
           : undefined,
@@ -168,6 +161,21 @@ export async function listFeed(options: {
     .limit(options.limit ?? 60);
 
   return rows;
+}
+
+export async function listFeedCompanies(): Promise<string[]> {
+  const rows = await getDb()
+    .select({ company: posts.product })
+    .from(posts)
+    .where(
+      and(eq(posts.type, "feedback"), eq(posts.hidden, false), isNotNull(posts.product)),
+    )
+    .groupBy(posts.product)
+    .orderBy(desc(sql`count(*)`), asc(posts.product));
+
+  return rows
+    .map((row) => row.company)
+    .filter((company): company is string => Boolean(company));
 }
 
 export async function listRoadmap(viewerId?: string): Promise<PostSummary[]> {
@@ -335,7 +343,6 @@ function cleanBody(value: string): string {
 export async function createPost(input: {
   authorId: string;
   type: "feedback" | "support";
-  category?: string | null;
   product?: string | null;
   productUrl?: string | null;
   title: string;
@@ -357,21 +364,12 @@ export async function createPost(input: {
     productName = new URL(existingLink.href).hostname.replace(/^www\./i, "");
   }
 
-  let category: string | null = null;
-  if (input.type === "feedback") {
-    if (!input.category || !(FEEDBACK_CATEGORIES as readonly string[]).includes(input.category)) {
-      throw new PostError("برای فید‌بک محصول یکی از دسته‌ها را انتخاب کن.");
-    }
-    category = input.category;
-  }
-
   return getDb().transaction(async (tx) => {
     const [row] = await tx
       .insert(posts)
       .values({
         authorId: input.authorId,
         type: input.type,
-        category,
         product: productName,
         productUrl,
         title,

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPostAction } from "@/app/feedback-actions";
-import { CATEGORY_LABELS } from "@/lib/feedback/labels";
 import {
   MAX_PRODUCT_LENGTH,
   MAX_SITE_URL_LENGTH,
@@ -13,7 +12,7 @@ import {
   productBrand,
 } from "@/lib/feedback/product";
 import FormatToolbar from "./format-toolbar";
-import { CloseIcon, TagIcon } from "./icons";
+import { CloseIcon } from "./icons";
 import Markdown from "./markdown";
 import ProductMark from "./product-mark";
 
@@ -24,7 +23,6 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<"feedback" | "support">("feedback");
-  const [category, setCategory] = useState("feature");
   const [product, setProduct] = useState("");
   const [productError, setProductError] = useState<string | null>(null);
   const [siteUrl, setSiteUrl] = useState("");
@@ -62,7 +60,6 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
   function resetDraft() {
     setType("feedback");
-    setCategory("feature");
     setProduct("");
     setProductError(null);
     setSiteUrl("");
@@ -119,7 +116,6 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
     setSubmitting(true);
     const result = await createPostAction({
       type,
-      category: type === "feedback" ? category : null,
       product: parsedProduct.value,
       productUrl: parsedSite.value,
       title: cleanTitle,
@@ -212,27 +208,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
               <p className="fb-note" style={{ marginTop: 0 }}>
                 این درخواست عمومی نمی‌شود و فقط نویسنده و مدیر آن را می‌بینند.
               </p>
-            ) : (
-              <label className="label" htmlFor="composer-category">
-                <span className="fb-field-label">
-                  <TagIcon size={13} />
-                  دسته
-                </span>
-                <select
-                  id="composer-category"
-                  className="input"
-                  value={category}
-                  onChange={(event) => setCategory(event.target.value)}
-                  style={{ marginTop: 6 }}
-                >
-                  {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            )}
+            ) : null}
 
             <label className="label" htmlFor="composer-product">
               نام محصول <span className="required">الزامی</span>

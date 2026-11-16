@@ -3,7 +3,7 @@ import Link from "next/link";
 import BrandMark from "@/app/components/brand-mark";
 import ComposerButton from "@/app/components/feedback/composer-button";
 import MoveMenu from "@/app/components/feedback/move-menu";
-import { CATEGORY_LABELS, STATUS_LABELS, faNumber } from "@/lib/feedback/labels";
+import { STATUS_LABELS, faNumber } from "@/lib/feedback/labels";
 import { ROADMAP_STATUSES, listRoadmap } from "@/lib/feedback/posts";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
 
@@ -76,7 +76,6 @@ export default async function RoadmapPage() {
                     {post.title}
                   </Link>
                   <div className="fb-mini-meta">
-                    {post.category ? <span className="fb-chip">{CATEGORY_LABELS[post.category]}</span> : null}
                     <span>{faNumber(post.upvotes)} رای</span>
                   </div>
                   {admin ? <MoveMenu postId={post.id} status={post.status} /> : null}

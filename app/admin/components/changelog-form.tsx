@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { publishChangelogAction } from "@/app/feedback-actions";
-import { CATEGORY_LABELS } from "@/lib/feedback/labels";
 import type { ChangelogLinkedPost } from "@/lib/feedback/changelog";
 
 export default function ChangelogForm({ candidates }: { candidates: ChangelogLinkedPost[] }) {
@@ -130,14 +129,7 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
                   onChange={() => toggle(post.id)}
                   disabled={busy}
                 />
-                <span>
-                  {post.category ? (
-                    <span style={{ color: "var(--ink-4)" }}>
-                      {CATEGORY_LABELS[post.category] ?? post.category} ·{" "}
-                    </span>
-                  ) : null}
-                  {post.title}
-                </span>
+                <span>{post.title}</span>
               </label>
             ))
           )}

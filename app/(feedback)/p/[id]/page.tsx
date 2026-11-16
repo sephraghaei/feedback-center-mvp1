@@ -13,7 +13,7 @@ import StatusChip from "@/app/components/feedback/status-chip";
 import VoteButton from "@/app/components/feedback/vote-button";
 import { CommentIcon, VoteUpIcon } from "@/app/components/feedback/icons";
 import { listComments } from "@/lib/feedback/comments";
-import { CATEGORY_LABELS, TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
+import { TYPE_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
 import { productContext } from "@/lib/feedback/product";
 import { getPostDetail, isUuid, listFeed } from "@/lib/feedback/posts";
@@ -79,9 +79,6 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           <div className="fb-card-top">
             {isSupport || isAuthor ? (
               <span className="fb-chip">{TYPE_LABELS[post.type] ?? post.type}</span>
-            ) : null}
-            {post.category ? (
-              <span className="fb-chip">{CATEGORY_LABELS[post.category] ?? post.category}</span>
             ) : null}
             <StatusChip status={post.status} />
           </div>
