@@ -1,6 +1,6 @@
 # وسا
 
-A Next.js feedback center, RTL and Persian, with Vazirmatn as the main font and Noto Kufi Arabic for the wordmark. Guests read the feed, the roadmap and the changelog. Signed in customers post feedback or a private support request, upload images and PDFs, and vote. Admins triage posts and publish changelog entries. Login runs through phone OTP, email OTP or Clerk. The feedback details are in [docs/feedback.md](docs/feedback.md).
+A Next.js feedback center, RTL and Persian, with IRANYekan as the main font and Noto Kufi Arabic for the wordmark. Guests read the feed, the roadmap and the changelog. Signed in customers post feedback or a private support request, upload images and PDFs, and vote. Admins triage posts and publish changelog entries. Login runs through phone OTP, email OTP or Clerk. The feedback details are in [docs/feedback.md](docs/feedback.md).
 
 ## Stack
 

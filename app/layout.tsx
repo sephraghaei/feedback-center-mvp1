@@ -2,8 +2,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { faIR } from "@clerk/localizations";
 import type { Metadata } from "next";
 import "@fontsource-variable/noto-kufi-arabic";
-import "@fontsource-variable/vazirmatn";
 import ClientLogger from "./components/client-logger";
+import { IRANYekan } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning>
+    <html lang="fa" dir="rtl" suppressHydrationWarning className={IRANYekan.variable}>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -43,7 +43,7 @@ export default function RootLayout({
               colorSuccess: "var(--green)",
               colorDanger: "var(--red)",
               borderRadius: "0.625rem",
-              fontFamily: '"Vazirmatn Variable", Vazirmatn, system-ui, sans-serif',
+              fontFamily: '"IRANYekan", system-ui, sans-serif',
               fontSize: "0.875rem",
             },
             elements: {

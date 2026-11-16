@@ -564,7 +564,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid var(--hairline);
   border-radius: 12px;
   background-color: var(--surface);
@@ -675,34 +675,23 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
   min-width: 0;
-}
-
-.fb-card-meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 3px 7px;
-  margin: 0;
-  font-size: 0.72rem;
-  line-height: 1.6;
-  color: var(--ink-4);
 }
 
 .fb-card-head {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 8px;
   min-width: 0;
-  padding-bottom: 2px;
 }
 
 .fb-card-company {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
   color: var(--ink-2);
 }
@@ -712,80 +701,37 @@
   box-shadow: 0 0 0 1px var(--hairline);
 }
 
-.fb-card-date {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.fb-card-type {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-
 .fb-card-product {
   max-width: 100%;
   overflow: hidden;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.84rem;
+  font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.fb-card-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.fb-card-type-label {
+  flex-shrink: 0;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--pill);
+  background: var(--wash);
+  color: var(--ink-3);
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.7;
+  white-space: nowrap;
 }
 
 .fb-card-excerpt {
   display: -webkit-box;
-  margin: 0;
+  margin: 4px 0 0;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
-  font-size: 0.8rem;
-  line-height: 1.7;
+  font-size: 0.84rem;
+  line-height: 1.75;
   color: var(--ink-3);
-}
-
-.fb-card .fb-chip {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  font-size: 0.7rem;
-  font-weight: 600;
-  line-height: 1.6;
-}
-
-.fb-card .fb-chip.tone-open,
-.fb-card .fb-chip.tone-progress,
-.fb-card .fb-chip.tone-done,
-.fb-card .fb-chip.tone-muted,
-.fb-card .fb-chip.urgent {
-  border: 0;
-  background: transparent;
-}
-
-.fb-card .fb-chip.tone-open {
-  color: var(--ink-3);
-}
-
-.fb-card .fb-chip.tone-progress {
-  color: var(--ink-2);
-}
-
-.fb-card .fb-chip.tone-done {
-  color: var(--green);
-}
-
-.fb-card .fb-chip.tone-muted {
-  color: var(--ink-4);
-}
-
-.fb-card .fb-chip.urgent {
-  color: var(--red);
 }
 
 .fb-card-top {
@@ -896,10 +842,10 @@
 }
 
 .fb-card-title {
-  margin: 0;
-  font-size: 0.98rem;
+  margin: 8px 0 0;
+  font-size: 1rem;
   font-weight: 600;
-  line-height: 1.6;
+  line-height: 1.55;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -922,42 +868,16 @@
   color: var(--accent);
 }
 
-.fb-card-rail {
+.fb-card .fb-owner-actions {
   position: relative;
   z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  flex-shrink: 0;
-}
-
-.fb-card-rail .fb-action-btn {
-  min-height: 30px;
-  padding: 0 0.45rem;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--ink-3);
-  font-size: 0.73rem;
-}
-
-.fb-card-rail .fb-action-btn:hover:not(:disabled) {
-  background: var(--wash);
-  color: var(--ink);
-}
-
-.fb-card-rail .fb-action-btn.on {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.fb-card-rail .fb-owner-actions {
+  margin-inline-start: auto;
   gap: 2px;
 }
 
-.fb-card-rail .fb-owner-actions .fb-btn {
-  min-height: 30px;
-  padding: 0 0.45rem;
+.fb-card .fb-owner-actions .fb-btn {
+  min-height: 28px;
+  padding: 0 0.5rem;
   border: 0;
   background: transparent;
   color: var(--ink-4);
@@ -965,25 +885,9 @@
   font-weight: 500;
 }
 
-.fb-card-rail .fb-owner-actions .fb-btn:hover:not(:disabled) {
+.fb-card .fb-owner-actions .fb-btn:hover:not(:disabled) {
   background: var(--red-soft);
   color: var(--red);
-}
-
-.fb-card-open {
-  display: inline-flex;
-  align-items: center;
-  min-height: 30px;
-  padding: 0 0.5rem;
-  border-radius: 8px;
-  font-size: 0.74rem;
-  color: var(--accent);
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.fb-card-open:hover {
-  background: var(--accent-soft);
 }
 
 .fb-action-btn {
@@ -2327,7 +2231,9 @@ a.fb-product-name:hover {
 
 .fb-composer {
   max-width: 44rem;
+  max-height: min(46rem, calc(100dvh - 3rem));
   padding: 1.5rem;
+  overscroll-behavior: contain;
 }
 
 .fb-composer-head {
@@ -2687,25 +2593,36 @@ a.fb-product-name:hover {
 
 @media (max-width: 640px) {
   .backdrop.fb-composer-backdrop {
-    padding: 0;
+    padding:
+      max(0.75rem, env(safe-area-inset-top))
+      max(0.75rem, env(safe-area-inset-right))
+      max(0.75rem, env(safe-area-inset-bottom))
+      max(0.75rem, env(safe-area-inset-left));
   }
 
   .modal.fb-composer {
     width: 100%;
     max-width: none;
-    height: 100dvh;
-    max-height: 100dvh;
-    padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
-    border: 0;
-    border-radius: 0;
+    max-height: calc(100dvh - 1.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    padding: 1.15rem 1rem 1rem;
+    border-radius: var(--radius);
+    overscroll-behavior: contain;
   }
 
   .fb-composer-head {
-    margin-bottom: 10px;
+    margin: -1.15rem -1rem 10px;
+    padding: 1.15rem 1rem 10px;
+    border-bottom: 1px solid var(--hairline);
   }
 
   .fb-composer .modal-hint {
-    display: none;
+    margin-bottom: 0;
+    font-size: 0.8rem;
+  }
+
+  .modal.fb-composer .input,
+  .modal.fb-composer .fb-textarea {
+    font-size: 1rem;
   }
 
   .fb-form {
@@ -5285,22 +5202,6 @@ a.fb-product-name:hover {
     font-size: 1rem;
   }
 
-  .fb-card-meta {
-    font-size: 0.76rem;
-  }
-
-  .fb-card .fb-chip {
-    font-size: 0.74rem;
-  }
-
-  .fb-card-status {
-    margin-inline-start: 0;
-  }
-
-  .fb-card:has(.fb-owner-actions) .fb-card-type {
-    display: none;
-  }
-
   .fb-card-excerpt {
     font-size: 0.84rem;
   }
@@ -5474,15 +5375,7 @@ a.fb-product-name:hover {
 
   .fb-card {
     gap: 10px;
-    padding: 9px 10px;
-  }
-
-  .fb-card .fb-action-label {
-    display: none;
-  }
-
-  .fb-card-date {
-    display: none;
+    padding: 10px 12px;
   }
 
 }
