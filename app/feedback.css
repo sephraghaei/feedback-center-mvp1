@@ -374,7 +374,7 @@
   margin: 0;
   max-width: 22ch;
   font-size: clamp(1.9rem, 4vw, 3rem);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.025em;
 }
