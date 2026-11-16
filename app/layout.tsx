@@ -2,8 +2,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { faIR } from "@clerk/localizations";
 import type { Metadata } from "next";
 import "@fontsource-variable/noto-kufi-arabic";
+import "@fontsource-variable/vazirmatn";
 import ClientLogger from "./components/client-logger";
-import { Dana } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning className={Dana.variable}>
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -43,7 +43,7 @@ export default function RootLayout({
               colorSuccess: "var(--green)",
               colorDanger: "var(--red)",
               borderRadius: "0.625rem",
-              fontFamily: '"Dana", system-ui, sans-serif',
+              fontFamily: '"Vazirmatn Variable", system-ui, sans-serif',
               fontSize: "0.875rem",
             },
             elements: {

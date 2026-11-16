@@ -2,7 +2,7 @@
 
 - Do not use an em-dash for anything in code, text and comments.
 - Always RTL and Persian in the interface.
-- Use the `---` font, or Dana when it does not exist. This project uses Dana.
+- Use the `---` font, or Vazirmatn when it does not exist. This project uses Vazirmatn.
 
 The full stack lives in [docs/main-stack.md](docs/main-stack.md), with the details in:
 

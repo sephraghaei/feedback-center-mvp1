@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import "@fontsource-variable/vazirmatn";
 import { clientLogger } from "@/lib/client-logger";
-import { Dana } from "./fonts";
 
 export default function GlobalError({
   error,
@@ -49,7 +49,7 @@ export default function GlobalError({
           placeItems: "center",
           background: "var(--paper)",
           color: "var(--ink)",
-          fontFamily: Dana.style.fontFamily,
+          fontFamily: '"Vazirmatn Variable", system-ui, sans-serif',
           textAlign: "center",
           padding: "2rem",
         }}
