@@ -226,7 +226,7 @@ type Chapter = {
 const CHAPTERS: Chapter[] = [
   {
     title: "یه چیزی کمه",
-    body: "یکی وسط کار به مشکل می‌خوره یا یه ایده به ذهنش می‌رسه. همین جمله کافیه تا ماجرا شروع بشه.",
+    body: "یه مشکل یا ایده، شروع ماجراست.",
     url: "vasa.app/feed",
     accent: "blue",
     icon: (
@@ -236,11 +236,11 @@ const CHAPTERS: Chapter[] = [
       </svg>
     ),
     scene: <ShotStart />,
-    cta: { kind: "composer", label: "همین حالا بنویس" },
+    cta: { kind: "composer", label: "فید‌بک بده" },
   },
   {
-    title: "بنویسش، با جزئیات",
-    body: "چند خط توضیح کافیه: چی شده، کجا، و چه انتظاری داری. عکس هم می‌تونی بچسبونی تا موضوع روشن‌تر بشه.",
+    title: "می‌نویسی",
+    body: "چند خط بنویس: چی شد و چی می‌خوای.",
     url: "vasa.app/new",
     accent: "violet",
     icon: (
@@ -253,8 +253,8 @@ const CHAPTERS: Chapter[] = [
     cta: { kind: "link", href: "/feed", label: "بقیه چطور نوشتن" },
   },
   {
-    title: "بقیه هم همراهش می‌شن",
-    body: "کاربرهای دیگه فید‌بک رو می‌خونن، رای می‌دن و کامنت می‌ذارن. هرچی رای بیشتر، شانس دیده شدن هم بیشتر.",
+    title: "رای می‌گیره",
+    body: "بقیه می‌خونن و رای می‌دن.",
     url: "vasa.app/feed",
     accent: "teal",
     icon: (
@@ -264,11 +264,11 @@ const CHAPTERS: Chapter[] = [
       </svg>
     ),
     scene: <ShotVote />,
-    cta: { kind: "link", href: "/feed", label: "فید‌بک‌ها و رای‌ها" },
+    cta: { kind: "link", href: "/feed", label: "فید‌بک‌ها" },
   },
   {
-    title: "روی نقشه راه، به زودی",
-    body: "نقشه راه هنوز در دست توسعه‌ست، ولی قراره فید‌بک‌هایی که رای بیشتری دارن از انتظار به در حال ساخت و بعد منتشر برن. همین حالا هم وضعیت هر فید‌بک روی خود کارتش معلومه.",
+    title: "می‌ره روی نقشه راه",
+    body: "هرچی رای بیشتر، زودتر می‌ره روی نقشه راه.",
     url: "vasa.app/roadmap",
     accent: "amber",
     icon: (
@@ -279,11 +279,11 @@ const CHAPTERS: Chapter[] = [
       </svg>
     ),
     scene: <ShotRoadmap />,
-    cta: { kind: "link", href: "/roadmap", label: "نقشه راه، به زودی" },
+    cta: { kind: "link", href: "/roadmap", label: "نقشه راه" },
   },
   {
-    title: "ساخته می‌شه و منتشر",
-    body: "وقتی ساخته و منتشر شد، توی تغییرات با جزئیات می‌بینی چی عوض شده. بعد دوباره می‌تونی فید‌بک بدی و چرخه ادامه پیدا کنه.",
+    title: "منتشر می‌شه",
+    body: "ساخته می‌شه و توی تغییرات می‌بینیش.",
     url: "vasa.app/changelog",
     accent: "green",
     icon: (
@@ -293,7 +293,7 @@ const CHAPTERS: Chapter[] = [
       </svg>
     ),
     scene: <ShotShip />,
-    cta: { kind: "link", href: "/changelog", label: "تغییرات منتشرشده" },
+    cta: { kind: "link", href: "/changelog", label: "تغییرات" },
   },
 ];
 
@@ -487,14 +487,10 @@ export default function HomeStory() {
     <section className="fb-section fb-story" aria-labelledby="story-title">
       <div className="fb-section-head">
         <div>
-          <p className="fb-eyebrow">داستان یک فید‌بک</p>
           <h2 id="story-title" className="fb-section-title">
             از یک جمله تا یک تغییر واقعی
           </h2>
-          <p className="fb-section-sub">
-            پنج مرحله از مسیر یک فید‌بک، از لحظه‌ای که یه چیزی به ذهنت می‌رسه تا وقتی ساخته و منتشر
-            می‌شه. با اسکرول جلو برو.
-          </p>
+          <p className="fb-section-sub">با اسکرول، مسیر یه فید‌بک رو ببین.</p>
         </div>
       </div>
 

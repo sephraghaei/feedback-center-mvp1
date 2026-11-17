@@ -5,11 +5,6 @@ import { faNumber } from "@/lib/feedback/labels";
 
 type Comment = {
   name: string;
-  initial: string;
-  tag: string;
-  status: string;
-  tone: "open" | "progress" | "done";
-  text: string;
   short: string;
   likes: number;
 };
@@ -17,31 +12,16 @@ type Comment = {
 const COMMENTS: Comment[] = [
   {
     name: "سارا",
-    initial: "س",
-    tag: "درخواست قابلیت",
-    status: "در حال بررسی",
-    tone: "open",
-    text: "می‌شه فیلترهای فید رو ذخیره کنم؟ هر بار باید از اول انتخاب کنم.",
     short: "فیلترهای فید رو می‌شه ذخیره کرد؟",
     likes: 12,
   },
   {
     name: "امیر",
-    initial: "ا",
-    tag: "بهبود",
-    status: "برنامه‌ریزی شده",
-    tone: "progress",
-    text: "خروجی گرفتن از گزارش‌ها برای جلسه‌ها خیلی کمک می‌کنه.",
     short: "خروجی گزارش‌ها برای جلسه‌ها لازمه.",
     likes: 8,
   },
   {
     name: "نگار",
-    initial: "ن",
-    tag: "منتشر شده",
-    status: "رسیده به انتشار",
-    tone: "done",
-    text: "وضعیت درخواست‌ها رو دقیق نشون می‌دین. همین شفافیت عالیه.",
     short: "پیگیری وضعیت‌ها همین شفافیت رو می‌سازه.",
     likes: 21,
   },
@@ -187,30 +167,6 @@ function LikeButton({
   );
 }
 
-function CommentCard({ comment, side }: { comment: Comment; side: "start" | "end" }) {
-  const [liked, setLiked] = useState(false);
-
-  return (
-    <article className={`hero-comment hero-comment-${side}`}>
-      <div className="hero-comment-head">
-        <span className="hero-avatar" aria-hidden="true">
-          {comment.initial}
-        </span>
-        <span className="hero-comment-name">{comment.name}</span>
-        <span className="hero-comment-tag">{comment.tag}</span>
-      </div>
-      <p className="hero-comment-text">{comment.text}</p>
-      <div className="hero-comment-foot">
-        <span className={`hero-status tone-${comment.tone}`}>
-          <i aria-hidden="true" />
-          {comment.status}
-        </span>
-        <LikeButton liked={liked} count={comment.likes + (liked ? 1 : 0)} onToggle={() => setLiked((value) => !value)} />
-      </div>
-    </article>
-  );
-}
-
 export function HeroCommentScene() {
   const symbolsRef = useRef<HTMLDivElement>(null);
 
@@ -259,31 +215,15 @@ export function HeroCommentScene() {
   }, []);
 
   return (
-    <>
-      <div ref={symbolsRef} className="fb-hero-symbols" aria-hidden="true">
-        {SYMBOLS.map((symbol) => (
-          <span key={symbol.className} className={`fb-symbol ${symbol.className}`}>
-            <span className="fb-symbol-inner">
-              <HeroIcon name={symbol.icon} />
-            </span>
+    <div ref={symbolsRef} className="fb-hero-symbols" aria-hidden="true">
+      {SYMBOLS.map((symbol) => (
+        <span key={symbol.className} className={`fb-symbol ${symbol.className}`}>
+          <span className="fb-symbol-inner">
+            <HeroIcon name={symbol.icon} />
           </span>
-        ))}
-      </div>
-
-      <div className="fb-hero-comment-layer" role="group" aria-label="نمونه فید‌بک‌های کاربران">
-        <CommentCard comment={COMMENTS[0]} side="start" />
-        <CommentCard comment={COMMENTS[1]} side="end" />
-        <div className="fb-typing" aria-hidden="true">
-          <span className="hero-avatar">ن</span>
-          <span className="fb-typing-dots">
-            <i />
-            <i />
-            <i />
-          </span>
-          <span>داره می‌نویسه...</span>
-        </div>
-      </div>
-    </>
+        </span>
+      ))}
+    </div>
   );
 }
 
