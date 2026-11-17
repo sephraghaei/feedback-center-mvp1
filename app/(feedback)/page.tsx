@@ -10,6 +10,7 @@ import { HeroCommentScene, HeroTicker } from "@/app/components/feedback/hero-com
 import HomeStory from "@/app/components/feedback/home-story";
 import PostCard from "@/app/components/feedback/post-card";
 import RotatingWord from "@/app/components/feedback/rotating-word";
+import TourTrigger from "@/app/components/feedback/tour-trigger";
 import { STATUS_LABELS, faDate, faNumber } from "@/lib/feedback/labels";
 import { listChangelog } from "@/lib/feedback/changelog";
 import { ROADMAP_STATUSES, countFeedback, listFeed, listRoadmap } from "@/lib/feedback/posts";
@@ -52,7 +53,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
     status,
     items: roadmap.filter((post) => post.status === status),
   }));
-  const shipped = groups.find((group) => group.status === "shipped")?.items.length ?? 0;
+  const queued = groups.find((group) => group.status === "planned")?.items.length ?? 0;
+  const building = groups.find((group) => group.status === "in_progress")?.items.length ?? 0;
 
   return (
     <div className="fb-home">
@@ -88,24 +90,56 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               <span className="fb-soon">به زودی</span>
             </Link>
           </div>
-          <ul className="fb-hero-stats">
-            <li>
-              <strong>
-                <CountUp value={feedbackCount} />
-              </strong>
-              <span>فید‌بک ثبت‌شده</span>
-            </li>
-            <li>
-              <strong>
-                <CountUp value={shipped} />
-              </strong>
-              <span>رسیده به انتشار</span>
-            </li>
-            <li>
-              <strong>بدون حساب</strong>
-              <span>می‌تونی فید‌بک‌ها رو ببینی</span>
-            </li>
-          </ul>
+          <div
+            className="fb-hero-path"
+            role="group"
+            aria-label="مسیر یک فید‌بک از نوشتن تا انتشار"
+          >
+            <div className="fb-hero-path-head">
+              <span className="fb-hero-path-label">مسیر یک فید‌بک</span>
+              <TourTrigger />
+            </div>
+            <ol className="fb-hero-path-steps">
+              <li>
+                <ComposerButton className="fb-path-step">
+                  <span className="fb-path-num" aria-hidden="true">
+                    ۱
+                  </span>
+                  <strong>می‌نویسی</strong>
+                  <span className="fb-path-detail">چند خط کافیه</span>
+                </ComposerButton>
+              </li>
+              <li>
+                <Link href="/feed" className="fb-path-step">
+                  <span className="fb-path-num" aria-hidden="true">
+                    ۲
+                  </span>
+                  <strong>فید و رأی</strong>
+                  <span className="fb-path-detail">{faNumber(feedbackCount)} فید‌بک ثبت‌شده</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/roadmap" className="fb-path-step">
+                  <span className="fb-path-num" aria-hidden="true">
+                    ۳
+                  </span>
+                  <strong>نقشه راه</strong>
+                  <span className="fb-path-detail">
+                    {faNumber(queued)} در صف، {faNumber(building)} در ساخت
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/changelog" className="fb-path-step">
+                  <span className="fb-path-num" aria-hidden="true">
+                    ۴
+                  </span>
+                  <strong>انتشار</strong>
+                  <span className="fb-path-detail">تغییرات رو ببین</span>
+                </Link>
+              </li>
+            </ol>
+          </div>
           <HeroTicker />
         </div>
         <HeroCommentScene />

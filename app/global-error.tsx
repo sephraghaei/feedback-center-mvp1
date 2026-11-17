@@ -70,7 +70,7 @@ export default function GlobalError({
             style={{
               margin: 0,
               fontSize: "2.125rem",
-              fontWeight: 500,
+              fontWeight: 600,
               letterSpacing: "-0.02em",
               lineHeight: 1.2,
             }}

@@ -650,7 +650,7 @@
   background: color-mix(in srgb, var(--accent) 8%, transparent);
   color: color-mix(in srgb, var(--accent) 80%, var(--ink));
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.1;
 }
 
@@ -2951,7 +2951,7 @@ a.fb-product-name:hover {
   background: var(--surface);
   color: var(--accent);
   font-size: 0.68rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
   white-space: nowrap;
   box-shadow: var(--shadow-sm);
@@ -2984,43 +2984,115 @@ a.fb-product-name:hover {
   transform: translateX(-130%);
 }
 
-.fb-home .fb-hero-stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 0;
-  width: min(100%, 40rem);
+.fb-hero-path {
+  width: min(100%, 46rem);
   margin-top: 1.7rem;
-  border-top: 1px solid var(--hairline);
-  border-bottom: 1px solid var(--hairline);
+  text-align: start;
 }
 
-.fb-home .fb-hero-stats li {
+.fb-hero-path-head {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding-bottom: 0.5rem;
+}
+
+.fb-hero-path-label {
+  color: var(--ink-2);
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.fb-path-tour {
+  display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 0.95rem 0.65rem;
-  font-size: 0.73rem;
-  line-height: 1.5;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--ink-3);
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: color 0.18s ease;
 }
 
-.fb-home .fb-hero-stats li + li {
+.fb-path-tour svg {
+  width: 14px;
+  height: 14px;
+}
+
+.fb-path-tour:hover {
+  color: var(--accent);
+}
+
+.fb-hero-path-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  list-style: none;
+}
+
+.fb-hero-path-steps li {
+  min-width: 0;
+}
+
+.fb-hero-path-steps li + li {
   border-inline-start: 1px solid var(--hairline);
 }
 
-.fb-home .fb-hero-stats strong {
-  font-size: 1.3rem;
+.fb-path-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  padding: 0.85rem 0.5rem 0.95rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.fb-path-step:hover {
+  background: var(--wash);
+}
+
+.fb-path-step:focus-visible {
+  outline-offset: -3px;
+}
+
+.fb-path-num {
+  color: var(--accent);
+  font-size: 0.68rem;
   font-weight: 600;
-  line-height: 1.15;
-  color: var(--ink);
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
-.fb-home .fb-hero-stats .fb-count {
-  font-size: inherit;
-  color: inherit;
+.fb-path-step strong {
+  color: var(--ink);
+  font-size: 0.93rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.fb-path-detail {
+  color: var(--ink-3);
+  font-size: 0.72rem;
+  line-height: 1.55;
 }
 
 /* Hero feedback scene */
@@ -4327,7 +4399,7 @@ a.fb-product-name:hover {
   background: color-mix(in srgb, var(--story-accent) 9%, transparent);
   color: color-mix(in srgb, var(--story-accent) 88%, var(--ink));
   font-size: 0.72em;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
 }
 
@@ -4954,18 +5026,8 @@ a.fb-product-name:hover {
     font-size: 0.88rem;
   }
 
-  .fb-home .fb-hero-stats {
-    gap: 0;
-  }
-
-  .fb-home .fb-hero-stats li {
-    padding: 0.8rem 0.4rem;
-    font-size: 0.8rem;
-    line-height: 1.55;
-  }
-
-  .fb-home .fb-hero-stats strong {
-    font-size: 1.3rem;
+  .fb-home .fb-hero-path {
+    margin-top: 1.5rem;
   }
 
   .fb-home .hero-ticker-text {
@@ -5053,7 +5115,7 @@ a.fb-product-name:hover {
   .fb-home .fb-title {
     max-width: 100%;
     font-size: clamp(2.5rem, 12.6vw, 3.35rem);
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1.22;
     letter-spacing: -0.035em;
   }
@@ -5104,7 +5166,7 @@ a.fb-product-name:hover {
     border-color: var(--hairline);
     background: var(--surface);
     font-size: 0.96rem;
-    font-weight: 600;
+    font-weight: 500;
     white-space: nowrap;
   }
 
@@ -5113,47 +5175,47 @@ a.fb-product-name:hover {
     border-color: var(--accent);
     background: var(--accent);
     font-size: 1.06rem;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.01em;
     box-shadow: 0 16px 32px -18px color-mix(in srgb, var(--accent) 55%, transparent);
   }
 
-  .fb-home .fb-hero-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .fb-home .fb-hero-path {
     width: 100%;
     margin-top: 1.5rem;
-    border: 0;
-    gap: 8px;
   }
 
-  .fb-home .fb-hero-stats li {
-    border-radius: 16px;
-    padding: 0.95rem 0.5rem;
-    background: var(--accent-soft);
-    font-size: 0.82rem;
+  .fb-hero-path-head {
+    padding-bottom: 0.45rem;
   }
 
-  .fb-home .fb-hero-stats li + li {
+  .fb-hero-path-label,
+  .fb-path-tour {
+    font-size: 0.76rem;
+  }
+
+  .fb-hero-path-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fb-hero-path-steps li:nth-child(3) {
     border-inline-start: 0;
   }
 
-  .fb-home .fb-hero-stats li:nth-child(2) {
-    background: var(--green-soft);
+  .fb-hero-path-steps li:nth-child(n + 3) {
+    border-top: 1px solid var(--hairline);
   }
 
-  .fb-home .fb-hero-stats li:nth-child(3) {
-    background: var(--wash);
+  .fb-path-step {
+    padding: 0.9rem 0.5rem 1rem;
   }
 
-  .fb-home .fb-hero-stats li:last-child {
-    grid-column: 1 / -1;
-    padding-block: 0.8rem;
-    border-top: 0;
+  .fb-path-step strong {
+    font-size: 0.98rem;
   }
 
-  .fb-home .fb-hero-stats strong {
-    font-size: 1.8rem;
-    font-weight: 800;
+  .fb-path-detail {
+    font-size: 0.76rem;
   }
 
   .fb-home .fb-section {
@@ -5162,7 +5224,7 @@ a.fb-product-name:hover {
 
   .fb-home .fb-section-title {
     font-size: 1.85rem;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: -0.025em;
   }
 
@@ -5173,7 +5235,7 @@ a.fb-product-name:hover {
 
   .fb-home .fb-section-head > .fb-link {
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 500;
   }
 }
 
@@ -6476,7 +6538,7 @@ a.fb-product-name:hover {
   .fb-home .fb-board-preview .fb-column > .fb-mini::before,
   .fb-home .fb-board-preview .fb-column-live,
   .fb-home .fb-board-preview .fb-column-more,
-  .fb-home .fb-hero-stats li,
+  .fb-home .fb-path-step,
   .fb-story-chapter-title,
   .fb-story-icon,
   .fb-story-chevron,

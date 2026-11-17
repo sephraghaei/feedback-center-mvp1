@@ -307,7 +307,7 @@ body:has(.admin-login) {
 }
 .crumb .current {
   color: var(--ink);
-  font-weight: 510;
+  font-weight: 500;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -359,7 +359,7 @@ body:has(.admin-login) {
 .page-title {
   margin: 0;
   font-size: 1.55rem;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.25;
   letter-spacing: -0.02em;
   color: var(--ink);
@@ -533,7 +533,7 @@ body:has(.admin-login) {
 .view-tab.active {
   background: var(--surface);
   color: var(--ink);
-  font-weight: 510;
+  font-weight: 600;
   box-shadow: 0 0 0 1px var(--line-strong);
 }
 .search-box {
@@ -703,7 +703,7 @@ body:has(.admin-login) {
   min-width: 0;
 }
 .cell-user .name {
-  font-weight: 510;
+  font-weight: 600;
   color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
@@ -741,7 +741,7 @@ body:has(.admin-login) {
 
 .post-cell .post-title {
   display: block;
-  font-weight: 510;
+  font-weight: 600;
   color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
@@ -852,7 +852,7 @@ body:has(.admin-login) {
 .empty-state h3 {
   margin: 0;
   font-size: 0.94rem;
-  font-weight: 510;
+  font-weight: 600;
   color: var(--ink-2);
 }
 .empty-state p {
@@ -883,7 +883,7 @@ body:has(.admin-login) {
   gap: 8px;
   padding: 12px 14px;
   font-size: 0.78rem;
-  font-weight: 510;
+  font-weight: 600;
   color: var(--ink-2);
   border-bottom: 1px solid var(--line);
 }
@@ -936,7 +936,7 @@ body:has(.admin-login) {
   flex: 1;
 }
 .board-card .name {
-  font-weight: 510;
+  font-weight: 600;
   font-size: 0.83rem;
   white-space: nowrap;
   overflow: hidden;
@@ -981,7 +981,7 @@ body:has(.admin-login) {
   min-width: 0;
 }
 .list-row .name {
-  font-weight: 510;
+  font-weight: 600;
   font-size: 0.87rem;
 }
 .list-row .id {
@@ -1067,7 +1067,7 @@ body:has(.admin-login) {
 .drawer-title {
   margin: 0;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 .drawer-head .btn-icon {
   margin-inline-start: auto;
@@ -1087,7 +1087,7 @@ body:has(.admin-login) {
 }
 .field label {
   font-size: 0.76rem;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--ink-3);
 }
 .field label .opt {
@@ -1273,7 +1273,7 @@ body:has(.admin-login) {
 }
 .stat-value {
   font-size: 1.85rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
@@ -1285,7 +1285,7 @@ body:has(.admin-login) {
 }
 .stat-hint strong {
   color: var(--green);
-  font-weight: 510;
+  font-weight: 600;
 }
 
 .charts-grid {
@@ -1312,7 +1312,7 @@ body:has(.admin-login) {
 .chart-title {
   margin: 0;
   font-size: 0.92rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 .chart-sub {
@@ -1342,7 +1342,7 @@ body:has(.admin-login) {
 .range-tab.active {
   background: var(--surface);
   color: var(--ink);
-  font-weight: 510;
+  font-weight: 600;
   box-shadow: 0 0 0 1px var(--line-strong);
 }
 .bars-svg {
@@ -1402,7 +1402,7 @@ body:has(.admin-login) {
 }
 .legend-item .val {
   margin-inline-start: auto;
-  font-weight: 510;
+  font-weight: 600;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
@@ -1418,7 +1418,7 @@ body:has(.admin-login) {
   color: var(--ink-2);
 }
 .sex-row .top .val {
-  font-weight: 510;
+  font-weight: 600;
   color: var(--ink);
 }
 .sex-bar {
@@ -1480,7 +1480,7 @@ body:has(.admin-login) {
 .login-title {
   margin: 0;
   font-size: 1.3rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.25;
   color: var(--ink);
@@ -1499,7 +1499,7 @@ body:has(.admin-login) {
 }
 .login-field label {
   font-size: 0.76rem;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--ink-3);
 }
 .password-wrap {
