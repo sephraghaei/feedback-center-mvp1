@@ -9,6 +9,7 @@ import ThemeToggle from "../theme-toggle";
 import { mediaUrl } from "@/lib/feedback/media";
 import Avatar from "./avatar";
 import { ChevronDownIcon, CompassIcon, MenuIcon, PlusIcon } from "./icons";
+import WipBadge from "./wip-badge";
 
 type HeaderViewer = {
   name: string;
@@ -17,10 +18,10 @@ type HeaderViewer = {
   avatarPath: string | null;
 } | null;
 
-const LINKS: { href: string; label: string }[] = [
+const LINKS: { href: string; label: string; wip?: boolean }[] = [
   { href: "/feed", label: "فید‌بک‌ها" },
-  { href: "/roadmap", label: "نقشه راه" },
-  { href: "/changelog", label: "تغییرات" },
+  { href: "/roadmap", label: "نقشه راه", wip: true },
+  { href: "/changelog", label: "تغییرات", wip: true },
 ];
 
 const METHOD_LABELS: Record<"phone" | "email" | "clerk", string> = {
@@ -149,7 +150,8 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
               className={`fb-nav-link ${isActive(link.href) ? "active" : ""}`}
               onClick={closeMenu}
             >
-              {link.label}
+              {link.label}{" "}
+              {link.wip ? <WipBadge /> : null}
             </Link>
           ))}
           {!viewer ? (

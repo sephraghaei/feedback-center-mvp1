@@ -9,6 +9,7 @@ import HomeStory from "@/app/components/feedback/home-story";
 import PostCard from "@/app/components/feedback/post-card";
 import RotatingWord from "@/app/components/feedback/rotating-word";
 import TourTrigger from "@/app/components/feedback/tour-trigger";
+import WipBadge from "@/app/components/feedback/wip-badge";
 import { faDate, faNumber } from "@/lib/feedback/labels";
 import { listChangelog } from "@/lib/feedback/changelog";
 import { countFeedback, listFeed, listRoadmap } from "@/lib/feedback/posts";
@@ -104,7 +105,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
                   <span className="fb-path-num" aria-hidden="true">
                     ۳
                   </span>
-                  <strong>نقشه راه</strong>
+                  <span className="fb-path-title">
+                    <strong>نقشه راه</strong>{" "}
+                    <WipBadge />
+                  </span>
                   <span className="fb-path-detail">
                     {faNumber(queued)} در صف، {faNumber(building)} در ساخت
                   </span>
@@ -116,7 +120,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
                     ۴
                   </span>
                   <strong>انتشار</strong>
-                  <span className="fb-path-detail">تغییرات رو ببین</span>
+                  <span className="fb-path-detail">
+                    تغییرات{" "}
+                    <WipBadge />
+                  </span>
                 </Link>
               </li>
             </ol>

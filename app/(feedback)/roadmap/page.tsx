@@ -3,6 +3,7 @@ import Link from "next/link";
 import BrandMark from "@/app/components/brand-mark";
 import ComposerButton from "@/app/components/feedback/composer-button";
 import MoveMenu from "@/app/components/feedback/move-menu";
+import WipBadge from "@/app/components/feedback/wip-badge";
 import { STATUS_LABELS, faNumber } from "@/lib/feedback/labels";
 import { ROADMAP_STATUSES, listRoadmap } from "@/lib/feedback/posts";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
@@ -31,7 +32,8 @@ export default async function RoadmapPage() {
       <section className="fb-hero fb-page-head">
         <p className="fb-eyebrow">
           <BrandMark className="eyebrow-mark" simple />
-          نقشه راه
+          نقشه راه{" "}
+          <WipBadge />
         </p>
         <h1 className="fb-title">از نوبت تا انتشار</h1>
         <p className="fb-lede">

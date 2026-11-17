@@ -5,6 +5,7 @@ import ComposerButton from "@/app/components/feedback/composer-button";
 import CountUp from "@/app/components/feedback/count-up";
 import CompanyFilter from "@/app/components/feedback/company-filter";
 import PostCard from "@/app/components/feedback/post-card";
+import WipBadge from "@/app/components/feedback/wip-badge";
 import { faNumber } from "@/lib/feedback/labels";
 import { listFeed, listFeedCompanies } from "@/lib/feedback/posts";
 import { getViewer } from "@/lib/feedback/viewer";
@@ -59,7 +60,8 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         <div className="fb-hero-actions">
           <ComposerButton className="fb-btn fb-btn-primary">فید‌بک بده</ComposerButton>
           <Link href="/roadmap" className="fb-btn">
-            نقشه راه
+            نقشه راه{" "}
+            <WipBadge />
           </Link>
         </div>
         <ul className="fb-hero-stats">
