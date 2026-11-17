@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { faNumber } from "@/lib/feedback/labels";
 import ComposerButton from "./composer-button";
 
 function ShotStart() {
@@ -46,12 +45,13 @@ function ShotWrite() {
         <span className="fb-shot-label">عنوان</span>
         <span className="fb-shot-input">دکمه پرداخت توی موبایل کار نمی‌کنه</span>
       </div>
-      <div className="fb-shot-field">
+      <div className="fb-shot-field is-grow">
         <span className="fb-shot-label">توضیح</span>
         <span className="fb-shot-box">
           <span className="fb-shot-line w90" />
-          <span className="fb-shot-line w70" />
-          <span className="fb-shot-line w45" />
+          <span className="fb-shot-line w75" />
+          <span className="fb-shot-line w85" />
+          <span className="fb-shot-line w55" />
         </span>
       </div>
       <div className="fb-shot-chips">
@@ -70,7 +70,7 @@ function ShotVote() {
         <span className="fb-shot-brand">فید‌بک‌ها</span>
         <span className="fb-shot-pill">داغ‌ترین</span>
       </div>
-      <div className="fb-shot-item">
+      <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
           <span className="fb-shot-arrow" />۲۴
         </span>
@@ -80,7 +80,7 @@ function ShotVote() {
         </span>
         <span className="fb-shot-meta">۸ کامنت</span>
       </div>
-      <div className="fb-shot-item">
+      <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
           <span className="fb-shot-arrow" />۱۶
         </span>
@@ -90,7 +90,7 @@ function ShotVote() {
         </span>
         <span className="fb-shot-meta">۳ کامنت</span>
       </div>
-      <div className="fb-shot-item">
+      <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
           <span className="fb-shot-arrow" />۱۱
         </span>
@@ -99,6 +99,16 @@ function ShotVote() {
           <span className="fb-shot-line w35" />
         </span>
         <span className="fb-shot-meta">۱ کامنت</span>
+      </div>
+      <div className="fb-shot-item is-tall">
+        <span className="fb-shot-vote">
+          <span className="fb-shot-arrow" />۸
+        </span>
+        <span className="fb-shot-lines">
+          <span className="fb-shot-line w75" />
+          <span className="fb-shot-line w40" />
+        </span>
+        <span className="fb-shot-meta">۲ کامنت</span>
       </div>
     </>
   );
@@ -114,19 +124,47 @@ function ShotRoadmap() {
       <div className="fb-shot-board">
         <div className="fb-shot-col">
           <span className="fb-shot-col-title">در انتظار</span>
-          <span className="fb-shot-card-line" />
-          <span className="fb-shot-card-line" />
+          <span className="fb-shot-card">
+            <i className="fb-shot-line w85" />
+            <i className="fb-shot-line w55" />
+          </span>
+          <span className="fb-shot-card">
+            <i className="fb-shot-line w70" />
+            <i className="fb-shot-line w45" />
+          </span>
+          <span className="fb-shot-card">
+            <i className="fb-shot-line w60" />
+            <i className="fb-shot-line w35" />
+          </span>
         </div>
         <div className="fb-shot-col is-live">
           <span className="fb-shot-col-title">در حال ساخت</span>
-          <span className="fb-shot-card-line" />
+          <span className="fb-shot-card">
+            <i className="fb-shot-line w80" />
+            <i className="fb-shot-line w50" />
+          </span>
+          <span className="fb-shot-card">
+            <i className="fb-shot-line w65" />
+            <i className="fb-shot-line w40" />
+          </span>
           <span className="fb-shot-progress">
             <i />
           </span>
         </div>
         <div className="fb-shot-col">
           <span className="fb-shot-col-title">منتشر شد</span>
-          <span className="fb-shot-card-line" />
+          <span className="fb-shot-card">
+            <i className="fb-shot-line w75" />
+            <i className="fb-shot-line w45" />
+          </span>
+          <span className="fb-shot-card">
+            <i className="fb-shot-line w60" />
+            <i className="fb-shot-line w35" />
+          </span>
+          <span className="fb-shot-card">
+            <i className="fb-shot-line w50" />
+            <i className="fb-shot-line w30" />
+          </span>
         </div>
       </div>
     </>
@@ -140,7 +178,10 @@ function ShotShip() {
         <span className="fb-shot-brand">تغییرات</span>
         <span className="fb-shot-pill">نسخه ۲٫۰</span>
       </div>
-      <span className="fb-shot-release">پرداخت موبایل درست شد</span>
+      <div className="fb-shot-release-block">
+        <span className="fb-shot-release">پرداخت موبایل درست شد</span>
+        <span className="fb-shot-release-meta">از فید‌بک پررای «دکمه پرداخت»</span>
+      </div>
       <span className="fb-shot-check">
         <i />
         تکمیل پرداخت روی موبایل
@@ -149,13 +190,30 @@ function ShotShip() {
         <i />
         پیام خطای روشن‌تر
       </span>
+      <span className="fb-shot-check">
+        <i />
+        حفظ سبد خرید بعد از ورود
+      </span>
+      <span className="fb-shot-check">
+        <i />
+        نمایش وضعیت سفارش در پروفایل
+      </span>
+      <div className="fb-shot-versions">
+        <span className="fb-shot-version">
+          <span>نسخه ۱٫۹</span>
+          <i />
+        </span>
+        <span className="fb-shot-version">
+          <span>نسخه ۱٫۸</span>
+          <i />
+        </span>
+      </div>
       <span className="fb-shot-note">این فید‌بک ساخته و منتشر شد</span>
     </>
   );
 }
 
 type Chapter = {
-  kicker: string;
   title: string;
   body: string;
   url: string;
@@ -167,7 +225,6 @@ type Chapter = {
 
 const CHAPTERS: Chapter[] = [
   {
-    kicker: "پرده اول",
     title: "یه چیزی کمه",
     body: "یکی وسط کار به مشکل می‌خوره یا یه ایده به ذهنش می‌رسه. همین جمله کافیه تا ماجرا شروع بشه.",
     url: "vasa.app/feed",
@@ -182,7 +239,6 @@ const CHAPTERS: Chapter[] = [
     cta: { kind: "composer", label: "همین حالا بنویس" },
   },
   {
-    kicker: "پرده دوم",
     title: "بنویسش، با جزئیات",
     body: "چند خط توضیح کافیه: چی شده، کجا، و چه انتظاری داری. عکس هم می‌تونی بچسبونی تا موضوع روشن‌تر بشه.",
     url: "vasa.app/new",
@@ -197,7 +253,6 @@ const CHAPTERS: Chapter[] = [
     cta: { kind: "link", href: "/feed", label: "بقیه چطور نوشتن" },
   },
   {
-    kicker: "پرده سوم",
     title: "بقیه هم همراهش می‌شن",
     body: "کاربرهای دیگه فید‌بک رو می‌خونن، رای می‌دن و کامنت می‌ذارن. هرچی رای بیشتر، شانس دیده شدن هم بیشتر.",
     url: "vasa.app/feed",
@@ -212,7 +267,6 @@ const CHAPTERS: Chapter[] = [
     cta: { kind: "link", href: "/feed", label: "فید‌بک‌ها و رای‌ها" },
   },
   {
-    kicker: "پرده چهارم",
     title: "روی نقشه راه، به زودی",
     body: "نقشه راه هنوز در دست توسعه‌ست، ولی قراره فید‌بک‌هایی که رای بیشتری دارن از انتظار به در حال ساخت و بعد منتشر برن. همین حالا هم وضعیت هر فید‌بک روی خود کارتش معلومه.",
     url: "vasa.app/roadmap",
@@ -228,7 +282,6 @@ const CHAPTERS: Chapter[] = [
     cta: { kind: "link", href: "/roadmap", label: "نقشه راه، به زودی" },
   },
   {
-    kicker: "پرده پنجم",
     title: "ساخته می‌شه و منتشر",
     body: "وقتی ساخته و منتشر شد، توی تغییرات با جزئیات می‌بینی چی عوض شده. بعد دوباره می‌تونی فید‌بک بدی و چرخه ادامه پیدا کنه.",
     url: "vasa.app/changelog",
@@ -439,7 +492,7 @@ export default function HomeStory() {
             از یک جمله تا یک تغییر واقعی
           </h2>
           <p className="fb-section-sub">
-            پنج پرده از مسیر یک فید‌بک، از لحظه‌ای که یه چیزی به ذهنت می‌رسه تا وقتی ساخته و منتشر
+            پنج مرحله از مسیر یک فید‌بک، از لحظه‌ای که یه چیزی به ذهنت می‌رسه تا وقتی ساخته و منتشر
             می‌شه. با اسکرول جلو برو.
           </p>
         </div>
@@ -469,7 +522,6 @@ export default function HomeStory() {
                     {chapter.icon}
                   </span>
                   <span className="fb-story-head-text">
-                    <span className="fb-story-step">{chapter.kicker}</span>
                     <span className="fb-story-chapter-title">{chapter.title}</span>
                   </span>
                   <span className="fb-story-chevron" aria-hidden="true" />
@@ -522,30 +574,6 @@ export default function HomeStory() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            <div className="fb-story-meter" role="group" aria-label="پرده‌های داستان">
-              <div className="fb-story-dots">
-                {CHAPTERS.map((chapter, index) => (
-                  <button
-                    key={chapter.kicker}
-                    type="button"
-                    className={`fb-story-dot ${index === active ? "active" : ""} ${
-                      index < active ? "done" : ""
-                    }`}
-                    onClick={() => goTo(index)}
-                    aria-label={`رفتن به ${chapter.kicker}`}
-                    aria-current={index === active ? "step" : undefined}
-                  >
-                    {faNumber(index + 1)}
-                  </button>
-                ))}
-              </div>
-              <span className="fb-story-meter-label">
-                <span key={active} className="fb-story-meter-text">
-                  {current.kicker} از {faNumber(CHAPTERS.length)}
-                </span>
-              </span>
             </div>
           </div>
         </div>
