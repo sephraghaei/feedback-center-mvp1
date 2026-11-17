@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import "@fontsource-variable/vazirmatn";
 import { clientLogger } from "@/lib/client-logger";
+import { dastkhat } from "./font";
 
 export default function GlobalError({
   error,
@@ -20,7 +20,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="fa" dir="rtl" className={dastkhat.variable}>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -49,7 +49,7 @@ export default function GlobalError({
           placeItems: "center",
           background: "var(--paper)",
           color: "var(--ink)",
-          fontFamily: '"Vazirmatn Variable", system-ui, sans-serif',
+          fontFamily: "var(--font-dastkhat, system-ui, sans-serif)",
           textAlign: "center",
           padding: "2rem",
         }}
