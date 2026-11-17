@@ -24,6 +24,12 @@
   --amber: #a16207;
   --amber-soft: #fdf6e3;
   --amber-line: #f0dfb0;
+  --violet: #6d3fd8;
+  --violet-soft: #f0eafe;
+  --violet-line: #ddd2fb;
+  --rose: #be185d;
+  --rose-soft: #fdeaf2;
+  --rose-line: #f6cbdd;
   --red: #b42318;
   --red-soft: #fdf0ef;
   --red-line: #f7cfcb;
@@ -44,6 +50,10 @@
   --inverted-body: #cfe0ff;
   --inverted-soft: #9fbcf0;
   --inverted-line: #274a86;
+  --footer-bg: #0d1b33;
+  --footer-ink: #ffffff;
+  --footer-body: #b4c6e4;
+  --footer-line: rgba(255, 255, 255, 0.16);
   --ring-card: 0 0 0 1px rgba(13, 27, 51, 0.06), 0 16px 34px -24px rgba(37, 99, 235, 0.55);
   --shadow-sm: 0 0 0 1px var(--hairline);
   --shadow-card: 0 1px 2px rgba(13, 27, 51, 0.04), 0 14px 30px -22px rgba(37, 99, 235, 0.5);
@@ -87,6 +97,12 @@
   --amber: #f0c96b;
   --amber-soft: rgba(240, 201, 107, 0.12);
   --amber-line: rgba(240, 201, 107, 0.3);
+  --violet: #a99bea;
+  --violet-soft: rgba(169, 155, 234, 0.12);
+  --violet-line: rgba(169, 155, 234, 0.3);
+  --rose: #f0a1c0;
+  --rose-soft: rgba(240, 161, 192, 0.12);
+  --rose-line: rgba(240, 161, 192, 0.3);
   --red: #ef9a94;
   --red-soft: rgba(239, 154, 148, 0.11);
   --red-line: rgba(239, 154, 148, 0.28);
@@ -101,6 +117,10 @@
   --inverted-body: #3c4556;
   --inverted-soft: #6b7486;
   --inverted-line: #c9d2e2;
+  --footer-bg: #0a0d12;
+  --footer-ink: #eef2f8;
+  --footer-body: #8f9aac;
+  --footer-line: #20252f;
   --gradient-spectrum: linear-gradient(90deg, #232936 0%, #e4e9f2 50%, #232936 100%);
   --gradient-solar: linear-gradient(90deg, #e4e9f2 0%, #96a0b2 100%);
   --ring-card: 0 0 0 1px rgba(220, 230, 245, 0.06), 0 18px 40px -28px rgba(0, 0, 0, 0.9);
@@ -717,53 +737,6 @@ a {
 .feature-inverted .feature-code {
   color: var(--inverted-soft);
   border-top-color: var(--inverted-line);
-}
-
-/* Footer */
-
-.site-footer {
-  width: 100%;
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 20px clamp(20px, 5vw, 48px) 36px;
-  border-top: 1px solid var(--hairline);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 0.75rem;
-  color: var(--ink-4);
-}
-
-.footer-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 500;
-  color: var(--ink);
-}
-
-.footer-name {
-  font-family: var(--font-brand);
-  font-weight: 600;
-  font-size: 0.82rem;
-}
-
-.footer-mark {
-  width: 13px;
-  height: 13px;
-  flex-shrink: 0;
-  color: var(--mark);
-}
-
-@media (max-width: 900px) {
-  .site-footer {
-    font-size: 0.85rem;
-  }
-
-  .footer-name {
-    font-size: 0.92rem;
-  }
 }
 
 /* Clerk pages */

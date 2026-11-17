@@ -217,7 +217,7 @@ type Chapter = {
   title: string;
   body: string;
   url: string;
-  accent: "blue" | "violet" | "teal" | "amber" | "green";
+  accent: "blue" | "violet" | "rose" | "amber" | "green";
   icon: ReactNode;
   scene: ReactNode;
   cta: { kind: "composer"; label: string } | { kind: "link"; href: string; label: string };
@@ -226,7 +226,7 @@ type Chapter = {
 const CHAPTERS: Chapter[] = [
   {
     title: "یه چیزی کمه",
-    body: "یه مشکل یا ایده، شروع ماجراست.",
+    body: "یه مشکل، ایده یا جای بهتر شدن پیدا کردی؟ همون اول ماجراست. لازم نیست متن آماده داشته باشی.",
     url: "vasa.app/feed",
     accent: "blue",
     icon: (
@@ -240,7 +240,7 @@ const CHAPTERS: Chapter[] = [
   },
   {
     title: "می‌نویسی",
-    body: "چند خط بنویس: چی شد و چی می‌خوای.",
+    body: "چی شد و چی می‌خوای رو بنویس. یه عنوان روشن و دو سه خط توضیح کافیه تا بقیه سریع بفهمن.",
     url: "vasa.app/new",
     accent: "violet",
     icon: (
@@ -254,9 +254,9 @@ const CHAPTERS: Chapter[] = [
   },
   {
     title: "رای می‌گیره",
-    body: "بقیه می‌خونن و رای می‌دن.",
+    body: "بقیه می‌خونن، رای می‌دن و کامنت می‌ذارن. هرچی رای بیشتر، فید‌بک زودتر بررسی می‌شه.",
     url: "vasa.app/feed",
-    accent: "teal",
+    accent: "rose",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 19.5V6.5" />
@@ -268,7 +268,7 @@ const CHAPTERS: Chapter[] = [
   },
   {
     title: "می‌ره روی نقشه راه",
-    body: "هرچی رای بیشتر، زودتر می‌ره روی نقشه راه.",
+    body: "فید‌بک‌های پررای وارد نقشه راه می‌شن. می‌بینی چی قبول شده، چی داره ساخته می‌شه و چی منتشر شده.",
     url: "vasa.app/roadmap",
     accent: "amber",
     icon: (
@@ -283,7 +283,7 @@ const CHAPTERS: Chapter[] = [
   },
   {
     title: "منتشر می‌شه",
-    body: "ساخته می‌شه و توی تغییرات می‌بینیش.",
+    body: "وقتی ساخته شد، توی تغییرات می‌بینی کدوم فید‌بک باعثش شده. مسیر از ایده تا انتشار شفاف می‌مونه.",
     url: "vasa.app/changelog",
     accent: "green",
     icon: (
@@ -490,7 +490,7 @@ export default function HomeStory() {
           <h2 id="story-title" className="fb-section-title">
             از یک جمله تا یک تغییر واقعی
           </h2>
-          <p className="fb-section-sub">با اسکرول، مسیر یه فید‌بک رو ببین.</p>
+          <p className="fb-section-sub">با اسکرول، مسیر یه فید‌بک رو ببین: از نوشتن تا انتشار.</p>
         </div>
       </div>
 

@@ -1,9 +1,9 @@
 import "../feedback.css";
-import BrandMark from "@/app/components/brand-mark";
 import Composer from "@/app/components/feedback/composer";
 import FeedbackHeader from "@/app/components/feedback/feedback-header";
 import PointerFx from "@/app/components/feedback/pointer-fx";
 import ScrollProgress from "@/app/components/feedback/scroll-progress";
+import SiteFooter from "@/app/components/feedback/site-footer";
 import SiteTour from "@/app/components/feedback/site-tour";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
 
@@ -19,13 +19,7 @@ export default async function FeedbackLayout({ children }: { children: React.Rea
       <div className="top-strip" aria-hidden="true" />
       <FeedbackHeader viewer={headerViewer} admin={admin} />
       <main className="fb-main">{children}</main>
-      <footer className="site-footer">
-        <span className="footer-brand">
-          <BrandMark className="footer-mark" simple />
-          <span className="footer-name">وسا</span>
-        </span>
-        <span>فید‌بک و تغییرات در یک جا، نقشه راه به زودی</span>
-      </footer>
+      <SiteFooter />
       <Composer viewer={headerViewer} />
       <PointerFx />
       <SiteTour />

@@ -18,7 +18,7 @@ import { OTP_LENGTH } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "وسا",
-  description: "فید‌بک بنویس، رای بگیر، و نتیجه رو توی نقشه راه و تغییرات ببین.",
+  description: "ایده یا مشکلت رو بنویس، بقیه رای می‌دن و نتیجه رو تا انتشار توی نقشه راه و تغییرات دنبال کن.",
 };
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
@@ -61,7 +61,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               فیدبک بده.
             </span>
           </h1>
-          <p className="fb-lede">وسا یه مرکز فید‌بکه. بنویس، رای بگیر، نتیجه رو ببین.</p>
+          <p className="fb-lede">
+            وسا یه مرکز فید‌بکه. ایده یا مشکلی که داری رو بنویس، بقیه رای می‌دن و نتیجه رو تا
+            انتشار دنبال کن.
+          </p>
           <div className="fb-hero-actions">
             <ComposerButton className="fb-btn fb-btn-primary">فید‌بک بده</ComposerButton>
             <Link href="/feed" className="fb-btn">
@@ -78,7 +81,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               <TourTrigger />
             </div>
             <ol className="fb-hero-path-steps">
-              <li>
+              <li data-accent="violet">
                 <ComposerButton className="fb-path-step">
                   <span className="fb-path-num" aria-hidden="true">
                     ۱
@@ -87,7 +90,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
                   <span className="fb-path-detail">چند خط کافیه</span>
                 </ComposerButton>
               </li>
-              <li>
+              <li data-accent="rose">
                 <Link href="/feed" className="fb-path-step">
                   <span className="fb-path-num" aria-hidden="true">
                     ۲
@@ -96,7 +99,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
                   <span className="fb-path-detail">{faNumber(feedbackCount)} فید‌بک ثبت‌شده</span>
                 </Link>
               </li>
-              <li>
+              <li data-accent="amber">
                 <Link href="/roadmap" className="fb-path-step">
                   <span className="fb-path-num" aria-hidden="true">
                     ۳
@@ -107,7 +110,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
                   </span>
                 </Link>
               </li>
-              <li>
+              <li data-accent="green">
                 <Link href="/changelog" className="fb-path-step">
                   <span className="fb-path-num" aria-hidden="true">
                     ۴
@@ -129,6 +132,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         <div className="fb-section-head">
           <div>
             <h2 id="recent-title" className="fb-section-title">تازه‌ترین فید‌بک‌ها</h2>
+            <p className="fb-section-sub">ایده‌های تازه رو ببین، به مهم‌ها رای بده و گفتگو رو ادامه بده.</p>
           </div>
           <Link href="/feed" className="fb-link">
             همه فید‌بک‌ها
@@ -148,8 +152,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           </div>
         ) : (
           <div className="fb-empty">
-            <strong>هنوز فید‌بک‌ی نیست.</strong>
-            اولین نفر باش.
+            <strong>هنوز فید‌بک‌ی ثبت نشده.</strong>
+            اولین نفر باش و بنویس چی کمه.
             <div className="fb-empty-action">
               <ComposerButton className="fb-btn fb-btn-primary fb-btn-sm">
                 اولین فید‌بک‌ت رو بنویس
@@ -164,6 +168,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           <div className="fb-section-head">
             <div>
               <h2 id="changelog-title" className="fb-section-title">آخرین تغییرات</h2>
+              <p className="fb-section-sub">
+                هر تغییری که منتشر می‌شه، با فید‌بک‌هایی که باعثش شدن.
+              </p>
             </div>
             <Link href="/changelog" className="fb-link">
               همه تغییرات

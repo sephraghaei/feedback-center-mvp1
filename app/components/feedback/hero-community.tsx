@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { faNumber } from "@/lib/feedback/labels";
 
 type Comment = {
@@ -168,54 +168,8 @@ function LikeButton({
 }
 
 export function HeroCommentScene() {
-  const symbolsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const host = symbolsRef.current?.parentElement;
-    if (!host) return;
-
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let frame = 0;
-    let x = 0;
-    let y = 0;
-
-    const apply = () => {
-      frame = 0;
-      host.style.setProperty("--px", x.toFixed(3));
-      host.style.setProperty("--py", y.toFixed(3));
-    };
-
-    const onMove = (event: PointerEvent) => {
-      if (event.pointerType === "touch" || reduce.matches) return;
-      x = event.clientX / Math.max(window.innerWidth, 1) - 0.5;
-      y = event.clientY / Math.max(window.innerHeight, 1) - 0.5;
-      if (!frame) frame = window.requestAnimationFrame(apply);
-    };
-
-    const onLeave = () => {
-      x = 0;
-      y = 0;
-      if (frame) {
-        window.cancelAnimationFrame(frame);
-        frame = 0;
-      }
-      apply();
-    };
-
-    host.addEventListener("pointermove", onMove, { passive: true });
-    host.addEventListener("pointerleave", onLeave);
-
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      host.removeEventListener("pointermove", onMove);
-      host.removeEventListener("pointerleave", onLeave);
-      host.style.removeProperty("--px");
-      host.style.removeProperty("--py");
-    };
-  }, []);
-
   return (
-    <div ref={symbolsRef} className="fb-hero-symbols" aria-hidden="true">
+    <div className="fb-hero-symbols" aria-hidden="true">
       {SYMBOLS.map((symbol) => (
         <span key={symbol.className} className={`fb-symbol ${symbol.className}`}>
           <span className="fb-symbol-inner">

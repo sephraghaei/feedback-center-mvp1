@@ -2837,12 +2837,7 @@ a.fb-product-name:hover {
   background: color-mix(in srgb, var(--rotate-color) 12%, transparent);
   color: var(--rotate-color);
   opacity: 0;
-  translate: 0 0.55em;
-  scale: 0.92;
-  transition:
-    opacity 0.38s ease,
-    translate 0.55s cubic-bezier(0.22, 0.7, 0.25, 1),
-    scale 0.55s cubic-bezier(0.22, 0.7, 0.25, 1);
+  transition: opacity 0.4s ease;
 }
 
 /* One hue per word, walking the same sky to violet ramp as the brand gradient, so the
@@ -2865,14 +2860,10 @@ a.fb-product-name:hover {
 
 .fb-rotate-word.is-active {
   opacity: 1;
-  translate: 0 0;
-  scale: 1;
 }
 
 .fb-rotate-word.is-leaving {
   opacity: 0;
-  translate: 0 -0.55em;
-  scale: 0.92;
 }
 
 /* A solid light badge this large glares on a dark page, so the highlight becomes a soft
@@ -2913,29 +2904,7 @@ a.fb-product-name:hover {
 }
 
 .fb-home .fb-btn-primary {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
   padding-inline: 1.35rem;
-}
-
-.fb-home .fb-btn-primary::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
-    110deg,
-    transparent 24%,
-    color-mix(in srgb, var(--on-accent) 20%, transparent) 48%,
-    transparent 72%
-  );
-  transform: translateX(130%);
-  transition: transform 0.65s cubic-bezier(0.22, 0.7, 0.25, 1);
-}
-
-.fb-home .fb-btn-primary:hover::after {
-  transform: translateX(-130%);
 }
 
 .fb-hero-path {
@@ -2998,6 +2967,26 @@ a.fb-product-name:hover {
   min-width: 0;
 }
 
+.fb-hero-path-steps li[data-accent="violet"] {
+  --step-accent: var(--violet);
+  --step-wash: var(--violet-soft);
+}
+
+.fb-hero-path-steps li[data-accent="rose"] {
+  --step-accent: var(--rose);
+  --step-wash: var(--rose-soft);
+}
+
+.fb-hero-path-steps li[data-accent="amber"] {
+  --step-accent: var(--amber);
+  --step-wash: var(--amber-soft);
+}
+
+.fb-hero-path-steps li[data-accent="green"] {
+  --step-accent: var(--green);
+  --step-wash: var(--green-soft);
+}
+
 .fb-hero-path-steps li + li {
   border-inline-start: 1px solid var(--hairline);
 }
@@ -3029,11 +3018,26 @@ a.fb-product-name:hover {
 }
 
 .fb-path-num {
-  color: var(--accent);
-  font-size: 0.68rem;
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-bottom: 3px;
+  border-radius: 50%;
+  background: var(--step-wash, var(--accent-soft));
+  color: var(--step-accent, var(--accent));
+  font-size: 0.7rem;
   font-weight: 600;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.fb-path-step:hover .fb-path-num {
+  background: var(--step-accent, var(--accent));
+  color: var(--on-accent);
 }
 
 .fb-path-step strong {
@@ -3065,12 +3069,6 @@ a.fb-product-name:hover {
 
 .fb-symbol {
   position: absolute;
-  transform: translate3d(
-    calc(var(--px, 0) * var(--depth, 12px)),
-    calc(var(--py, 0) * var(--depth, 12px)),
-    0
-  );
-  transition: transform 0.28s ease-out;
 }
 
 .fb-symbol-inner {
@@ -3078,15 +3076,13 @@ a.fb-product-name:hover {
   place-items: center;
   width: var(--size, 2.4rem);
   height: var(--size, 2.4rem);
-  border: 1px solid var(--hairline);
+  border: 1px solid color-mix(in srgb, var(--sym-color, var(--ink-4)) 24%, var(--hairline));
   border-radius: 50%;
   background: color-mix(in srgb, var(--surface) 74%, transparent);
   color: var(--sym-color, var(--ink-3));
   box-shadow: var(--shadow-sm);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  animation: fb-float var(--float, 8s) ease-in-out infinite;
-  animation-delay: var(--delay, 0s);
 }
 
 .fb-symbol-inner svg {
@@ -3097,101 +3093,68 @@ a.fb-product-name:hover {
 .fb-symbol.s1 {
   left: 5%;
   top: 22%;
-  --depth: 20px;
   --size: 2.7rem;
-  --float: 7.5s;
-  --delay: -1s;
+  --sym-color: var(--accent);
 }
 
 .fb-symbol.s2 {
   right: 6%;
   top: 12%;
-  --depth: 16px;
   --size: 2.3rem;
-  --float: 8.5s;
-  --delay: -3s;
-  --sym-color: var(--red);
+  --sym-color: var(--rose);
 }
 
 .fb-symbol.s3 {
   left: 9%;
   bottom: 20%;
-  --depth: 24px;
   --size: 2.4rem;
-  --float: 9.5s;
-  --delay: -5s;
+  --sym-color: var(--violet);
 }
 
 .fb-symbol.s4 {
   right: 9%;
   bottom: 23%;
-  --depth: 18px;
   --size: 2.8rem;
-  --float: 8s;
-  --delay: -2s;
   --sym-color: var(--green);
 }
 
 .fb-symbol.s5 {
   left: 3%;
   top: 50%;
-  --depth: 28px;
   --size: 2rem;
-  --float: 10s;
-  --delay: -4s;
-  --sym-color: var(--ink-4);
-}
-
-.fb-symbol.s2 .fb-symbol-inner,
-.fb-symbol.s4 .fb-symbol-inner {
-  border-color: color-mix(in srgb, var(--sym-color) 32%, var(--hairline));
+  --sym-color: var(--amber);
 }
 
 .fb-symbol.s6 {
   right: 3%;
   top: 52%;
-  --depth: 22px;
   --size: 2.1rem;
-  --float: 9s;
-  --delay: -6s;
 }
 
 .fb-symbol.s7 {
   left: 21%;
   top: 30%;
-  --depth: 26px;
   --size: 1.9rem;
-  --float: 9.5s;
-  --delay: -3.5s;
-  --sym-color: var(--ink-4);
+  --sym-color: var(--violet);
 }
 
 .fb-symbol.s8 {
   right: 21%;
   top: 47%;
-  --depth: 20px;
   --size: 1.85rem;
-  --float: 8.8s;
-  --delay: -5.5s;
+  --sym-color: var(--accent);
 }
 
 .fb-symbol.s9 {
   left: 15%;
   top: 7%;
-  --depth: 14px;
   --size: 1.7rem;
-  --float: 10.5s;
-  --delay: -2.5s;
 }
 
 .fb-symbol.s10 {
   right: 15%;
   top: 7%;
-  --depth: 14px;
   --size: 1.7rem;
-  --float: 9.5s;
-  --delay: -7s;
-  --sym-color: var(--ink-4);
 }
 
 .hero-like {
@@ -3460,13 +3423,13 @@ a.fb-product-name:hover {
 }
 
 .fb-story-row[data-accent="violet"] {
-  --story-accent: #6d3fd8;
-  --story-wash: #f1ecfe;
+  --story-accent: var(--violet);
+  --story-wash: var(--violet-soft);
 }
 
-.fb-story-row[data-accent="teal"] {
-  --story-accent: #0f766e;
-  --story-wash: #e4f6f3;
+.fb-story-row[data-accent="rose"] {
+  --story-accent: var(--rose);
+  --story-wash: var(--rose-soft);
 }
 
 .fb-story-row[data-accent="amber"] {
@@ -3484,16 +3447,15 @@ a.fb-product-name:hover {
   position: absolute;
   inset-inline: 0;
   bottom: -3px;
-  height: 3px;
+  height: 2px;
   border-radius: var(--pill);
   background: var(--story-accent);
-  box-shadow: 0 0 16px color-mix(in srgb, var(--story-accent) 32%, transparent);
   opacity: 0;
   transform: scaleX(0);
   transform-origin: 100% 50%;
   transition:
-    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.36s ease;
+    transform 0.45s cubic-bezier(0.22, 0.7, 0.25, 1),
+    opacity 0.3s ease;
 }
 
 .fb-story-row.is-active .fb-story-chapter-title::after {
@@ -3526,38 +3488,27 @@ a.fb-product-name:hover {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border: 1px solid color-mix(in srgb, var(--story-accent) 22%, transparent);
-  border-radius: 12px;
+  border-radius: 13px;
   background: var(--story-wash);
   color: var(--story-accent);
   transition:
-    background 0.35s ease,
-    border-color 0.35s ease;
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .fb-story-icon svg {
-  width: 19px;
-  height: 19px;
+  width: 20px;
+  height: 20px;
 }
 
 .fb-story-row.is-active .fb-story-icon {
-  animation: fc-story-pop 0.52s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes fc-story-pop {
-  0% {
-    transform: scale(0.84);
-  }
-
-  62% {
-    transform: scale(1.05);
-  }
-
-  100% {
-    transform: scale(1);
-  }
+  border-color: var(--story-accent);
+  background: var(--story-accent);
+  color: var(--on-accent);
 }
 
 .fb-story-head-text {
@@ -3701,7 +3652,7 @@ a.fb-product-name:hover {
 
 .fb-story-stage {
   --story-accent: var(--accent);
-  --story-mix: 9%;
+  --story-mix: 18%;
   --shot-shift: 1.05em;
   position: relative;
   isolation: isolate;
@@ -3709,15 +3660,15 @@ a.fb-product-name:hover {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: clamp(14px, 1.6vw, 20px);
-  border: 1px solid color-mix(in srgb, var(--story-accent) 24%, var(--hairline));
-  border-radius: var(--radius-band);
+  padding: clamp(16px, 1.9vw, 26px);
+  border: 1px solid color-mix(in srgb, var(--story-accent) 28%, var(--hairline));
+  border-radius: 26px;
   background-color: color-mix(in srgb, var(--story-accent) var(--story-mix), var(--surface));
-  box-shadow: 0 30px 60px -54px color-mix(in srgb, var(--story-accent) 60%, transparent);
+  box-shadow: 0 30px 60px -52px color-mix(in srgb, var(--story-accent) 55%, transparent);
   transition:
-    background-color 0.8s ease,
-    border-color 0.8s ease,
-    box-shadow 0.8s ease;
+    background-color 0.55s ease,
+    border-color 0.55s ease,
+    box-shadow 0.55s ease;
 }
 
 .fb-story-stage[data-dir="up"] {
@@ -3725,11 +3676,11 @@ a.fb-product-name:hover {
 }
 
 .fb-story-stage[data-accent="violet"] {
-  --story-accent: #6d3fd8;
+  --story-accent: var(--violet);
 }
 
-.fb-story-stage[data-accent="teal"] {
-  --story-accent: #0f766e;
+.fb-story-stage[data-accent="rose"] {
+  --story-accent: var(--rose);
 }
 
 .fb-story-stage[data-accent="amber"] {
@@ -3810,19 +3761,7 @@ a.fb-product-name:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
-  animation: fc-story-fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes fc-story-fade-in {
-  from {
-    opacity: 0;
-    translate: 0 0.45em;
-  }
-
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
+  animation: fb-fade 0.3s ease both;
 }
 
 .fb-story-screen {
@@ -3841,54 +3780,15 @@ a.fb-product-name:hover {
   overflow: hidden;
   opacity: 0;
   translate: 0 var(--shot-shift);
-  scale: 0.975;
   transition:
-    opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-    translate 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-    scale 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.4s ease,
+    translate 0.6s cubic-bezier(0.22, 0.7, 0.25, 1);
   pointer-events: none;
 }
 
 .fb-story-shot.is-active {
   opacity: 1;
   translate: 0 0;
-  scale: 1;
-}
-
-.fb-story-shot.is-active > * {
-  animation: fc-shot-part 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.fb-story-shot.is-active > *:nth-child(1) {
-  animation-delay: 0.03s;
-}
-
-.fb-story-shot.is-active > *:nth-child(2) {
-  animation-delay: 0.09s;
-}
-
-.fb-story-shot.is-active > *:nth-child(3) {
-  animation-delay: 0.15s;
-}
-
-.fb-story-shot.is-active > *:nth-child(4) {
-  animation-delay: 0.21s;
-}
-
-.fb-story-shot.is-active > *:nth-child(5) {
-  animation-delay: 0.27s;
-}
-
-.fb-story-shot.is-active > *:nth-child(6) {
-  animation-delay: 0.33s;
-}
-
-.fb-story-shot.is-active > *:nth-child(7) {
-  animation-delay: 0.39s;
-}
-
-.fb-story-shot.is-active > *:nth-child(n + 8) {
-  animation-delay: 0.45s;
 }
 
 .fb-story-shot.is-active .fb-shot-progress i {
@@ -3898,18 +3798,6 @@ a.fb-product-name:hover {
 @keyframes fc-story-fill {
   from {
     width: 0;
-  }
-}
-
-@keyframes fc-shot-part {
-  from {
-    opacity: 0.2;
-    translate: 0 0.55em;
-  }
-
-  to {
-    opacity: 1;
-    translate: 0 0;
   }
 }
 
@@ -4354,12 +4242,12 @@ a.fb-product-name:hover {
 
 :root[data-theme="dark"] .fb-story-row[data-accent="violet"],
 :root[data-theme="dark"] .fb-story-stage[data-accent="violet"] {
-  --story-accent: #a99bea;
+  --story-accent: var(--violet);
 }
 
-:root[data-theme="dark"] .fb-story-row[data-accent="teal"],
-:root[data-theme="dark"] .fb-story-stage[data-accent="teal"] {
-  --story-accent: #79cfc0;
+:root[data-theme="dark"] .fb-story-row[data-accent="rose"],
+:root[data-theme="dark"] .fb-story-stage[data-accent="rose"] {
+  --story-accent: var(--rose);
 }
 
 :root[data-theme="dark"] .fb-story-row[data-accent="amber"],
@@ -4368,11 +4256,11 @@ a.fb-product-name:hover {
 }
 
 :root[data-theme="dark"] .fb-story-row[data-accent="violet"] {
-  --story-wash: rgba(169, 155, 234, 0.11);
+  --story-wash: var(--violet-soft);
 }
 
-:root[data-theme="dark"] .fb-story-row[data-accent="teal"] {
-  --story-wash: rgba(121, 207, 192, 0.1);
+:root[data-theme="dark"] .fb-story-row[data-accent="rose"] {
+  --story-wash: var(--rose-soft);
 }
 
 :root[data-theme="dark"] .fb-story-row[data-accent="amber"] {
@@ -4380,7 +4268,7 @@ a.fb-product-name:hover {
 }
 
 :root[data-theme="dark"] .fb-story-stage {
-  --story-mix: 13%;
+  --story-mix: 17%;
 }
 
 :root[data-theme="dark"] .fb-shot-item,
@@ -5465,36 +5353,12 @@ a.fb-product-name:hover {
   }
 }
 
-@keyframes fb-breathe {
-  0%,
-  100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes fb-float {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-  50% {
-    translate: 0 -9px;
-  }
-}
-
 @keyframes fb-ticker-in {
   from {
     opacity: 0;
-    translate: 6px 0;
   }
   to {
     opacity: 1;
-    translate: 0 0;
   }
 }
 
@@ -5516,26 +5380,6 @@ a.fb-product-name:hover {
 
   .fb-page {
     animation: fb-page-in 0.38s cubic-bezier(0.22, 0.7, 0.25, 1) backwards;
-  }
-
-  .fb-story-shot.is-active > * {
-    animation: fb-reveal 0.72s cubic-bezier(0.22, 0.7, 0.25, 1) both;
-  }
-
-  .fb-story-shot.is-active > :nth-child(2) {
-    animation-delay: 0.07s;
-  }
-
-  .fb-story-shot.is-active > :nth-child(3) {
-    animation-delay: 0.14s;
-  }
-
-  .fb-story-shot.is-active > :nth-child(4) {
-    animation-delay: 0.21s;
-  }
-
-  .fb-story-shot.is-active > :nth-child(5) {
-    animation-delay: 0.28s;
   }
 
   .fb-tour-tip {
@@ -5590,10 +5434,6 @@ a.fb-product-name:hover {
     animation-delay: 0.34s;
   }
 
-  .fb-aura-glow {
-    animation: fb-breathe 11s ease-in-out infinite;
-  }
-
   .fb-home .fb-hero .fb-btn {
     transition:
       scale 0.16s ease,
@@ -5612,7 +5452,7 @@ a.fb-product-name:hover {
   }
 
   .hero-ticker-text {
-    animation: fb-ticker-in 0.45s ease backwards;
+    animation: fb-ticker-in 0.3s ease backwards;
   }
 
   .fb-mini,
@@ -5957,11 +5797,191 @@ a.fb-product-name:hover {
   }
 }
 
+/* Site footer */
+
+.site-footer {
+  border-top: 1px solid var(--footer-line);
+  background: var(--footer-bg);
+  color: var(--footer-body);
+}
+
+.footer-inner {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(44px, 5.5vw, 72px) clamp(20px, 5vw, 48px) clamp(22px, 3vw, 30px);
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.55fr);
+  gap: clamp(36px, 5vw, 72px);
+}
+
+.footer-brand-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--footer-ink);
+  text-decoration: none;
+}
+
+.footer-mark {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  color: var(--footer-ink);
+}
+
+.footer-name {
+  font-family: var(--font-brand);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.footer-tagline {
+  margin: 0;
+  max-width: 26rem;
+  font-size: 0.92rem;
+  line-height: 2;
+  color: var(--footer-body);
+}
+
+.footer-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0.72rem 1.3rem;
+  border: 0;
+  border-radius: var(--pill);
+  background: var(--footer-ink);
+  color: var(--footer-bg);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.footer-cta::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-top: 1.5px solid currentColor;
+  border-left: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+.footer-cta:hover {
+  opacity: 0.86;
+}
+
+.footer-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 36px);
+}
+
+.footer-col-title {
+  margin: 0 0 14px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--footer-ink);
+}
+
+.footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--footer-body);
+  font-family: inherit;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.footer-link:hover {
+  color: var(--footer-ink);
+}
+
+.footer-link svg {
+  width: 13px;
+  height: 13px;
+  opacity: 0.7;
+}
+
+.footer-bottom {
+  margin-top: clamp(36px, 4.5vw, 56px);
+  padding-top: 20px;
+  border-top: 1px solid var(--footer-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  font-size: 0.76rem;
+  color: color-mix(in srgb, var(--footer-body) 78%, transparent);
+}
+
+.footer-note {
+  color: var(--footer-body);
+}
+
+@media (max-width: 900px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+}
+
+@media (max-width: 560px) {
+  .footer-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 28px;
+  }
+
+  .footer-brand-col {
+    gap: 14px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fb-hero > *,
   .fb-home .fb-hero-inner > *,
   .fb-home .fb-aura-glow,
   .fb-rotate-word,
+  .footer-cta,
+  .footer-link,
   .fb-home .fb-btn-primary::after,
   .fb-card,
   .fb-mini,
