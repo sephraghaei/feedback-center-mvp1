@@ -181,7 +181,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
         {signInRequired ? (
           <div className="fb-signin-card">
-            <p>برای ثبت فید‌بک یک حساب لازم است. بعد از ورود به همین صفحه برمی‌گردی.</p>
+            <p>برای ثبت فید‌بک یک حساب لازمه. بعد از ورود به همین صفحه برمی‌گردی.</p>
             <div className="fb-signin-actions">
               <Link href={signInHref} className="fb-btn fb-btn-primary">
                 ورود با موبایل یا ایمیل
@@ -216,7 +216,7 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
 
             {type === "support" ? (
               <p className="fb-note" style={{ marginTop: 0 }}>
-                این درخواست عمومی نمی‌شود و فقط نویسنده و مدیر آن را می‌بینند.
+                این درخواست عمومی نمی‌شه؛ فقط خودت و مدیر می‌بینیدش.
               </p>
             ) : (
               <div className="fb-kind-field">
@@ -302,8 +302,8 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
                   </span>
                   <span className="field-hint">
                     {previewBrand.host
-                      ? "نشان همین سایت روی کارت می‌آید."
-                      : "بدون آدرس سایت فقط نام محصول نمایش داده می‌شود."}
+                      ? "نشان همین سایت روی کارت میاد."
+                      : "بدون آدرس سایت فقط نام محصول نشون داده می‌شه."}
                   </span>
                 </span>
               </div>
@@ -368,8 +368,8 @@ export default function Composer({ viewer }: { viewer: HeaderViewer }) {
             <div className="fb-modal-foot">
               <p>
                 {type === "feedback"
-                  ? "فید‌بک محصول عمومی است و همه می‌بینند."
-                  : "درخواست شخصی فقط برای تو و مدیر نمایش داده می‌شود."}
+                  ? "فید‌بک محصول عمومیه و همه می‌بینن."
+                  : "درخواست شخصی فقط برای تو و مدیر نشون داده می‌شه."}
               </p>
               <div className="fb-modal-actions">
                 <button type="button" className="fb-btn fb-btn-ghost" onClick={close} disabled={submitting}>

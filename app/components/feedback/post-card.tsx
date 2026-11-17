@@ -28,7 +28,7 @@ export default function PostCard({
   const kind = feedbackKind(post.type, post.category);
 
   return (
-    <article className={`fb-card${kind ? ` kind-${kind}` : ""}`}>
+    <article className={`fb-card${kind ? ` kind-${kind}` : ""}`} data-glow>
       {vote ? (
         <div className="fb-card-vote">
           <VoteButton

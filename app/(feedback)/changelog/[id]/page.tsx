@@ -22,16 +22,14 @@ export default async function ChangelogEntryPage({ params }: { params: Promise<{
         همه تغییرات
       </Link>
 
-      <article className="fb-entry" style={{ marginTop: 0 }}>
+      <article className="fb-entry fb-changelog-entry">
         <p className="fb-entry-date">{faDate(entry.publishedAt)}</p>
-        <h1 className="fb-entry-title" style={{ fontSize: "1.5rem" }}>
-          {entry.title}
-        </h1>
+        <h1 className="fb-entry-title">{entry.title}</h1>
         <Markdown source={entry.body} />
 
         {entry.posts.length > 0 ? (
           <>
-            <h2 className="label" style={{ marginTop: 22 }}>
+            <h2 className="label fb-changelog-block">
               فید‌بک‌هایی که این تغییر حل کرد
             </h2>
             <div className="fb-linked">
@@ -43,8 +41,8 @@ export default async function ChangelogEntryPage({ params }: { params: Promise<{
             </div>
           </>
         ) : (
-          <p className="field-hint" style={{ marginTop: 16 }}>
-            این ورودی به فید‌بک‌ی وصل نشده است.
+          <p className="field-hint fb-changelog-hint">
+            این ورودی به فید‌بک‌ی وصل نشده.
           </p>
         )}
       </article>

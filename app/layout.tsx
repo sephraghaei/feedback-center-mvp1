@@ -8,7 +8,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "وسا",
-  description: "مرکز فید‌بک ساده و شفاف برای شنیدن نظر کاربران",
+  description: "ایده‌ها و مشکل‌ها رو جمع می‌کنیم، با رأی شما مرتب می‌کنیم و تا انتشار دنبالشون می‌مونیم.",
 };
 
 export default function RootLayout({

@@ -36,7 +36,7 @@ export default function SiteFooter() {
               ایده‌ها رو جمع می‌کنیم، با رأی شما مرتبشون می‌کنیم و تا انتشار دنبالشون
               می‌مونیم.
             </p>
-            <ComposerButton className="footer-cta">یه فیدبک بنویس</ComposerButton>
+            <ComposerButton className="footer-cta">فیدبک بده</ComposerButton>
           </div>
 
           <nav className="footer-nav" aria-label="پیوندهای پاصفحه">

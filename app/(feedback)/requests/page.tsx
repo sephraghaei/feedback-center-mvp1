@@ -9,7 +9,7 @@ import { requireViewer } from "@/lib/feedback/viewer";
 
 export const metadata: Metadata = {
   title: "درخواست‌های من | وسا",
-  description: "همه فید‌بک‌ها و درخواست‌های پشتیبانی خودت، با وضعیت به‌روز.",
+  description: "فید‌بک‌های عمومی و درخواست‌های خصوصی‌ات، با وضعیت به‌روز.",
 };
 
 export default async function RequestsPage() {
@@ -22,23 +22,19 @@ export default async function RequestsPage() {
 
   return (
     <>
-      <section className="fb-hero">
+      <section className="fb-hero fb-page-head">
         <p className="fb-eyebrow">
           <BrandMark className="eyebrow-mark" simple />
           درخواست‌های من
         </p>
-        <h1 className="fb-title">هر چه فرستادی، یک جا</h1>
+        <h1 className="fb-title">هر چی فرستادی، یک جا</h1>
         <p className="fb-lede">
-          فید‌بک‌های عمومی و درخواست‌های پشتیبانی خصوصی‌ات را از همین‌جا دنبال کن. وضعیت هر
-          درخواست را بدون ایمیل و پیام اضافه می‌بینی.
+          فید‌بک‌های عمومی و درخواست‌های خصوصی‌ت رو همین‌جا دنبال کن و وضعیت هر کدوم رو ببین.
         </p>
         <div className="fb-hero-actions">
-          <ComposerButton className="fb-btn fb-btn-primary">ثبت درخواست تازه</ComposerButton>
+          <ComposerButton className="fb-btn fb-btn-primary">فید‌بک بده</ComposerButton>
           <Link href="/profile" className="fb-btn">
             پروفایل من
-          </Link>
-          <Link href="/feed" className="fb-btn fb-btn-ghost">
-            همه فید‌بک‌ها
           </Link>
         </div>
         <ul className="fb-hero-stats">
@@ -53,17 +49,20 @@ export default async function RequestsPage() {
 
       {posts.length === 0 ? (
         <div className="fb-empty">
-          <strong>هنوز چیزی ثبت نکرده‌ای.</strong>
-          اولین فید‌بک یا درخواست پشتیبانی‌ات را از دکمه بالا بنویس و وضعیتش را همین‌جا ببین.
+          <strong>هنوز چیزی ننوشتی.</strong>
+          از دکمه بالا شروع کن؛ وضعیتش رو همین‌جا می‌بینی.
         </div>
       ) : null}
 
       {publicPosts.length > 0 ? (
-        <section aria-labelledby="mine-feedback">
-          <div className="fb-toolbar-row">
-            <h2 id="mine-feedback" className="section-title" style={{ fontSize: "1.05rem" }}>
-              فید‌بک‌های عمومی
-            </h2>
+        <section className="fb-section" aria-labelledby="mine-feedback">
+          <div className="fb-section-head">
+            <div>
+              <h2 id="mine-feedback" className="fb-section-title">
+                فید‌بک‌های عمومی
+              </h2>
+              <p className="fb-section-sub">هر چی نوشتی که بقیه هم می‌بینن.</p>
+            </div>
             <p className="fb-count">{faNumber(publicPosts.length)} مورد</p>
           </div>
           <div className="fb-grid">
@@ -83,17 +82,17 @@ export default async function RequestsPage() {
       ) : null}
 
       {supportPosts.length > 0 ? (
-        <section aria-labelledby="mine-support" style={{ marginTop: 40 }}>
-          <div className="fb-toolbar-row">
-            <h2 id="mine-support" className="section-title" style={{ fontSize: "1.05rem" }}>
-              درخواست‌های پشتیبانی
-            </h2>
+        <section className="fb-section" aria-labelledby="mine-support">
+          <div className="fb-section-head">
+            <div>
+              <h2 id="mine-support" className="fb-section-title">
+                درخواست‌های پشتیبانی
+              </h2>
+              <p className="fb-section-sub">خصوصیه؛ فقط خودت و تیم پشتیبانی می‌بینیدشون.</p>
+            </div>
             <p className="fb-count">{faNumber(supportPosts.length)} مورد</p>
           </div>
-          <p className="fb-note" style={{ marginTop: 0 }}>
-            این درخواست‌ها عمومی نیستند. فقط تو و تیم پشتیبانی می‌توانید آن‌ها را ببینید.
-          </p>
-          <div className="fb-grid" style={{ marginTop: 16 }}>
+          <div className="fb-grid">
             {supportPosts.map((post) => (
               <PostCard
                 key={post.id}
@@ -110,17 +109,19 @@ export default async function RequestsPage() {
       ) : null}
 
       {hiddenPosts.length > 0 ? (
-        <section aria-labelledby="mine-hidden" style={{ marginTop: 40 }}>
-          <div className="fb-toolbar-row">
-            <h2 id="mine-hidden" className="section-title" style={{ fontSize: "1.05rem" }}>
-              پنهان شده
-            </h2>
+        <section className="fb-section" aria-labelledby="mine-hidden">
+          <div className="fb-section-head">
+            <div>
+              <h2 id="mine-hidden" className="fb-section-title">
+                پنهان شده
+              </h2>
+              <p className="fb-section-sub">
+                مدیر این‌ها رو از فید عمومی کنار گذاشته؛ فقط خودت و مدیر می‌بینیدشون.
+              </p>
+            </div>
             <p className="fb-count">{faNumber(hiddenPosts.length)} مورد</p>
           </div>
-          <p className="field-hint">
-            این موارد را مدیر از فید عمومی کنار گذاشته است. فقط خودت و مدیر می‌بینید.
-          </p>
-          <div className="fb-grid" style={{ marginTop: 16 }}>
+          <div className="fb-grid">
             {hiddenPosts.map((post) => (
               <PostCard
                 key={post.id}

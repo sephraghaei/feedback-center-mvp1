@@ -58,7 +58,7 @@ function ShotWrite() {
         <span className="fb-shot-chip">فروشگاه</span>
         <span className="fb-shot-chip is-soft">موبایل</span>
       </div>
-      <span className="fb-shot-btn">ثبت فیدبک</span>
+      <span className="fb-shot-btn">فیدبک بده</span>
     </>
   );
 }
@@ -547,7 +547,7 @@ export default function HomeStory() {
             data-accent={current.accent}
             data-dir={direction}
           >
-            <div className="fb-story-frame">
+            <div className="fb-story-frame" data-tilt>
               <div className="fb-story-bar">
                 <span className="fb-story-window" aria-hidden="true">
                   <i />

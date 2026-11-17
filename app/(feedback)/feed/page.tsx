@@ -11,7 +11,7 @@ import { getViewer } from "@/lib/feedback/viewer";
 
 export const metadata: Metadata = {
   title: "فید‌بک‌ها | وسا",
-  description: "فید‌بک محصول را بخوان، رای بده و وضعیتش را دنبال کن. نقشه راه هم به زودی می‌آید.",
+  description: "ایده‌ها و فید‌بک‌های محصولات رو ببین، به مهم‌ها رای بده و وضعیتشون رو دنبال کن.",
 };
 
 type Search = { company?: string; sort?: string };
@@ -46,24 +46,20 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
 
   return (
     <>
-      <section className="fb-hero">
+      <section className="fb-hero fb-page-head">
         <p className="fb-eyebrow">
           <BrandMark className="eyebrow-mark" simple />
-          جریان فید‌بک
+          فید‌بک‌ها
         </p>
-        <h1 className="fb-title">آنچه کاربران می‌خواهند، شفاف و مرتب</h1>
+        <h1 className="fb-title">همه ایده‌ها، یک جا</h1>
         <p className="fb-lede">
-          فید‌بک‌ها را بخوان، به آن‌ها رای بده و وضعیت هر کدام را ببین. نقشه راه هم به زودی کامل
-          می‌شه. خواندن برای همه آزاد است؛ نوشتن فقط یک حساب می‌خواهد.
+          فید‌بک‌ها رو بخون، به مهم‌ها رای بده و وضعیت هر کدوم رو ببین. نوشتن فقط یک حساب
+          می‌خواد.
         </p>
         <div className="fb-hero-actions">
-          <ComposerButton className="fb-btn fb-btn-primary">ثبت فید‌بک تازه</ComposerButton>
+          <ComposerButton className="fb-btn fb-btn-primary">فید‌بک بده</ComposerButton>
           <Link href="/roadmap" className="fb-btn">
-            نقشه راه{" "}
-            <span className="fb-soon">به زودی</span>
-          </Link>
-          <Link href="/changelog" className="fb-btn fb-btn-ghost">
-            تغییرات منتشر شده
+            نقشه راه
           </Link>
         </div>
         <ul className="fb-hero-stats">
@@ -73,7 +69,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
             </strong>{" "}
             فید‌بک در این نما
           </li>
-          <li>بدون نیاز به حساب</li>
+          <li>خواندن برای همه آزاده</li>
         </ul>
       </section>
 
@@ -119,10 +115,10 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         </div>
       ) : (
         <div className="fb-empty">
-          <strong>هنوز فید‌بک‌ی با این فیلتر نیست.</strong>
-          فیلتر را عوض کن یا اولین فید‌بک را ثبت کن.
-          <div style={{ marginTop: 14 }}>
-            <ComposerButton className="fb-btn fb-btn-primary">ثبت فید‌بک</ComposerButton>
+          <strong>هنوز فید‌بکی با این فیلتر نیست.</strong>
+          فیلتر رو عوض کن یا اولین فید‌بک رو بنویس.
+          <div className="fb-empty-action">
+            <ComposerButton className="fb-btn fb-btn-primary fb-btn-sm">فید‌بک بده</ComposerButton>
           </div>
         </div>
       )}

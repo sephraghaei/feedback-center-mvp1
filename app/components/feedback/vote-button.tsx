@@ -22,6 +22,7 @@ export default function VoteButton({
   const router = useRouter();
   const [state, setState] = useState({ count, upvoted });
   const [busy, setBusy] = useState(false);
+  const [roll, setRoll] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   async function vote() {
@@ -34,6 +35,7 @@ export default function VoteButton({
     const optimistic = !state.upvoted;
     setBusy(true);
     setError(null);
+    setRoll((value) => value + 1);
     setState({ upvoted: optimistic, count: Math.max(0, state.count + (optimistic ? 1 : -1)) });
 
     const result = await toggleUpvoteAction(postId);
@@ -63,7 +65,9 @@ export default function VoteButton({
       title={error ?? (signedIn ? (state.upvoted ? "برداشتن رای" : "رای دادن") : "برای رای دادن وارد شو")}
     >
       <VoteUpIcon size={15} />
-      <span>{faNumber(state.count)}</span>
+      <span key={roll} className={`fb-vote-num${roll ? " is-rolling" : ""}`}>
+        {faNumber(state.count)}
+      </span>
     </button>
   );
 }

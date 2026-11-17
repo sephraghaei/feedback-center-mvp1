@@ -17,9 +17,9 @@ type HeaderViewer = {
   avatarPath: string | null;
 } | null;
 
-const LINKS: { href: string; label: string; soon?: boolean }[] = [
+const LINKS: { href: string; label: string }[] = [
   { href: "/feed", label: "فید‌بک‌ها" },
-  { href: "/roadmap", label: "نقشه راه", soon: true },
+  { href: "/roadmap", label: "نقشه راه" },
   { href: "/changelog", label: "تغییرات" },
 ];
 
@@ -149,8 +149,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
               className={`fb-nav-link ${isActive(link.href) ? "active" : ""}`}
               onClick={closeMenu}
             >
-              {link.label}{" "}
-              {link.soon ? <span className="fb-soon">به زودی</span> : null}
+              {link.label}
             </Link>
           ))}
           {!viewer ? (
@@ -234,7 +233,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
             }}
           >
             <PlusIcon size={15} />
-            ثبت فید‌بک
+            فید‌بک بده
           </button>
           <button
             ref={menuButtonRef}

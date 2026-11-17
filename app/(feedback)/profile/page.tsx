@@ -12,7 +12,7 @@ import { getProfile } from "@/lib/user-store";
 
 export const metadata: Metadata = {
   title: "پروفایل من | وسا",
-  description: "عکس، معرفی و اطلاعات حسابت را ویرایش کن و فید‌بک‌هایت را یک جا ببین.",
+  description: "عکس و معرفی‌ات رو عوض کن و فید‌بک‌هایت رو یک جا ببین.",
 };
 
 const METHOD_LABELS: Record<string, string> = {
@@ -50,7 +50,7 @@ export default async function ProfilePage() {
           <Link href="/requests" className="fb-btn">
             درخواست‌های من
           </Link>
-          <ComposerButton className="fb-btn fb-btn-ghost">فید‌بک تازه</ComposerButton>
+          <ComposerButton className="fb-btn fb-btn-ghost">فید‌بک بده</ComposerButton>
         </ProfileEditor>
 
         <dl className="fb-profile-stats">
@@ -83,8 +83,8 @@ export default async function ProfilePage() {
             </h2>
             <p className="fb-section-sub">
               {publicPosts.length > 0
-                ? "آخرین چیزهایی که نوشتی، با وضعیت به‌روزشان."
-                : "هنوز فید‌بک عمومی ننوشتی. اولین مورد را ثبت کن."}
+                ? "آخرین چیزهایی که نوشتی، با وضعیتشون."
+                : "هنوز فید‌بک عمومی ننوشتی. اولین مورد رو بنویس."}
             </p>
           </div>
           {publicPosts.length > 0 ? (
@@ -102,11 +102,11 @@ export default async function ProfilePage() {
           </div>
         ) : (
           <div className="fb-empty">
-            <strong>این‌جا خالیه.</strong>
-            با ثبت اولین فید‌بک، همین بخش پر می‌شود و وضعیتش را دنبال می‌کنی.
+            <strong>هنوز این‌جا خالیه.</strong>
+            اولین فید‌بکت رو بنویس تا با وضعیتش همین‌جا بیاد.
             <div className="fb-empty-action">
               <ComposerButton className="fb-btn fb-btn-primary fb-btn-sm">
-                فید‌بک بنویس
+                فید‌بک بده
               </ComposerButton>
             </div>
           </div>

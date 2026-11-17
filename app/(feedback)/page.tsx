@@ -46,7 +46,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
 
   return (
     <div className="fb-home">
-      <section className="fb-hero">
+      <section className="fb-hero" data-cursor>
         <div className="fb-hero-aura" aria-hidden="true">
           <span className="fb-aura-glow" />
           <span className="fb-aura-grid" />

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import BrandMark from "@/app/components/brand-mark";
+import ComposerButton from "@/app/components/feedback/composer-button";
 import Markdown from "@/app/components/feedback/markdown";
 import { faDate } from "@/lib/feedback/labels";
 import { listChangelog } from "@/lib/feedback/changelog";
 
 export const metadata: Metadata = {
   title: "تغییرات | وسا",
-  description: "هر نسخه چه چیزی را حل کرد و کدام فید‌بک‌ها به انتشار رسیدند.",
+  description: "هر تغییری که منتشر می‌شه، با فید‌بک‌هایی که باعثش شدن.",
 };
 
 export default async function ChangelogPage() {
@@ -15,46 +16,45 @@ export default async function ChangelogPage() {
 
   return (
     <>
-      <section className="fb-hero">
+      <section className="fb-hero fb-page-head">
         <p className="fb-eyebrow">
           <BrandMark className="eyebrow-mark" simple />
           تغییرات
         </p>
-        <h1 className="fb-title">آنچه ساخته شد، با تاریخ و پیوند</h1>
+        <h1 className="fb-title">هر چیزی که منتشر شد</h1>
         <p className="fb-lede">
-          هر ورودی تغییرات به فید‌بک‌هایی وصل است که آن را حل کرده‌اند. این‌جا معلوم می‌شود حرف
-          کاربران به کدام تغییر رسیده است.
+          هر تغییری که منتشر می‌شه، با فید‌بک‌هایی که باعثش شدن. مسیر از ایده تا انتشار شفاف
+          می‌مونه.
         </p>
         <div className="fb-hero-actions">
-          <Link href="/feed" className="fb-btn">
+          <ComposerButton className="fb-btn fb-btn-primary">فید‌بک بده</ComposerButton>
+          <Link href="/feed" className="fb-btn fb-btn-ghost">
             همه فید‌بک‌ها
-          </Link>
-          <Link href="/roadmap" className="fb-btn fb-btn-ghost">
-            نقشه راه{" "}
-            <span className="fb-soon">به زودی</span>
           </Link>
         </div>
       </section>
 
       {entries.length > 0 ? (
-        entries.map((entry) => (
-          <article key={entry.id} className="fb-entry" data-spotlight>
-            <p className="fb-entry-date">{faDate(entry.publishedAt)}</p>
-            <h2 className="fb-entry-title">
-              <Link href={`/changelog/${entry.id}`}>{entry.title}</Link>
-            </h2>
-            <Markdown source={entry.body} />
-            <p className="field-hint" style={{ marginTop: 12 }}>
-              <Link href={`/changelog/${entry.id}`} className="fb-link">
-                فید‌بک‌های مرتبط
-              </Link>
-            </p>
-          </article>
-        ))
+        <div className="fb-changelog">
+          {entries.map((entry) => (
+            <article key={entry.id} className="fb-entry" data-spotlight>
+              <p className="fb-entry-date">{faDate(entry.publishedAt)}</p>
+              <h2 className="fb-entry-title">
+                <Link href={`/changelog/${entry.id}`}>{entry.title}</Link>
+              </h2>
+              <Markdown source={entry.body} />
+              <p className="field-hint fb-entry-more">
+                <Link href={`/changelog/${entry.id}`} className="fb-link">
+                  فید‌بک‌های مرتبط
+                </Link>
+              </p>
+            </article>
+          ))}
+        </div>
       ) : (
-        <div className="fb-empty" style={{ marginTop: 22 }}>
-          <strong>هنوز ورودی تغییری منتشر نشده است.</strong>
-          وقتی اولین تغییر منتشر شود، همین‌جا با پیوند به فید‌بک‌هایش می‌آید.
+        <div className="fb-empty">
+          <strong>هنوز تغییری منتشر نشده.</strong>
+          وقتی اولین تغییر منتشر بشه، همین‌جا با فید‌بک‌های مرتبطش میاد.
         </div>
       )}
     </>

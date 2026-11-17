@@ -166,15 +166,14 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
       {post.changelog ? (
         <p className="fb-note">
-          این فید‌بک در تغییرات منتشر شده آمده است:{" "}
+          این فید‌بک توی تغییرات منتشر شد:{" "}
           <Link href={`/changelog/${post.changelog.id}`}>{post.changelog.title}</Link>
         </p>
       ) : null}
 
       {isSupport && isAuthor ? (
         <p className="fb-note">
-          این درخواست خصوصی است. فقط تو و تیم پشتیبانی می‌توانید آن را ببینید. پاسخ تیم همین‌جا
-          نمایش داده می‌شود.
+          این درخواست خصوصیه. فقط خودت و تیم پشتیبانی می‌بینیدش. پاسخ تیم هم همین‌جا میاد.
         </p>
       ) : null}
 
@@ -202,7 +201,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             <div className="fb-detail-related-head">
               <div>
                 <h2 id="related-title">فید‌بک‌های همین محصول</h2>
-                <p>بقیه چیزهایی که برای {source?.label ?? "این محصول"} نوشته شده.</p>
+                <p>بقیه چیزهایی که برای {source?.label ?? "این محصول"} نوشتن.</p>
               </div>
               <Link href="/feed" className="fb-link">
                 همه
