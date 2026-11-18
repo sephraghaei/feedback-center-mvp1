@@ -3,6 +3,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { CSSProperties } from "react";
 import AuthFlow from "@/app/components/auth-flow";
+import PointerFx from "@/app/components/feedback/pointer-fx";
+import ScrollReveal from "@/app/components/feedback/scroll-reveal";
 import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-buttons";
 import { listCompanies } from "@/lib/companies";
 import { OTP_LENGTH } from "@/lib/config";
@@ -75,9 +77,18 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
 
   return (
     <div className="fb-home fb-landing">
-      <section className="fb-hero">
+      <PointerFx />
+      <ScrollReveal />
+      <section className="fb-hero" data-cursor>
+        <div className="fb-hero-aura" aria-hidden="true">
+          <span className="fb-aura-glow" />
+          <span className="fb-aura-grid" />
+        </div>
         <div className="fb-hero-inner">
-          <span className="fb-landing-kicker">Customer feedback, end to end</span>
+          <span className="fb-landing-kicker">
+            <span className="fb-landing-dot" aria-hidden="true" />
+            Customer feedback, end to end
+          </span>
           <h1 className="fb-title">Ship what customers actually ask for.</h1>
           <p className="fb-lede">
             Vasa gives every company a public board where customers post ideas, vote on what
@@ -92,12 +103,33 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               Company panel
             </Link>
           </div>
+          <div className="fb-hero-demo" aria-hidden="true">
+            <span className="fb-demo-vote">
+              <span className="fb-demo-arrow" />
+              <strong>42</strong>
+              <span className="fb-demo-vote-label">votes</span>
+            </span>
+            <span className="fb-demo-copy">
+              <strong>Dark mode for the public board</strong>
+              <span>Posted by a customer, 12 comments</span>
+            </span>
+            <span className="fb-demo-status">
+              <span>New</span>
+              <span>Planned</span>
+              <span>Shipped</span>
+            </span>
+          </div>
         </div>
       </section>
 
       <div className="fb-modes" id="modes">
-        {MODES.map((mode) => (
-          <article key={mode.id} className="fb-mode">
+        {MODES.map((mode, index) => (
+          <article
+            key={mode.id}
+            className="fb-mode"
+            data-reveal
+            style={{ "--i": index } as CSSProperties}
+          >
             <span className="fb-mode-label">{mode.label}</span>
             <h2>{mode.title}</h2>
             <ul>
@@ -106,14 +138,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               ))}
             </ul>
             <Link href={mode.href} className="fb-mode-link">
-              {mode.link} →
+              {mode.link}
+              <span className="fb-mode-arrow" aria-hidden="true">
+                →
+              </span>
             </Link>
           </article>
         ))}
       </div>
 
       <section className="fb-section" id="boards" aria-labelledby="boards-title">
-        <div className="fb-section-head">
+        <div className="fb-section-head" data-reveal>
           <div>
             <h2 id="boards-title" className="fb-section-title">
               Public boards
@@ -130,12 +165,18 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
 
         {companies.length > 0 ? (
           <div className="fb-board-links">
-            {companies.map((company) => (
+            {companies.map((company, index) => (
               <Link
                 key={company.id}
                 href={`/c/${company.slug}`}
                 className="fb-board-link"
-                style={{ "--board-accent": company.accent } as CSSProperties}
+                data-reveal
+                style={
+                  {
+                    "--board-accent": company.accent,
+                    "--i": index,
+                  } as CSSProperties
+                }
               >
                 <span className="fb-board-mark" aria-hidden="true">
                   {company.name.slice(0, 1).toUpperCase()}
@@ -164,7 +205,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
       </section>
 
       <section className="fb-section" aria-labelledby="steps-title">
-        <div className="fb-section-head">
+        <div className="fb-section-head" data-reveal>
           <div>
             <h2 id="steps-title" className="fb-section-title">
               How it works
@@ -174,7 +215,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         </div>
         <ol className="fb-steps">
           {STEPS.map((step, index) => (
-            <li key={step.title} className="fb-step">
+            <li
+              key={step.title}
+              className="fb-step"
+              data-reveal
+              style={{ "--i": index } as CSSProperties}
+            >
               <span className="fb-step-num" aria-hidden="true">
                 {index + 1}
               </span>
@@ -186,7 +232,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
       </section>
 
       <section id="account" className="fb-section" aria-labelledby="account-title">
-        <div className="fb-section-head">
+        <div className="fb-section-head" data-reveal>
           <div>
             <h2 id="account-title" className="fb-section-title">
               Your account
@@ -198,7 +244,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         </div>
 
         {viewer ? (
-          <div className="fb-account">
+          <div className="fb-account" data-reveal>
             <p className="fb-account-greeting">Welcome back, {viewer.name}</p>
             <div className="fb-hero-actions">
               <Link href="/requests" className="fb-btn fb-btn-primary">
@@ -221,7 +267,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
             </div>
           </div>
         ) : (
-          <div className="fb-account">
+          <div className="fb-account" data-reveal>
             <p className="fb-lede">
               Log in with your mobile, email or Google account to post feedback and vote.
             </p>
