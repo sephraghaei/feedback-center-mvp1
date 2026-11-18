@@ -1,24 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-buttons";
-import ComposerButton from "@/app/components/feedback/composer-button";
 import CountUp from "@/app/components/feedback/count-up";
 import PostCard from "@/app/components/feedback/post-card";
 import ProfileEditor from "@/app/components/feedback/profile-editor";
-import { faDate, faNumber } from "@/lib/feedback/labels";
+import { formatDate, formatNumber } from "@/lib/feedback/labels";
 import { getProfileStats, listMyPosts } from "@/lib/feedback/posts";
 import { requireViewer } from "@/lib/feedback/viewer";
 import { getProfile } from "@/lib/user-store";
 
 export const metadata: Metadata = {
-  title: "پروفایل من | وسا",
-  description: "عکس و معرفی‌ات رو عوض کن و فید‌بک‌هایت رو یک جا ببین.",
+  title: "My profile | Vasa",
+  description: "Change your photo and bio, and see your feedback in one place.",
 };
 
 const METHOD_LABELS: Record<string, string> = {
-  phone: "ورود با شماره موبایل",
-  email: "ورود با ایمیل",
-  clerk: "ورود با ایمیل یا گوگل",
+  phone: "Signed in with mobile",
+  email: "Signed in with email",
+  clerk: "Signed in with email or Google",
 };
 
 export default async function ProfilePage() {
@@ -33,7 +32,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="fb-profile-page">
-      <section className="fb-profile-summary" aria-label="پروفایل">
+      <section className="fb-profile-summary" aria-label="Profile">
         <ProfileEditor
           profile={{
             name: profile?.name ?? viewer.name,
@@ -43,31 +42,31 @@ export default async function ProfilePage() {
             sex: profile?.sex ?? "",
             avatarPath: profile?.avatarPath ?? null,
           }}
-          joinedLabel={faDate(viewer.joinedAt)}
+          joinedLabel={formatDate(viewer.joinedAt)}
           contact={viewer.contact}
-          roleLabel={viewer.role === "admin" ? "مدیر" : null}
+          roleLabel={viewer.role === "admin" ? "Admin" : null}
         >
           <Link href="/requests" className="fb-btn">
-            درخواست‌های من
+            Your posts
           </Link>
-          <ComposerButton className="fb-btn fb-btn-ghost">فید‌بک بده</ComposerButton>
+          <Link href="/" className="fb-btn fb-btn-ghost">Browse boards</Link>
         </ProfileEditor>
 
         <dl className="fb-profile-stats">
           <div>
-            <dt>فید‌بک</dt>
+            <dt>Feedback</dt>
             <dd>
               <CountUp value={stats.feedback} />
             </dd>
           </div>
           <div>
-            <dt>رای گرفته</dt>
+            <dt>Votes received</dt>
             <dd>
               <CountUp value={stats.votes} />
             </dd>
           </div>
           <div>
-            <dt>کامنت</dt>
+            <dt>Comments</dt>
             <dd>
               <CountUp value={stats.comments} />
             </dd>
@@ -79,17 +78,17 @@ export default async function ProfilePage() {
         <div className="fb-section-head">
           <div>
             <h2 id="profile-feedback" className="fb-section-title">
-              فید‌بک‌های من
+              My feedback
             </h2>
             <p className="fb-section-sub">
               {publicPosts.length > 0
-                ? "آخرین چیزهایی که نوشتی، با وضعیتشون."
-                : "هنوز فید‌بک عمومی ننوشتی. اولین مورد رو بنویس."}
+                ? "Your latest posts, with the current status."
+                : "No public feedback yet. Post the first one."}
             </p>
           </div>
           {publicPosts.length > 0 ? (
             <Link href="/requests" className="fb-link">
-              {faNumber(publicPosts.length)} مورد
+              {formatNumber(publicPosts.length)} items
             </Link>
           ) : null}
         </div>
@@ -102,12 +101,12 @@ export default async function ProfilePage() {
           </div>
         ) : (
           <div className="fb-empty">
-            <strong>هنوز این‌جا خالیه.</strong>
-            اولین فید‌بکت رو بنویس تا با وضعیتش همین‌جا بیاد.
+            <strong>Nothing here yet.</strong>
+            Post your first feedback and it shows up here with its status.
             <div className="fb-empty-action">
-              <ComposerButton className="fb-btn fb-btn-primary fb-btn-sm">
-                فید‌بک بده
-              </ComposerButton>
+              <Link href="/" className="fb-btn fb-btn-primary fb-btn-sm">
+                Browse boards
+              </Link>
             </div>
           </div>
         )}
@@ -116,10 +115,10 @@ export default async function ProfilePage() {
       <section className="fb-section fb-profile-account" aria-labelledby="profile-account">
         <div>
           <h2 id="profile-account" className="fb-section-title">
-            راه ورود
+            Sign-in method
           </h2>
           <p className="fb-section-sub">
-            {METHOD_LABELS[viewer.method] ?? "ورود به حساب"}
+            {METHOD_LABELS[viewer.method] ?? "Account login"}
             {viewer.contact ? ` · ${viewer.contact}` : ""}
           </p>
         </div>

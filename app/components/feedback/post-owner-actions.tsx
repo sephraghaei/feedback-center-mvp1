@@ -7,9 +7,9 @@ import ConfirmDialog from "@/app/components/confirm-dialog";
 
 export default function PostOwnerActions({
   postId,
-  redirectTo = "/feed",
-  label = "حذف فید‌بک",
-  confirmText = "این فید‌بک با همه کامنت‌هایش برای همیشه حذف شود؟",
+  redirectTo = "/",
+  label = "Delete feedback",
+  confirmText = "Delete this feedback and all its comments for good?",
 }: {
   postId: string;
   redirectTo?: string;
@@ -47,7 +47,7 @@ export default function PostOwnerActions({
         onClick={() => setConfirming(true)}
         disabled={busy}
       >
-        {busy ? "در حال حذف..." : label}
+        {busy ? "Deleting..." : label}
       </button>
       {error ? (
         <span className="field-hint" style={{ color: "var(--red)" }}>
@@ -56,9 +56,9 @@ export default function PostOwnerActions({
       ) : null}
       <ConfirmDialog
         open={confirming}
-        title="حذف فید‌بک؟"
+        title="Delete feedback?"
         description={confirmText}
-        confirmLabel="حذف فید‌بک"
+        confirmLabel="Delete feedback"
         busy={busy}
         onConfirm={() => void remove()}
         onCancel={() => {

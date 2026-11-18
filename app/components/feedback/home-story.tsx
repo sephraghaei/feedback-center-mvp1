@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import ComposerButton from "./composer-button";
-import SoonBadge from "./soon-badge";
 
 function ShotStart() {
   return (
@@ -115,105 +114,6 @@ function ShotVote() {
   );
 }
 
-function ShotRoadmap() {
-  return (
-    <>
-      <div className="fb-shot-head">
-        <span className="fb-shot-brand">نقشه راه</span>
-        <span className="fb-shot-pill">این هفته</span>
-      </div>
-      <div className="fb-shot-board">
-        <div className="fb-shot-col">
-          <span className="fb-shot-col-title">در انتظار</span>
-          <span className="fb-shot-card">
-            <i className="fb-shot-line w85" />
-            <i className="fb-shot-line w55" />
-          </span>
-          <span className="fb-shot-card">
-            <i className="fb-shot-line w70" />
-            <i className="fb-shot-line w45" />
-          </span>
-          <span className="fb-shot-card">
-            <i className="fb-shot-line w60" />
-            <i className="fb-shot-line w35" />
-          </span>
-        </div>
-        <div className="fb-shot-col is-live">
-          <span className="fb-shot-col-title">در حال ساخت</span>
-          <span className="fb-shot-card">
-            <i className="fb-shot-line w80" />
-            <i className="fb-shot-line w50" />
-          </span>
-          <span className="fb-shot-card">
-            <i className="fb-shot-line w65" />
-            <i className="fb-shot-line w40" />
-          </span>
-          <span className="fb-shot-progress">
-            <i />
-          </span>
-        </div>
-        <div className="fb-shot-col">
-          <span className="fb-shot-col-title">منتشر شد</span>
-          <span className="fb-shot-card">
-            <i className="fb-shot-line w75" />
-            <i className="fb-shot-line w45" />
-          </span>
-          <span className="fb-shot-card">
-            <i className="fb-shot-line w60" />
-            <i className="fb-shot-line w35" />
-          </span>
-          <span className="fb-shot-card">
-            <i className="fb-shot-line w50" />
-            <i className="fb-shot-line w30" />
-          </span>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function ShotShip() {
-  return (
-    <>
-      <div className="fb-shot-head">
-        <span className="fb-shot-brand">تغییرات</span>
-        <span className="fb-shot-pill">نسخه ۲٫۰</span>
-      </div>
-      <div className="fb-shot-release-block">
-        <span className="fb-shot-release">پرداخت موبایل درست شد</span>
-        <span className="fb-shot-release-meta">از فید‌بک پررای «دکمه پرداخت»</span>
-      </div>
-      <span className="fb-shot-check">
-        <i />
-        تکمیل پرداخت روی موبایل
-      </span>
-      <span className="fb-shot-check">
-        <i />
-        پیام خطای روشن‌تر
-      </span>
-      <span className="fb-shot-check">
-        <i />
-        حفظ سبد خرید بعد از ورود
-      </span>
-      <span className="fb-shot-check">
-        <i />
-        نمایش وضعیت سفارش در پروفایل
-      </span>
-      <div className="fb-shot-versions">
-        <span className="fb-shot-version">
-          <span>نسخه ۱٫۹</span>
-          <i />
-        </span>
-        <span className="fb-shot-version">
-          <span>نسخه ۱٫۸</span>
-          <i />
-        </span>
-      </div>
-      <span className="fb-shot-note">این فید‌بک ساخته و منتشر شد</span>
-    </>
-  );
-}
-
 type Chapter = {
   title: string;
   body: string;
@@ -221,7 +121,7 @@ type Chapter = {
   accent: "blue" | "violet" | "rose" | "amber" | "green";
   icon: ReactNode;
   scene: ReactNode;
-  cta: { kind: "composer"; label: string } | { kind: "link"; href: string; label: string; soon?: boolean };
+  cta: { kind: "composer"; label: string } | { kind: "link"; href: string; label: string };
 };
 
 const CHAPTERS: Chapter[] = [
@@ -266,35 +166,6 @@ const CHAPTERS: Chapter[] = [
     ),
     scene: <ShotVote />,
     cta: { kind: "link", href: "/feed", label: "فید‌بک‌ها" },
-  },
-  {
-    title: "می‌ره روی نقشه راه",
-    body: "فید‌بک‌های پررای وارد نقشه راه می‌شن. می‌بینی چی قبول شده، چی داره ساخته می‌شه و چی منتشر شده.",
-    url: "vasa.app/roadmap",
-    accent: "amber",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="4.5" width="5" height="15" rx="1.6" />
-        <rect x="10" y="4.5" width="5" height="9.5" rx="1.6" />
-        <rect x="17" y="4.5" width="4" height="12.5" rx="1.6" />
-      </svg>
-    ),
-    scene: <ShotRoadmap />,
-    cta: { kind: "link", href: "/roadmap", label: "نقشه راه", soon: true },
-  },
-  {
-    title: "منتشر می‌شه",
-    body: "وقتی ساخته شد، توی تغییرات می‌بینی کدوم فید‌بک باعثش شده. مسیر از ایده تا انتشار شفاف می‌مونه.",
-    url: "vasa.app/changelog",
-    accent: "green",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="8.5" />
-        <path d="M8.4 12.3l2.4 2.4 4.8-5.2" />
-      </svg>
-    ),
-    scene: <ShotShip />,
-    cta: { kind: "link", href: "/changelog", label: "تغییرات", soon: true },
   },
 ];
 
@@ -489,9 +360,9 @@ export default function HomeStory() {
       <div className="fb-section-head">
         <div>
           <h2 id="story-title" className="fb-section-title">
-            از یک جمله تا یک تغییر واقعی
+            از یک جمله تا یه فید‌بک پررای
           </h2>
-          <p className="fb-section-sub">با اسکرول، مسیر یه فید‌بک رو ببین: از نوشتن تا انتشار.</p>
+          <p className="fb-section-sub">با اسکرول، مسیر یه فید‌بک رو ببین: از نوشتن تا رأی گرفتن.</p>
         </div>
       </div>
 
@@ -531,8 +402,7 @@ export default function HomeStory() {
                       <ComposerButton className="fb-story-link">{chapter.cta.label}</ComposerButton>
                     ) : (
                       <Link href={chapter.cta.href} className="fb-story-link">
-                        {chapter.cta.label}{" "}
-                        {chapter.cta.soon ? <SoonBadge /> : null}
+                        {chapter.cta.label}
                       </Link>
                     )}
                   </div>

@@ -4,7 +4,6 @@ import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { saveProfileAction } from "@/app/feedback-actions";
 import { mediaUrl } from "@/lib/feedback/media";
-import { toPersianDigits } from "@/lib/phone";
 import { MAX_BIO_LENGTH, SEX_OPTIONS } from "@/lib/profile";
 import Avatar from "./avatar";
 
@@ -98,7 +97,7 @@ export default function ProfileEditor({
         {editing ? (
           <>
             <label className="label" htmlFor="profile-name">
-              نام نمایشی
+              Display name
             </label>
             <input
               id="profile-name"
@@ -111,24 +110,24 @@ export default function ProfileEditor({
             />
 
             <label className="label" htmlFor="profile-bio">
-              معرفی کوتاه
+              Short bio
             </label>
             <textarea
               id="profile-bio"
               className="input fb-profile-bio-input"
               value={draft.bio}
               maxLength={MAX_BIO_LENGTH}
-              placeholder="مثلا روی چه محصولی کار می‌کنی یا چه چیزی برات مهمه."
+              placeholder="What you work on, or what matters to you."
               onChange={(event) => patch({ bio: event.target.value })}
               disabled={saving}
             />
             <p className="field-hint">
-              {toPersianDigits(String(draft.bio.length))} از {toPersianDigits(String(MAX_BIO_LENGTH))} نویسه
+              {draft.bio.length} of {MAX_BIO_LENGTH} characters
             </p>
 
             <div className="fb-profile-grid">
               <label className="fb-profile-field">
-                <span className="label">شرکت</span>
+                <span className="label">Company</span>
                 <input
                   className="input"
                   value={draft.company}
@@ -138,7 +137,7 @@ export default function ProfileEditor({
                 />
               </label>
               <label className="fb-profile-field">
-                <span className="label">سن</span>
+                <span className="label">Age</span>
                 <input
                   className="input ltr"
                   type="number"
@@ -151,14 +150,14 @@ export default function ProfileEditor({
                 />
               </label>
               <label className="fb-profile-field">
-                <span className="label">جنسیت</span>
+                <span className="label">Gender</span>
                 <select
                   className="input"
                   value={draft.sex}
                   onChange={(event) => patch({ sex: event.target.value })}
                   disabled={saving}
                 >
-                  <option value="">انتخاب نکن</option>
+                  <option value="">Prefer not to say</option>
                   {SEX_OPTIONS.map((option) => (
                     <option key={option} value={option}>
                       {option}
@@ -176,32 +175,32 @@ export default function ProfileEditor({
                 className="fb-btn fb-btn-primary"
                 disabled={saving || draft.name.trim().length < 2}
               >
-                {saving ? "در حال ذخیره..." : "ذخیره تغییرات"}
+                {saving ? "Saving..." : "Save changes"}
               </button>
               <button type="button" className="fb-btn" onClick={cancel} disabled={saving}>
-                انصراف
+                Cancel
               </button>
             </div>
           </>
         ) : (
           <>
-            <p className="fb-eyebrow">پروفایل</p>
+            <p className="fb-eyebrow">Profile</p>
             <h1 className="fb-profile-title">{values.name}</h1>
             <p className="fb-profile-meta">
               {roleLabel ? <span className="fb-profile-role">{roleLabel}</span> : null}
-              <span>عضو از {joinedLabel}</span>
+              <span>Member since {joinedLabel}</span>
               {contact ? <span dir="auto">{contact}</span> : null}
             </p>
             {values.bio ? (
               <p className="fb-profile-bio">{values.bio}</p>
             ) : (
               <p className="fb-profile-bio is-empty">
-                یک معرفی کوتاه از خودت بنویس تا بقیه بدانند با کی حرف می‌زنند.
+                Add a short bio so people know who they are talking to.
               </p>
             )}
             <div className="fb-profile-actions">
               <button type="button" className="fb-btn fb-btn-primary" onClick={startEditing}>
-                ویرایش پروفایل
+                Edit profile
               </button>
               {children}
             </div>

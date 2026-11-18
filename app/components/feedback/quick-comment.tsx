@@ -14,7 +14,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { addCommentAction } from "@/app/feedback-actions";
-import { faNumber } from "@/lib/feedback/labels";
+import { formatNumber } from "@/lib/feedback/labels";
 import { CommentIcon, SendIcon } from "./icons";
 
 const EDGE = 12;
@@ -196,7 +196,7 @@ export default function QuickComment({
                   <CommentIcon size={13} />
                   گفتگو
                 </span>
-                <span className="fb-quick-total">{faNumber(total)} کامنت</span>
+                <span className="fb-quick-total">{formatNumber(total)} کامنت</span>
               </div>
 
               {signedIn ? (
@@ -224,7 +224,7 @@ export default function QuickComment({
                   ) : null}
                   <div className="fb-quick-foot">
                     <span className="fb-quick-hint">
-                      {faNumber(draft.trim().length)} از ۲۰۰۰ نویسه
+                      {formatNumber(draft.trim().length)} از ۲۰۰۰ نویسه
                     </span>
                     <div className="fb-quick-actions">
                       <Link href={`/p/${postId}#comments`} className="fb-quick-link">
@@ -266,7 +266,7 @@ export default function QuickComment({
         ref={triggerRef}
         type="button"
         className={`fb-action-btn ${open ? "on" : ""}`}
-        aria-label={`${faNumber(total)} کامنت، نوشتن کامنت`}
+        aria-label={`${formatNumber(total)} کامنت، نوشتن کامنت`}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-controls={open ? panelId : undefined}
@@ -274,7 +274,7 @@ export default function QuickComment({
         onClick={toggle}
       >
         <CommentIcon size={15} />
-        <span className={`fb-action-count ${bump ? "bump" : ""}`}>{faNumber(total)}</span>
+        <span className={`fb-action-count ${bump ? "bump" : ""}`}>{formatNumber(total)}</span>
         <span className="fb-action-label">کامنت</span>
       </button>
       {panel}

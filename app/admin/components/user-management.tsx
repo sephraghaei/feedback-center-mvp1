@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { AdminUserRow, UserMethod, UserSnapshot } from "@/lib/admin-store";
 import { SEX_OPTIONS } from "@/lib/profile";
-import { toPersianDigits } from "@/lib/phone";
 import { Avatar, Icon, MethodBadge, ProfilePill, formatDate } from "./bits";
 
 type View = "table" | "board" | "list";
@@ -13,15 +12,15 @@ type Form = { name: string; email: string; phone: string; age: string; sex: stri
 
 const EMPTY_FORM: Form = { name: "", email: "", phone: "", age: "", sex: "", company: "" };
 const PAGE_SIZE = 10;
-const fa = (n: number) => toPersianDigits(String(n));
+const fa = (n: number) => n.toLocaleString("en-US");
 
 function identifierOf(row: AdminUserRow): string {
-  return row.email ?? row.phone ?? row.clerkId ?? "بدون شناسه";
+  return row.email ?? row.phone ?? row.clerkId ?? "No identifier";
 }
 
 async function readJson(response: Response) {
   const data = (await response.json().catch(() => ({}))) as { message?: string; [k: string]: unknown };
-  if (!response.ok) throw new Error(data.message ?? "مشکلی پیش آمد.");
+  if (!response.ok) throw new Error(data.message ?? "Something went wrong.");
   return data;
 }
 
@@ -160,10 +159,10 @@ export default function UserManagement() {
         }),
       );
       setDrawer(null);
-      setToast({ message: drawer.mode === "create" ? "کاربر ساخته شد." : "تغییرات ذخیره شد." });
+      setToast({ message: drawer.mode === "create" ? "User created." : "Changes saved." });
       refresh();
     } catch (issue) {
-      setFormError(issue instanceof Error ? issue.message : "ذخیره انجام نشد.");
+      setFormError(issue instanceof Error ? issue.message : "Could not save.");
     } finally {
       setSaving(false);
     }
@@ -174,7 +173,7 @@ export default function UserManagement() {
     setTotal((t) => Math.max(0, t - 1));
     try {
       const data = await readJson(await fetch(`/api/admin/users/${row.id}`, { method: "DELETE" }));
-      setToast({ message: "کاربر حذف شد.", snapshots: [data.snapshot as UserSnapshot] });
+      setToast({ message: "User deleted.", snapshots: [data.snapshot as UserSnapshot] });
     } catch {
       refresh();
     }
@@ -197,7 +196,7 @@ export default function UserManagement() {
       }
     }
     if (failed) refresh();
-    if (snapshots.length) setToast({ message: `${fa(snapshots.length)} کاربر حذف شد.`, snapshots });
+    if (snapshots.length) setToast({ message: `Deleted ${fa(snapshots.length)} users.`, snapshots });
   }
 
   async function undo() {
@@ -214,7 +213,7 @@ export default function UserManagement() {
       );
       refresh();
     } catch (issue) {
-      setToast({ message: issue instanceof Error ? issue.message : "بازگردانی انجام نشد." });
+      setToast({ message: issue instanceof Error ? issue.message : "Could not restore." });
     }
   }
 
@@ -228,26 +227,26 @@ export default function UserManagement() {
   const boardMethods: UserMethod[] = ["phone", "email", "clerk"];
   if (rows.some((r) => r.method === "unknown")) boardMethods.push("unknown");
   const BOARD_LABEL: Record<UserMethod, string> = {
-    phone: "موبایل",
-    email: "ایمیل",
+    phone: "Phone",
+    email: "Email",
     clerk: "Clerk",
-    unknown: "سایر",
+    unknown: "Other",
   };
 
   return (
     <>
       <div className="page-head">
         <div className="page-title-row">
-          <h1 className="page-title">مدیریت کاربران</h1>
+          <h1 className="page-title">Users</h1>
           <span className="count-badge">{fa(total)}</span>
         </div>
-        <p className="page-sub">اعضا را جست‌وجو، فیلتر و ویرایش کن؛ حذف‌ها قابل بازگردانی هستند.</p>
+        <p className="page-sub">Search, filter and edit members. Deleted rows can be restored.</p>
       </div>
 
       <div className="panel">
         <div className="toolbar">
-          <div className="view-tabs" role="tablist" aria-label="نمای نمایش">
-            {([["table", "table", "جدول"], ["board", "board", "برد"], ["list", "list", "فهرست"]] as const).map(
+          <div className="view-tabs" role="tablist" aria-label="View">
+            {([["table", "table", "Table"], ["board", "board", "Board"], ["list", "list", "List"]] as const).map(
               ([key, icon, label]) => (
                 <button
                   key={key}
@@ -268,16 +267,16 @@ export default function UserManagement() {
             <Icon name="search" size={16} />
             <input
               type="search"
-              placeholder="جست‌وجوی نام، ایمیل یا موبایل..."
+              placeholder="Search name, email or phone..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              aria-label="جست‌وجوی کاربران"
+              aria-label="Search users"
             />
           </div>
 
           <button type="button" className="btn btn-primary" onClick={openCreate}>
             <Icon name="plus" size={16} />
-            کاربر جدید
+            New user
           </button>
         </div>
 
@@ -290,11 +289,11 @@ export default function UserManagement() {
                 setMethod(e.target.value);
                 setPage(1);
               }}
-              aria-label="فیلتر روش ورود"
+              aria-label="Filter by sign-in method"
             >
-              <option value="">همه روش‌ها</option>
-              <option value="phone">موبایل</option>
-              <option value="email">ایمیل</option>
+              <option value="">All methods</option>
+              <option value="phone">Phone</option>
+              <option value="email">Email</option>
               <option value="clerk">Clerk</option>
             </select>
           </span>
@@ -306,11 +305,11 @@ export default function UserManagement() {
                 setProfileFilter(e.target.value);
                 setPage(1);
               }}
-              aria-label="فیلتر وضعیت پروفایل"
+              aria-label="Filter by profile status"
             >
-              <option value="">همه پروفایل‌ها</option>
-              <option value="complete">کامل</option>
-              <option value="incomplete">ناقص</option>
+              <option value="">All profiles</option>
+              <option value="complete">Complete</option>
+              <option value="incomplete">Incomplete</option>
             </select>
           </span>
           {filtersActive ? (
@@ -325,24 +324,24 @@ export default function UserManagement() {
               }}
             >
               <Icon name="close" size={14} />
-              پاک کردن فیلترها
+              Clear filters
             </button>
           ) : null}
           <span className="spacer" />
-          <span className="chart-sub">{loading ? "در حال بارگذاری..." : `${fa(total)} نتیجه`}</span>
+          <span className="chart-sub">{loading ? "Loading..." : `${fa(total)} results`}</span>
         </div>
 
         {selected.size > 0 ? (
           <div className="bulk-bar">
             <Icon name="check" size={15} />
-            {fa(selected.size)} کاربر انتخاب شده
+            {fa(selected.size)} selected
             <span className="spacer" style={{ marginInlineStart: "auto" }} />
             <button type="button" className="btn btn-danger" onClick={deleteBulk}>
               <Icon name="trash" size={15} />
-              حذف انتخاب‌شده‌ها
+              Delete selected
             </button>
             <button type="button" className="btn btn-ghost" onClick={() => setSelected(new Set())}>
-              لغو انتخاب
+              Clear selection
             </button>
           </div>
         ) : null}
@@ -351,15 +350,15 @@ export default function UserManagement() {
           {rows.length === 0 && !loading ? (
             <div className="empty-state">
               <Icon name="users" size={40} />
-              <h3>کاربری پیدا نشد</h3>
+              <h3>No users found</h3>
               <p>
                 {filtersActive
-                  ? "با این فیلترها چیزی نیست. فیلترها را پاک کن یا کاربر جدید بساز."
-                  : "هنوز کاربری ثبت نشده. اولین کاربر را بساز تا اینجا نمایش داده شود."}
+                  ? "Nothing matches these filters. Clear them or add a new user."
+                  : "No users yet. Create the first one and it shows up here."}
               </p>
               <button type="button" className="btn btn-primary" onClick={openCreate}>
                 <Icon name="plus" size={16} />
-                کاربر جدید
+                New user
               </button>
             </div>
           ) : view === "table" ? (
@@ -374,29 +373,29 @@ export default function UserManagement() {
                         className="check"
                         checked={allSelected}
                         onChange={toggleAll}
-                        aria-label="انتخاب همه"
+                        aria-label="Select all"
                       />
                     </th>
                     <th>
                       <button type="button" className={`th-sort ${sort === "name" ? "on" : ""}`} onClick={() => toggleSort("name")}>
                         <Icon name="user" size={14} />
-                        نام
+                        Name
                         <Icon name={sortIcon("name")} size={13} />
                       </button>
                     </th>
                     <th>
                       <button type="button" className={`th-sort ${sort === "email" ? "on" : ""}`} onClick={() => toggleSort("email")}>
                         <Icon name="mail" size={14} />
-                        شناسه
+                        Identifier
                         <Icon name={sortIcon("email")} size={13} />
                       </button>
                     </th>
-                    <th>روش ورود</th>
-                    <th>وضعیت</th>
+                    <th>Method</th>
+                    <th>Status</th>
                     <th>
                       <button type="button" className={`th-sort ${sort === "joined" ? "on" : ""}`} onClick={() => toggleSort("joined")}>
                         <Icon name="calendar" size={14} />
-                        تاریخ عضویت
+                        Joined
                         <Icon name={sortIcon("joined")} size={13} />
                       </button>
                     </th>
@@ -412,16 +411,16 @@ export default function UserManagement() {
                           className="check"
                           checked={selected.has(row.id)}
                           onChange={() => toggleOne(row.id)}
-                          aria-label={`انتخاب ${row.name ?? identifierOf(row)}`}
+                          aria-label={`Select ${row.name ?? identifierOf(row)}`}
                         />
                       </td>
                       <td>
                         <div className="cell-user">
                           <Avatar seed={row.id} label={row.name ?? identifierOf(row)} />
                           <span>
-                            <span className="name">{row.name ?? "بدون نام"}</span>
+                            <span className="name">{row.name ?? "No name"}</span>
                             <br />
-                            <span className="sub">{row.company ?? row.sex ?? "کاربر سامانه"}</span>
+                            <span className="sub">{row.company ?? row.sex ?? "Member"}</span>
                           </span>
                         </div>
                       </td>
@@ -431,10 +430,10 @@ export default function UserManagement() {
                       <td className="cell-date">{formatDate(row.createdAt)}</td>
                       <td>
                         <div className="row-actions">
-                          <button type="button" className="btn btn-icon" onClick={() => openEdit(row)} aria-label="ویرایش">
+                          <button type="button" className="btn btn-icon" onClick={() => openEdit(row)} aria-label="Edit">
                             <Icon name="edit" size={16} />
                           </button>
-                          <button type="button" className="btn btn-icon danger" onClick={() => deleteOne(row)} aria-label="حذف">
+                          <button type="button" className="btn btn-icon danger" onClick={() => deleteOne(row)} aria-label="Delete">
                             <Icon name="trash" size={16} />
                           </button>
                         </div>
@@ -457,17 +456,17 @@ export default function UserManagement() {
                     </div>
                     <div className="board-col-body">
                       {items.length === 0 ? (
-                        <p className="board-empty">خالی</p>
+                        <p className="board-empty">Empty</p>
                       ) : (
                         items.map((row) => (
                           <div className="board-card" key={row.id}>
                             <Avatar seed={row.id} label={row.name ?? identifierOf(row)} size={30} />
                             <span className="meta">
-                              <span className="name">{row.name ?? "بدون نام"}</span>
+                              <span className="name">{row.name ?? "No name"}</span>
                               <br />
                               <span className="id">{identifierOf(row)}</span>
                             </span>
-                            <button type="button" className="btn btn-icon" onClick={() => openEdit(row)} aria-label="ویرایش">
+                            <button type="button" className="btn btn-icon" onClick={() => openEdit(row)} aria-label="Edit">
                               <Icon name="edit" size={15} />
                             </button>
                           </div>
@@ -487,20 +486,20 @@ export default function UserManagement() {
                     className="check"
                     checked={selected.has(row.id)}
                     onChange={() => toggleOne(row.id)}
-                    aria-label={`انتخاب ${row.name ?? identifierOf(row)}`}
+                    aria-label={`Select ${row.name ?? identifierOf(row)}`}
                   />
                   <Avatar seed={row.id} label={row.name ?? identifierOf(row)} />
                   <span className="meta">
-                    <span className="name">{row.name ?? "بدون نام"}</span>
+                    <span className="name">{row.name ?? "No name"}</span>
                     <br />
                     <span className="id">{identifierOf(row)}</span>
                   </span>
                   <MethodBadge method={row.method} />
                   <ProfilePill complete={row.hasProfile} />
-                  <button type="button" className="btn btn-icon" onClick={() => openEdit(row)} aria-label="ویرایش">
+                  <button type="button" className="btn btn-icon" onClick={() => openEdit(row)} aria-label="Edit">
                     <Icon name="edit" size={16} />
                   </button>
-                  <button type="button" className="btn btn-icon danger" onClick={() => deleteOne(row)} aria-label="حذف">
+                  <button type="button" className="btn btn-icon danger" onClick={() => deleteOne(row)} aria-label="Delete">
                     <Icon name="trash" size={16} />
                   </button>
                 </div>
@@ -511,19 +510,19 @@ export default function UserManagement() {
 
         <div className="pager">
           <span className="pager-info">
-            نمایش {fa(from)} تا {fa(to)} از {fa(total)}
+            Showing {fa(from)} to {fa(to)} of {fa(total)}
           </span>
           <div className="pager-btns">
             <button type="button" className="btn btn-ghost" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-              <Icon name="chevron-right" size={15} />
-              قبلی
+              <Icon name="chevron-left" size={15} />
+              Previous
             </button>
             <span className="pager-info">
-              صفحه {fa(page)} از {fa(pageCount)}
+              Page {fa(page)} of {fa(pageCount)}
             </span>
             <button type="button" className="btn btn-ghost" disabled={page >= pageCount} onClick={() => setPage((p) => p + 1)}>
-              بعدی
-              <Icon name="chevron-left" size={15} />
+              Next
+              <Icon name="chevron-right" size={15} />
             </button>
           </div>
         </div>
@@ -532,18 +531,18 @@ export default function UserManagement() {
       {drawer ? (
         <>
           <div className="drawer-overlay" onClick={() => !saving && setDrawer(null)} />
-          <div className="drawer" role="dialog" aria-modal="true" aria-label={drawer.mode === "create" ? "کاربر جدید" : "ویرایش کاربر"}>
+          <div className="drawer" role="dialog" aria-modal="true" aria-label={drawer.mode === "create" ? "New user" : "Edit user"}>
             <div className="drawer-head">
               <Icon name={drawer.mode === "create" ? "plus" : "edit"} size={18} />
-              <h2 className="drawer-title">{drawer.mode === "create" ? "کاربر جدید" : "ویرایش کاربر"}</h2>
-              <button type="button" className="btn btn-icon" onClick={() => setDrawer(null)} disabled={saving} aria-label="بستن">
+              <h2 className="drawer-title">{drawer.mode === "create" ? "New user" : "Edit user"}</h2>
+              <button type="button" className="btn btn-icon" onClick={() => setDrawer(null)} disabled={saving} aria-label="Close">
                 <Icon name="close" size={18} />
               </button>
             </div>
             <form onSubmit={submitForm} style={{ display: "contents" }}>
               <div className="drawer-body">
                 <div className="field">
-                  <label htmlFor="f-name">نام</label>
+                  <label htmlFor="f-name">Name</label>
                   <input
                     id="f-name"
                     value={form.name}
@@ -554,7 +553,7 @@ export default function UserManagement() {
                   />
                 </div>
                 <div className="field">
-                  <label htmlFor="f-email">ایمیل <span className="opt">(اختیاری)</span></label>
+                  <label htmlFor="f-email">Email <span className="opt">(optional)</span></label>
                   <input
                     id="f-email"
                     type="email"
@@ -565,7 +564,7 @@ export default function UserManagement() {
                   />
                 </div>
                 <div className="field">
-                  <label htmlFor="f-phone">موبایل <span className="opt">(اختیاری)</span></label>
+                  <label htmlFor="f-phone">Phone <span className="opt">(optional)</span></label>
                   <input
                     id="f-phone"
                     type="tel"
@@ -577,7 +576,7 @@ export default function UserManagement() {
                 </div>
                 <div className="field-row">
                   <div className="field">
-                    <label htmlFor="f-age">سن <span className="opt">(اختیاری)</span></label>
+                    <label htmlFor="f-age">Age <span className="opt">(optional)</span></label>
                     <input
                       id="f-age"
                       type="number"
@@ -589,9 +588,9 @@ export default function UserManagement() {
                     />
                   </div>
                   <div className="field">
-                    <label htmlFor="f-sex">جنسیت <span className="opt">(اختیاری)</span></label>
+                    <label htmlFor="f-sex">Gender <span className="opt">(optional)</span></label>
                     <select id="f-sex" value={form.sex} onChange={(e) => setForm({ ...form, sex: e.target.value })}>
-                      <option value="">انتخاب نکن</option>
+                      <option value="">Prefer not to say</option>
                       {SEX_OPTIONS.map((option) => (
                         <option key={option} value={option}>{option}</option>
                       ))}
@@ -599,7 +598,7 @@ export default function UserManagement() {
                   </div>
                 </div>
                 <div className="field">
-                  <label htmlFor="f-company">شرکت <span className="opt">(اختیاری)</span></label>
+                  <label htmlFor="f-company">Company <span className="opt">(optional)</span></label>
                   <input
                     id="f-company"
                     value={form.company}
@@ -611,10 +610,10 @@ export default function UserManagement() {
               </div>
               <div className="drawer-foot">
                 <button type="submit" className="btn btn-primary" disabled={saving || form.name.trim().length < 2}>
-                  {saving ? "در حال ذخیره..." : drawer.mode === "create" ? "ساخت کاربر" : "ذخیره تغییرات"}
+                  {saving ? "Saving..." : drawer.mode === "create" ? "Create user" : "Save changes"}
                 </button>
                 <button type="button" className="btn btn-ghost" onClick={() => setDrawer(null)} disabled={saving}>
-                  انصراف
+                  Cancel
                 </button>
               </div>
             </form>
@@ -629,10 +628,10 @@ export default function UserManagement() {
           {toast.snapshots?.length ? (
             <button type="button" className="toast-action" onClick={undo}>
               <Icon name="undo" size={14} />
-              بازگردانی
+              Undo
             </button>
           ) : null}
-          <button type="button" className="toast-action" onClick={() => setToast(null)} aria-label="بستن پیام">
+          <button type="button" className="toast-action" onClick={() => setToast(null)} aria-label="Dismiss message">
             <Icon name="close" size={14} />
           </button>
         </div>

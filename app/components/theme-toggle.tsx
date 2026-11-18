@@ -49,8 +49,8 @@ export default function ThemeToggle() {
       type="button"
       className="theme-toggle"
       onClick={toggleTheme}
-      aria-label="تغییر حالت روشن و تاریک"
-      title="تغییر حالت روشن و تاریک"
+      aria-label="Toggle light and dark theme"
+      title="Toggle light and dark theme"
     >
       <span className="theme-icon theme-icon-moon" aria-hidden="true">
         <MoonIcon size={16} />

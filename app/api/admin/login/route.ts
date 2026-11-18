@@ -32,7 +32,7 @@ export const POST = withApiLogging("/api/admin/login", async (request, _context,
   if (!adminPasswordConfigured()) {
     log.warn("admin.login.not_configured");
     return NextResponse.json(
-      { message: "ورود مدیر فعال نیست. ADMIN_PASSWORD را در محیط تنظیم کن." },
+      { message: "Admin sign-in is not enabled. Set ADMIN_PASSWORD in the environment." },
       { status: 503 },
     );
   }
@@ -41,7 +41,7 @@ export const POST = withApiLogging("/api/admin/login", async (request, _context,
   if (throttled(ip)) {
     log.warn("admin.login.throttled", { context: { ip } });
     return NextResponse.json(
-      { message: "تلاش‌های زیاد. چند دقیقه دیگر دوباره تلاش کن." },
+      { message: "Too many attempts. Try again in a few minutes." },
       { status: 429 },
     );
   }
@@ -50,13 +50,13 @@ export const POST = withApiLogging("/api/admin/login", async (request, _context,
   try {
     input = await request.json();
   } catch {
-    return NextResponse.json({ message: "درخواست معتبر نیست." }, { status: 400 });
+    return NextResponse.json({ message: "Invalid request." }, { status: 400 });
   }
 
   const password = (input as { password?: unknown })?.password;
   if (!checkAdminPassword(password)) {
     log.warn("admin.login.failed", { context: { ip } });
-    return NextResponse.json({ message: "رمز عبور اشتباه است." }, { status: 401 });
+    return NextResponse.json({ message: "Wrong password." }, { status: 401 });
   }
 
   const response = NextResponse.json({ ok: true });

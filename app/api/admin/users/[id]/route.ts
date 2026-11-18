@@ -6,7 +6,7 @@ import { withApiLogging } from "@/lib/api-logger";
 type Context = { params: Promise<{ id: string }> };
 
 function unauthorized() {
-  return NextResponse.json({ message: "اول وارد پنل مدیریت شو." }, { status: 401 });
+  return NextResponse.json({ message: "Sign in to the admin panel first." }, { status: 401 });
 }
 
 export const PATCH = withApiLogging<Context>("/api/admin/users/[id]", async (request, context, log) => {
@@ -17,13 +17,13 @@ export const PATCH = withApiLogging<Context>("/api/admin/users/[id]", async (req
   try {
     input = await request.json();
   } catch {
-    return NextResponse.json({ message: "درخواست معتبر نیست." }, { status: 400 });
+    return NextResponse.json({ message: "Invalid request." }, { status: 400 });
   }
 
   const result = await updateUser(id, (input ?? {}) as Record<string, unknown>);
   if ("error" in result) {
     log.warn("admin.users.update_failed", { message: result.error, context: { userId: id } });
-    const status = result.error === "کاربر پیدا نشد." ? 404 : 400;
+    const status = result.error === "User not found." ? 404 : 400;
     return NextResponse.json({ message: result.error }, { status });
   }
 

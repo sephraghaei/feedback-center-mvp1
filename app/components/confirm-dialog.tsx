@@ -7,8 +7,8 @@ export default function ConfirmDialog({
   open,
   title,
   description,
-  confirmLabel = "حذف",
-  cancelLabel = "بی‌خیال",
+  confirmLabel = "Delete",
+  cancelLabel = "Cancel",
   busy = false,
   onConfirm,
   onCancel,
@@ -83,7 +83,7 @@ export default function ConfirmDialog({
             {cancelLabel}
           </button>
           <button type="button" className="confirm-btn confirm-btn-danger" onClick={onConfirm} disabled={busy}>
-            {busy ? "در حال حذف..." : confirmLabel}
+            {busy ? "Deleting..." : confirmLabel}
           </button>
         </div>
       </div>

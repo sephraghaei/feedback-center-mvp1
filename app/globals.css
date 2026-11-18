@@ -43,6 +43,7 @@
   --pill: 9999px;
   --max: 1280px;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-ui: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --mark: #1d4ed8;
   --ring-soft: rgba(37, 99, 235, 0.07);
   --inverted-bg: #0f2a5f;
@@ -68,7 +69,7 @@
     #7c3aed 100%
   );
   --gradient-solar: linear-gradient(90deg, #38bdf8 0%, #2563eb 100%);
-  --font-brand: "Noto Kufi Arabic Variable", var(--font-dastkhat, system-ui, sans-serif);
+  --font-brand: var(--font-ui);
 }
 
 :root[data-theme="dark"] {
@@ -148,7 +149,7 @@ html {
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-dastkhat, system-ui, sans-serif);
+  font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -913,7 +914,7 @@ a {
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
   padding: 1.9rem 1.5rem 1.5rem;
-  text-align: right;
+  text-align: start;
   box-shadow: 0 0 0 1px var(--ring-soft);
   animation: rise-in 0.18s ease;
 }
@@ -921,7 +922,7 @@ a {
 .modal-close {
   position: absolute;
   top: 0.9rem;
-  left: 0.9rem;
+  right: 0.9rem;
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--hairline);

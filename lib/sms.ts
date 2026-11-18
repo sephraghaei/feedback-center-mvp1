@@ -36,7 +36,7 @@ async function callKavenegar(
     if (!response.ok || payload?.return?.status !== 200) {
       const message =
         payload?.return?.message ??
-        `ارسال پیامک انجام نشد. کد پاسخ کاوه‌نگار: ${payload?.return?.status ?? response.status}`;
+        `The SMS could not be sent. Kavenegar status: ${payload?.return?.status ?? response.status}`;
       logger.warn("sms.kavenegar.rejected", {
         message,
         context: {
@@ -61,7 +61,7 @@ async function callKavenegar(
     });
     return {
       ok: false,
-      message: "ارتباط با کاوه‌نگار برقرار نشد. کمی بعد دوباره تلاش کن.",
+      message: "The SMS service is unreachable. Try again shortly.",
     };
   }
 }
@@ -89,7 +89,7 @@ export async function sendOtpSms(phone: string, code: string): Promise<SmsResult
 
   const params: Record<string, string> = {
     receptor: phone,
-    message: `${code} کد ورود شماست. اگر این درخواست را نداده‌اید پیام را نادیده بگیرید.`,
+    message: `${code} is your Vasa login code. If you did not ask for it, ignore this message.`,
     type: KAVENEGAR_SENDER_TYPE,
   };
   if (KAVENEGAR_SENDER) params.sender = KAVENEGAR_SENDER;

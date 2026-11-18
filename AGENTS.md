@@ -1,8 +1,8 @@
 # Project rules
 
 - Do not use an em-dash for anything in code, text and comments.
-- Always RTL and Persian in the interface.
-- Use Dastkhat as the UI font, self-hosted from `app/fonts/dastkhat-variable.woff2` under SIL OFL 1.1. This project uses Dastkhat.
+- The interface is English and LTR.
+- Use the Apple Helvetica stack (`"Helvetica Neue", Helvetica, Arial, sans-serif`) as the UI font, exposed as `--font-ui` in `app/globals.css`.
 
 The full stack lives in [docs/main-stack.md](docs/main-stack.md), with the details in:
 

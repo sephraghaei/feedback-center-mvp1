@@ -16,7 +16,7 @@ export default function Avatar({
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const initial = (name ?? "").trim().charAt(0) || "؟";
+  const initial = (name ?? "").trim().charAt(0) || "?";
   const showImage = Boolean(src) && failedSrc !== src;
   const loaded = Boolean(src) && loadedSrc === src;
 

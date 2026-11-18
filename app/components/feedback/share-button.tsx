@@ -74,20 +74,20 @@ export default function ShareButton({
     resetLater();
   }
 
-  const labelText = state === "copied" ? "کپی شد" : state === "failed" ? "نشد" : "اشتراک";
+  const labelText = state === "copied" ? "Copied" : state === "failed" ? "Failed" : "Share";
 
   return (
     <button
       type="button"
       className={`fb-action-btn ${state === "copied" ? "on" : ""}`}
       onClick={share}
-      aria-label={state === "copied" ? "لینک کپی شد" : "کپی لینک برای اشتراک‌گذاری"}
-      title={state === "failed" ? "کپی لینک ممکن نشد" : "اشتراک‌گذاری"}
+      aria-label={state === "copied" ? "Link copied" : "Copy link to share"}
+      title={state === "failed" ? "Could not copy the link" : "Share"}
     >
       {state === "copied" ? <CheckIcon size={15} /> : <ShareIcon size={15} />}
       {label ? <span>{labelText}</span> : null}
       <span className="sr-only" role="status">
-        {state === "copied" ? "لینک کپی شد." : ""}
+        {state === "copied" ? "Link copied." : ""}
       </span>
     </button>
   );

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { toPersianDigits } from "@/lib/phone";
 import BrandMark from "../../components/brand-mark";
 import ThemeToggle from "../../components/theme-toggle";
 import { Icon, type IconName } from "./bits";
@@ -33,11 +32,11 @@ export default function AdminShell({
   const [leaving, setLeaving] = useState(false);
 
   const items: NavItem[] = [
-    { href: "/admin", label: "داشبورد", icon: "dashboard", exact: true },
-    { href: "/admin/inbox", label: "صندوق پشتیبانی", icon: "mail", badge: openSupport },
-    { href: "/admin/posts", label: "مدیریت فید‌بک‌ها", icon: "list", badge: feedbackCount },
-    { href: "/admin/changelog", label: "تغییرات", icon: "calendar" },
-    { href: "/admin/users", label: "مدیریت کاربران", icon: "users", badge: userCount },
+    { href: "/admin", label: "Dashboard", icon: "dashboard", exact: true },
+    { href: "/admin/inbox", label: "Support inbox", icon: "mail", badge: openSupport },
+    { href: "/admin/posts", label: "Feedback", icon: "list", badge: feedbackCount },
+    { href: "/admin/changelog", label: "Updates", icon: "calendar" },
+    { href: "/admin/users", label: "Users", icon: "users", badge: userCount },
   ];
 
   const active =
@@ -64,14 +63,14 @@ export default function AdminShell({
         <div className="side-brand">
           <BrandMark className="brand-mark" />
           <span>
-            <span className="brand-name">وسا</span>
+            <span className="brand-name">Vasa</span>
             <br />
-            <span className="brand-sub">پنل مدیریت</span>
+            <span className="brand-sub">Admin panel</span>
           </span>
         </div>
 
-        <nav className="side-section" aria-label="بخش‌های پنل">
-          <p className="side-label">کلی</p>
+        <nav className="side-section" aria-label="Panel sections">
+          <p className="side-label">General</p>
           {items.map((item) => (
             <Link
               key={item.href}
@@ -82,7 +81,7 @@ export default function AdminShell({
               <Icon name={item.icon} />
               {item.label}
               {typeof item.badge === "number" && item.badge > 0 ? (
-                <span className="badge">{toPersianDigits(String(item.badge))}</span>
+                <span className="badge">{item.badge}</span>
               ) : null}
             </Link>
           ))}
@@ -90,17 +89,17 @@ export default function AdminShell({
 
         <div className="side-footer">
           <div className="side-card">
-            <p>این پنل فقط با رمز عبور مدیر باز می‌شود و به داده‌های زنده کاربران وصل است.</p>
+            <p>This panel opens with the admin password only and works on live user data.</p>
             <Link href="/" className="btn btn-ghost" onClick={() => setOpen(false)}>
               <Icon name="external" size={15} />
-              بازگشت به سایت
+              Back to site
             </Link>
           </div>
           <button type="button" className="btn btn-ghost" onClick={logout} disabled={leaving}>
             <Icon name="logout" size={16} />
-            {leaving ? "در حال خروج..." : "خروج از پنل"}
+            {leaving ? "Signing out..." : "Sign out"}
           </button>
-          <p className="side-version">نسخه ۱٫۰٫۰</p>
+          <p className="side-version">Version 1.0.0</p>
         </div>
       </aside>
 
@@ -110,12 +109,12 @@ export default function AdminShell({
             type="button"
             className="btn btn-icon menu-btn"
             onClick={() => setOpen((v) => !v)}
-            aria-label="باز کردن منو"
+            aria-label="Open menu"
           >
             <Icon name="menu" size={20} />
           </button>
-          <nav className="crumb" aria-label="مسیر">
-            <Link href="/admin">پنل مدیریت</Link>
+          <nav className="crumb" aria-label="Breadcrumb">
+            <Link href="/admin">Admin panel</Link>
             <span className="crumb-sep">/</span>
             <span className="current">
               <Icon name={active.icon} size={15} />
@@ -123,8 +122,8 @@ export default function AdminShell({
             </span>
           </nav>
           <span className="topbar-user">
-            <span className="topbar-avatar">م</span>
-            مدیر
+            <span className="topbar-avatar">A</span>
+            Admin
           </span>
           <ThemeToggle />
         </header>

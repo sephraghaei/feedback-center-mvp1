@@ -20,13 +20,13 @@ function normalizeUrl(raw: string, withScheme: boolean): ProductParse {
   try {
     url = new URL(withScheme ? raw : `https://${raw}`);
   } catch {
-    return { ok: false, message: "آدرس سایت معتبر نیست." };
+    return { ok: false, message: "That website address is not valid." };
   }
   if (url.protocol !== "http:" && url.protocol !== "https:") {
-    return { ok: false, message: "آدرس سایت باید با http یا https شروع شود." };
+    return { ok: false, message: "Website must start with http or https." };
   }
   if (!url.hostname.includes(".")) {
-    return { ok: false, message: "آدرس سایت معتبر نیست." };
+    return { ok: false, message: "That website address is not valid." };
   }
   return { ok: true, value: url.toString().replace(/\/$/, "") };
 }
@@ -35,11 +35,11 @@ export function parseProduct(input: string | null | undefined): ProductParse {
   const text = cleanText(input);
   if (!text) return { ok: true, value: null };
   if (text.length > MAX_PRODUCT_LENGTH) {
-    return { ok: false, message: "نام محصول یا آدرس سایت حداکثر ۱۲۰ نویسه است." };
+    return { ok: false, message: "Product name or website can be at most 120 characters." };
   }
   if (SCHEME.test(text)) return normalizeUrl(text, true);
   if (!/\s/.test(text) && DOMAIN.test(text)) return normalizeUrl(text, false);
-  if (text.includes("://")) return { ok: false, message: "آدرس سایت معتبر نیست." };
+  if (text.includes("://")) return { ok: false, message: "That website address is not valid." };
   return { ok: true, value: text };
 }
 
@@ -47,12 +47,12 @@ export function parseSiteUrl(input: string | null | undefined): ProductParse {
   const text = cleanText(input);
   if (!text) return { ok: true, value: null };
   if (text.length > MAX_SITE_URL_LENGTH) {
-    return { ok: false, message: "آدرس سایت حداکثر ۲۰۰ نویسه است." };
+    return { ok: false, message: "Website address can be at most 200 characters." };
   }
-  if (/\s/.test(text)) return { ok: false, message: "آدرس سایت معتبر نیست." };
+  if (/\s/.test(text)) return { ok: false, message: "That website address is not valid." };
   if (SCHEME.test(text)) return normalizeUrl(text, true);
   if (DOMAIN.test(text)) return normalizeUrl(text, false);
-  return { ok: false, message: "آدرس سایت معتبر نیست." };
+  return { ok: false, message: "That website address is not valid." };
 }
 
 export function productContext(value: string | null | undefined): ProductContext | null {
@@ -106,7 +106,7 @@ export function productBrand(
   const display = nameValue && !nameIsLink ? nameValue : host;
   if (!display) return null;
 
-  const first = Array.from(display)[0] ?? "؟";
+  const first = Array.from(display)[0] ?? "?";
   const initial = /[a-z]/i.test(first) ? first.toUpperCase() : first;
 
   return {

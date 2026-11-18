@@ -5,7 +5,7 @@ import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { addCommentAction, deleteOwnCommentAction, voteCommentAction } from "@/app/feedback-actions";
 import ConfirmDialog from "@/app/components/confirm-dialog";
 import type { CommentView } from "@/lib/feedback/comments";
-import { faDate, faNumber } from "@/lib/feedback/labels";
+import { formatDate, formatNumber } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
 import Avatar from "./avatar";
 import FormatToolbar from "./format-toolbar";
@@ -52,11 +52,11 @@ function CommentComposer({
       />
       <FormatToolbar value={value} onChange={onChange} textareaRef={inputRef} compact />
       <div className="fb-comment-form-foot">
-        <span className="fb-comment-hint">{faNumber(value.trim().length)} از ۲۰۰۰ نویسه</span>
+        <span className="fb-comment-hint">{formatNumber(value.trim().length)} of 2000 characters</span>
         <div className="fb-comment-foot-actions">
           {onCancel ? (
             <button type="button" className="fb-btn fb-btn-ghost fb-btn-sm" onClick={onCancel}>
-              بی‌خیال
+              Cancel
             </button>
           ) : null}
           <button
@@ -64,7 +64,7 @@ function CommentComposer({
             className="fb-btn fb-btn-primary fb-btn-sm"
             disabled={busy || value.trim().length < 2}
           >
-            {busy ? "در حال ارسال..." : submitLabel}
+            {busy ? "Posting..." : submitLabel}
           </button>
         </div>
       </div>
@@ -107,8 +107,8 @@ function CommentRow({
       <div className="fb-comment-main">
         <div className="fb-comment-head">
           <strong>{item.authorName}</strong>
-          {item.authorId === postAuthorId ? <span className="fb-comment-badge">نویسنده</span> : null}
-          <time dateTime={new Date(item.createdAt).toISOString()}>{faDate(item.createdAt)}</time>
+          {item.authorId === postAuthorId ? <span className="fb-comment-badge">Author</span> : null}
+          <time dateTime={new Date(item.createdAt).toISOString()}>{formatDate(item.createdAt)}</time>
         </div>
         <Markdown source={item.body} className="fb-prose fb-comment-body" />
         <div className="fb-comment-actions">
@@ -119,20 +119,20 @@ function CommentRow({
               onClick={() => onVote(item, 1)}
               disabled={pending}
               aria-pressed={item.myVote === 1}
-              aria-label="رای مثبت به این کامنت"
-              title="رای مثبت"
+              aria-label="Upvote this comment"
+              title="Upvote"
             >
               <VoteUpIcon size={13} />
             </button>
-            <span className="fb-cvote-score">{faNumber(item.score)}</span>
+            <span className="fb-cvote-score">{formatNumber(item.score)}</span>
             <button
               type="button"
               className="fb-cvote-btn"
               onClick={() => onVote(item, -1)}
               disabled={pending}
               aria-pressed={item.myVote === -1}
-              aria-label="رای منفی به این کامنت"
-              title="رای منفی"
+              aria-label="Downvote this comment"
+              title="Downvote"
             >
               <VoteDownIcon size={13} />
             </button>
@@ -140,7 +140,7 @@ function CommentRow({
           {onReply ? (
             <button type="button" className="fb-comment-reply-btn" onClick={onReply}>
               <ReplyIcon size={13} />
-              پاسخ
+              Reply
             </button>
           ) : null}
           {canDelete && onDelete ? (
@@ -149,11 +149,11 @@ function CommentRow({
               className="fb-comment-delete-btn"
               onClick={onDelete}
               disabled={deleting}
-              aria-label="حذف این کامنت"
-              title="حذف کامنت"
+              aria-label="Delete this comment"
+              title="Delete comment"
             >
               <TrashIcon size={13} />
-              {deleting ? "در حال حذف..." : "حذف"}
+              {deleting ? "Deleting..." : "Delete"}
             </button>
           ) : null}
         </div>
@@ -331,13 +331,13 @@ export default function CommentSection({
       <div className="fb-comments-head">
         <h2 id="comments-title">
           <CommentIcon size={16} />
-          گفتگو
+          Conversation
         </h2>
-        <span className="fb-comments-count">{faNumber(items.length)} کامنت</span>
+        <span className="fb-comments-count">{formatNumber(items.length)} comments</span>
       </div>
 
       {locked ? (
-        <p className="fb-note">این فید‌بک پنهان شده و کامنت تازه نمی‌پذیرد.</p>
+        <p className="fb-note">This feedback is hidden and no longer takes new comments.</p>
       ) : signedIn ? (
         <CommentComposer
           value={draft}
@@ -345,14 +345,14 @@ export default function CommentSection({
           onSubmit={submitRoot}
           busy={sending}
           error={error}
-          placeholder="چیزی بنویس که به بهتر شدن این فید‌بک کمک کند."
-          submitLabel="ارسال کامنت"
+          placeholder="Add something that helps make this feedback better."
+          submitLabel="Post comment"
         />
       ) : (
         <div className="fb-comment-guest">
-          <p>برای نوشتن کامنت و رای دادن به کامنت‌ها اول وارد حسابت شو.</p>
+          <p>Log in first to write comments and vote on them.</p>
           <button type="button" className="fb-btn fb-btn-primary fb-btn-sm" onClick={signIn}>
-            ورود و نوشتن کامنت
+            Log in to comment
           </button>
         </div>
       )}
@@ -360,7 +360,7 @@ export default function CommentSection({
       {actionError ? <p className="field-error">{actionError}</p> : null}
 
       {items.length === 0 ? (
-        <p className="fb-comment-empty">هنوز کامنتی نیست. اولین نفر باش.</p>
+        <p className="fb-comment-empty">No comments yet. Be the first.</p>
       ) : (
         <ol className="fb-comment-list">
           {roots.map((item) => {
@@ -386,8 +386,8 @@ export default function CommentSection({
                         onSubmit={submitReply}
                         busy={replySending}
                         error={replyError}
-                        placeholder={`پاسخ به ${item.authorName}...`}
-                        submitLabel="ارسال پاسخ"
+                        placeholder={`Reply to ${item.authorName}...`}
+                        submitLabel="Post reply"
                         onCancel={cancelReply}
                       />
                     ) : null
@@ -419,13 +419,13 @@ export default function CommentSection({
 
       <ConfirmDialog
         open={confirmDelete !== null}
-        title={confirmDelete?.parentId ? "حذف پاسخ؟" : "حذف کامنت؟"}
+        title={confirmDelete?.parentId ? "Delete reply?" : "Delete comment?"}
         description={
           confirmDelete?.parentId
-            ? "این پاسخ برای همیشه حذف می‌شود."
-            : "این کامنت و پاسخ‌های خودت برای همیشه حذف می‌شوند."
+            ? "This reply is gone for good."
+            : "This comment and your replies under it are gone for good."
         }
-        confirmLabel={confirmDelete?.parentId ? "حذف پاسخ" : "حذف کامنت"}
+        confirmLabel={confirmDelete?.parentId ? "Delete reply" : "Delete comment"}
         busy={Boolean(confirmDelete && deletingId === confirmDelete.id)}
         onConfirm={() => {
           if (confirmDelete) void remove(confirmDelete);

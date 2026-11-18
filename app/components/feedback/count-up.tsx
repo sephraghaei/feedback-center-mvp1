@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { faNumber } from "@/lib/feedback/labels";
+import { formatNumber } from "@/lib/feedback/labels";
 
 export default function CountUp({ value, duration = 900 }: { value: number; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -51,8 +51,8 @@ export default function CountUp({ value, duration = 900 }: { value: number; dura
 
   return (
     <span ref={ref} className="fb-count">
-      <span aria-hidden="true">{faNumber(display)}</span>
-      <span className="sr-only">{faNumber(value)}</span>
+      <span aria-hidden="true">{formatNumber(display)}</span>
+      <span className="sr-only">{formatNumber(value)}</span>
     </span>
   );
 }

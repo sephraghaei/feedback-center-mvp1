@@ -1,25 +1,62 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { CSSProperties } from "react";
 import AuthFlow from "@/app/components/auth-flow";
 import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-buttons";
-import ComposerButton from "@/app/components/feedback/composer-button";
-import { HeroCommentScene, HeroTicker } from "@/app/components/feedback/hero-community";
-import HomeStory from "@/app/components/feedback/home-story";
-import PostCard from "@/app/components/feedback/post-card";
-import RotatingWord from "@/app/components/feedback/rotating-word";
-import TourTrigger from "@/app/components/feedback/tour-trigger";
-import { faDate, faNumber } from "@/lib/feedback/labels";
-import { listChangelog } from "@/lib/feedback/changelog";
-import { countFeedback, listFeed, listRoadmap } from "@/lib/feedback/posts";
+import { listCompanies } from "@/lib/companies";
+import { OTP_LENGTH } from "@/lib/config";
+import { formatNumber } from "@/lib/feedback/labels";
 import { getViewer } from "@/lib/feedback/viewer";
 import { getProfile } from "@/lib/user-store";
-import { OTP_LENGTH } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "وسا",
-  description: "ایده یا مشکلت رو بنویس، بقیه رای می‌دن و نتیجه رو تا انتشار توی نقشه راه و تغییرات دنبال کن.",
+  title: "Vasa | Customer feedback boards",
+  description:
+    "Customers post ideas on a public board, vote on what matters, and follow the roadmap. Companies get a workspace to triage and ship.",
 };
+
+const MODES = [
+  {
+    id: "customers",
+    label: "For customers",
+    title: "Say what you need, then watch it happen",
+    points: [
+      "One board per company, sorted by votes or by newest.",
+      "Post a bug, an idea or a compliment in under a minute.",
+      "Follow the status from New to Shipped without asking anyone.",
+    ],
+    href: "#boards",
+    link: "Find a board",
+  },
+  {
+    id: "companies",
+    label: "For companies",
+    title: "A workspace behind every public board",
+    points: [
+      "Triage new feedback and move it along a public roadmap.",
+      "Publish updates that mark the linked feedback as shipped.",
+      "Invite teammates and match the board to your brand accent.",
+    ],
+    href: "/workspace",
+    link: "Open the workspace",
+  },
+];
+
+const STEPS = [
+  {
+    title: "Customers write",
+    body: "A customer picks a board and posts an idea, a bug or a compliment.",
+  },
+  {
+    title: "Everyone votes",
+    body: "Votes and comments show the team what actually matters, not just what is loudest.",
+  },
+  {
+    title: "The team ships",
+    body: "The company moves the idea through the roadmap and publishes an update when it lands.",
+  },
+];
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
   const params = await searchParams;
@@ -32,202 +69,162 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
   const viewer = await getViewer();
   if (viewer && nextPath) redirect(nextPath);
 
-  const [recent, roadmap, entries, feedbackCount] = await Promise.all([
-    listFeed({ viewerId: viewer?.userId, limit: 4 }),
-    listRoadmap(viewer?.userId),
-    listChangelog(4),
-    countFeedback(),
-  ]);
+  const companies = await listCompanies();
   const profile = viewer ? await getProfile(viewer.userId) : null;
   const status = !viewer ? "guest" : profile ? "ready" : "needs-profile";
 
-  const queued = roadmap.filter((post) => post.status === "planned").length;
-  const building = roadmap.filter((post) => post.status === "in_progress").length;
-
   return (
-    <div className="fb-home">
-      <section className="fb-hero" data-cursor>
-        <div className="fb-hero-aura" aria-hidden="true">
-          <span className="fb-aura-glow" />
-          <span className="fb-aura-grid" />
-        </div>
+    <div className="fb-home fb-landing">
+      <section className="fb-hero">
         <div className="fb-hero-inner">
-          <h1 className="fb-title">
-            <span className="sr-only">به هر وب‌سایت، اپلیکیشن، فروشگاه یا محصولی فیدبک بده.</span>
-            <span className="fb-title-line" aria-hidden="true">
-              <span className="fb-title-pre">به هر</span> <RotatingWord />
-            </span>
-            <span className="fb-title-line" aria-hidden="true">
-              فیدبک بده.
-            </span>
-          </h1>
+          <span className="fb-landing-kicker">Customer feedback, end to end</span>
+          <h1 className="fb-title">Ship what customers actually ask for.</h1>
           <p className="fb-lede">
-            وسا یه مرکز فید‌بکه. ایده یا مشکلی که داری رو بنویس، بقیه رای می‌دن و نتیجه رو تا
-            انتشار دنبال کن.
+            Vasa gives every company a public board where customers post ideas, vote on what
+            matters, and follow the roadmap. The company team gets a workspace behind it to
+            triage, plan and publish.
           </p>
           <div className="fb-hero-actions">
-            <ComposerButton className="fb-btn fb-btn-primary">فید‌بک بده</ComposerButton>
-            <Link href="/feed" className="fb-btn">
-              فید‌بک‌ها رو ببین
+            <Link href="#boards" className="fb-btn fb-btn-primary">
+              Browse boards
+            </Link>
+            <Link href="/workspace" className="fb-btn">
+              Company panel
             </Link>
           </div>
-          <div
-            className="fb-hero-path"
-            role="group"
-            aria-label="مسیر یک فید‌بک از نوشتن تا انتشار"
-          >
-            <div className="fb-hero-path-head">
-              <span className="fb-hero-path-label">مسیر یک فید‌بک</span>
-              <TourTrigger />
-            </div>
-            <ol className="fb-hero-path-steps">
-              <li data-accent="violet">
-                <ComposerButton className="fb-path-step">
-                  <span className="fb-path-num" aria-hidden="true">
-                    ۱
-                  </span>
-                  <strong>می‌نویسی</strong>
-                  <span className="fb-path-detail">چند خط کافیه</span>
-                </ComposerButton>
-              </li>
-              <li data-accent="rose">
-                <Link href="/feed" className="fb-path-step">
-                  <span className="fb-path-num" aria-hidden="true">
-                    ۲
-                  </span>
-                  <strong>فید و رأی</strong>
-                  <span className="fb-path-detail">{faNumber(feedbackCount)} فید‌بک ثبت‌شده</span>
-                </Link>
-              </li>
-              <li data-accent="amber">
-                <Link href="/roadmap" className="fb-path-step">
-                  <span className="fb-path-num" aria-hidden="true">
-                    ۳
-                  </span>
-                  <strong>نقشه راه</strong>
-                  <span className="fb-path-detail">
-                    {faNumber(queued)} در صف، {faNumber(building)} در ساخت
-                  </span>
-                </Link>
-              </li>
-              <li data-accent="green">
-                <Link href="/changelog" className="fb-path-step">
-                  <span className="fb-path-num" aria-hidden="true">
-                    ۴
-                  </span>
-                  <strong>انتشار</strong>
-                  <span className="fb-path-detail">تغییرات رو ببین</span>
-                </Link>
-              </li>
-            </ol>
-          </div>
-          <HeroTicker />
         </div>
-        <HeroCommentScene />
       </section>
 
-      <HomeStory />
+      <div className="fb-modes" id="modes">
+        {MODES.map((mode) => (
+          <article key={mode.id} className="fb-mode">
+            <span className="fb-mode-label">{mode.label}</span>
+            <h2>{mode.title}</h2>
+            <ul>
+              {mode.points.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
+            <Link href={mode.href} className="fb-mode-link">
+              {mode.link} →
+            </Link>
+          </article>
+        ))}
+      </div>
 
-      <section className="fb-section" aria-labelledby="recent-title">
+      <section className="fb-section" id="boards" aria-labelledby="boards-title">
         <div className="fb-section-head">
           <div>
-            <h2 id="recent-title" className="fb-section-title">تازه‌ترین فید‌بک‌ها</h2>
-            <p className="fb-section-sub">ایده‌های تازه رو ببین، به مهم‌ها رای بده و گفتگو رو ادامه بده.</p>
+            <h2 id="boards-title" className="fb-section-title">
+              Public boards
+            </h2>
+            <p className="fb-section-sub">
+              {companies.length === 0
+                ? "Boards show up here as soon as a company joins."
+                : companies.length === 1
+                  ? "One company is collecting feedback right now."
+                  : `${formatNumber(companies.length)} companies are collecting feedback right now.`}
+            </p>
           </div>
-          <Link href="/feed" className="fb-link">
-            همه فید‌بک‌ها
-          </Link>
         </div>
 
-        {recent.length > 0 ? (
-          <div className="fb-grid">
-            {recent.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                signedIn={Boolean(viewer)}
-                nextPath="/feed"
-              />
+        {companies.length > 0 ? (
+          <div className="fb-board-links">
+            {companies.map((company) => (
+              <Link
+                key={company.id}
+                href={`/c/${company.slug}`}
+                className="fb-board-link"
+                style={{ "--board-accent": company.accent } as CSSProperties}
+              >
+                <span className="fb-board-mark" aria-hidden="true">
+                  {company.name.slice(0, 1).toUpperCase()}
+                </span>
+                <span className="fb-board-text">
+                  <strong>{company.name}</strong>
+                  <span>{company.tagline ?? "Feedback board"}</span>
+                </span>
+                <span className="fb-board-arrow" aria-hidden="true">
+                  →
+                </span>
+              </Link>
             ))}
           </div>
         ) : (
           <div className="fb-empty">
-            <strong>هنوز فید‌بک‌ی ثبت نشده.</strong>
-            اولین نفر باش و بنویس چی کمه.
+            <strong>No boards yet.</strong>
+            Companies open their first board from the workspace.
             <div className="fb-empty-action">
-              <ComposerButton className="fb-btn fb-btn-primary fb-btn-sm">
-                اولین فید‌بک‌ت رو بنویس
-              </ComposerButton>
+              <Link href="/workspace" className="fb-btn fb-btn-primary fb-btn-sm">
+                Open the workspace
+              </Link>
             </div>
           </div>
         )}
       </section>
 
-      {entries.length > 0 ? (
-        <section className="fb-section" aria-labelledby="changelog-title">
-          <div className="fb-section-head">
-            <div>
-              <h2 id="changelog-title" className="fb-section-title">آخرین تغییرات</h2>
-              <p className="fb-section-sub">
-                هر تغییری که منتشر می‌شه، با فید‌بک‌هایی که باعثش شدن.
-              </p>
-            </div>
-            <Link href="/changelog" className="fb-link">
-              همه تغییرات
-            </Link>
+      <section className="fb-section" aria-labelledby="steps-title">
+        <div className="fb-section-head">
+          <div>
+            <h2 id="steps-title" className="fb-section-title">
+              How it works
+            </h2>
+            <p className="fb-section-sub">One loop, from the first idea to the shipped note.</p>
           </div>
-
-          <div className="fb-entry-list">
-            {entries.map((entry) => (
-              <article key={entry.id} className="fb-entry-row" data-spotlight>
-                <Link href={`/changelog/${entry.id}`}>{entry.title}</Link>
-                <time dateTime={entry.publishedAt.toISOString()}>{faDate(entry.publishedAt)}</time>
-              </article>
-            ))}
-          </div>
-        </section>
-      ) : null}
+        </div>
+        <ol className="fb-steps">
+          {STEPS.map((step, index) => (
+            <li key={step.title} className="fb-step">
+              <span className="fb-step-num" aria-hidden="true">
+                {index + 1}
+              </span>
+              <strong>{step.title}</strong>
+              <span>{step.body}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <section id="account" className="fb-section" aria-labelledby="account-title">
         <div className="fb-section-head">
           <div>
-            <h2 id="account-title" className="fb-section-title">حساب خودت</h2>
+            <h2 id="account-title" className="fb-section-title">
+              Your account
+            </h2>
+            <p className="fb-section-sub">
+              One account works across every board and the company workspace.
+            </p>
           </div>
         </div>
 
         {viewer ? (
           <div className="fb-account">
-            <p className="fb-account-greeting">سلام، {viewer.name} عزیز</p>
-            {profile ? (
-              <div className="fb-hero-actions">
-                <Link href="/requests" className="fb-btn fb-btn-primary">
-                  درخواست‌هام
+            <p className="fb-account-greeting">Welcome back, {viewer.name}</p>
+            <div className="fb-hero-actions">
+              <Link href="/requests" className="fb-btn fb-btn-primary">
+                Your posts
+              </Link>
+              <Link href="/profile" className="fb-btn">
+                My profile
+              </Link>
+              <Link href="/workspace" className="fb-btn fb-btn-ghost">
+                Workspace
+              </Link>
+              {viewer.role === "admin" ? (
+                <Link href="/admin" className="fb-btn fb-btn-ghost">
+                  Admin
                 </Link>
-                <Link href="/profile" className="fb-btn">
-                  پروفایل من
-                </Link>
-                <Link href="/feed" className="fb-btn fb-btn-ghost">
-                  فید‌بک‌ها
-                </Link>
-                {viewer.role === "admin" ? (
-                  <Link href="/admin" className="fb-btn fb-btn-ghost">
-                    پنل مدیر
-                  </Link>
-                ) : null}
-              </div>
-            ) : (
-              <>
-                <p className="fb-lede">پروفایلت رو کامل کن تا فید‌بک‌هات با اسم خودت ثبت بشن.</p>
-                <AuthFlow status={status} codeLength={OTP_LENGTH} nextPath={nextPath} />
-              </>
-            )}
+              ) : null}
+            </div>
             <div className="fb-account-foot">
               {viewer.method === "clerk" ? <ClerkSignOutButton /> : <LogoutButton />}
             </div>
           </div>
         ) : (
           <div className="fb-account">
-            <p className="fb-lede">وارد شو تا درخواست‌هات رو پیگیری کنی.</p>
+            <p className="fb-lede">
+              Log in with your mobile, email or Google account to post feedback and vote.
+            </p>
             <AuthFlow status={status} codeLength={OTP_LENGTH} nextPath={nextPath} />
           </div>
         )}

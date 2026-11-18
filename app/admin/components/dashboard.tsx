@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import type { AdminStats } from "@/lib/admin-store";
-import { toPersianDigits } from "@/lib/phone";
 import { Icon, type IconName } from "./bits";
 
 const METHOD_COLOR: Record<string, string> = {
@@ -11,14 +10,14 @@ const METHOD_COLOR: Record<string, string> = {
   clerk: "var(--chart-3)",
 };
 const METHOD_LABEL: Record<string, string> = {
-  phone: "موبایل",
-  email: "ایمیل",
+  phone: "Phone",
+  email: "Email",
   clerk: "Clerk",
 };
 const SEX_COLOR = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)"];
 
 function fa(n: number): string {
-  return toPersianDigits(String(n));
+  return n.toLocaleString("en-US");
 }
 function percent(part: number, total: number): number {
   return total > 0 ? Math.round((part / total) * 100) : 0;
@@ -61,10 +60,10 @@ function SignupBars({ daily, range }: { daily: AdminStats["daily"]; range: numbe
   const gap = n > 20 ? 3 : 6;
   const bw = (W - gap * (n - 1)) / n;
   const labelEvery = Math.max(1, Math.ceil(n / 6));
-  const dateFmt = new Intl.DateTimeFormat("fa-IR", { day: "numeric", month: "numeric" });
+  const dateFmt = new Intl.DateTimeFormat("en-US", { day: "numeric", month: "numeric" });
 
   return (
-    <svg className="bars-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="نمودار ثبت‌نام روزانه">
+    <svg className="bars-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Daily sign-ups">
       <defs>
         <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" className="bar-stop-top" />
@@ -90,7 +89,7 @@ function SignupBars({ daily, range }: { daily: AdminStats["daily"]; range: numbe
         return (
           <g key={d.date}>
             <rect x={x} y={y} width={bw} height={h} rx={Math.min(4, bw / 2)} fill="url(#barGrad)">
-              <title>{`${d.date}: ${fa(d.count)} ثبت‌نام`}</title>
+              <title>{`${d.date}: ${fa(d.count)} sign-ups`}</title>
             </rect>
             {i % labelEvery === 0 ? (
               <text
@@ -119,7 +118,7 @@ function MethodDonut({ stats }: { stats: AdminStats }) {
 
   return (
     <div className="donut-wrap">
-      <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="سهم روش‌های ورود">
+      <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="Share of sign-in methods">
         <circle className="donut-track" cx="75" cy="75" r={r} fill="none" strokeWidth="20" />
         {total > 0
           ? stats.methods.map((m) => {
@@ -149,7 +148,7 @@ function MethodDonut({ stats }: { stats: AdminStats }) {
           {fa(total)}
         </text>
         <text className="donut-sub" x="75" y="92" textAnchor="middle" fontSize="10">
-          کاربر
+          users
         </text>
       </svg>
       <div className="legend">
@@ -158,7 +157,7 @@ function MethodDonut({ stats }: { stats: AdminStats }) {
             <span className="legend-dot" style={{ background: METHOD_COLOR[m.method] }} />
             {METHOD_LABEL[m.method]}
             <span className="val">
-              {fa(m.count)} · {fa(percent(m.count, total))}٪
+              {fa(m.count)} · {fa(percent(m.count, total))}%
             </span>
           </div>
         ))}
@@ -176,36 +175,36 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
     <>
       <div className="page-head">
         <div className="page-title-row">
-          <h1 className="page-title">داشبورد</h1>
-          <span className="count-badge">{fa(stats.totalUsers)} کاربر</span>
+          <h1 className="page-title">Dashboard</h1>
+          <span className="count-badge">{fa(stats.totalUsers)} users</span>
         </div>
-        <p className="page-sub">نمای کلی و زنده از کاربران و ثبت‌نام‌های سامانه.</p>
+        <p className="page-sub">A live overview of users and sign-ups.</p>
       </div>
 
       <div className="stat-grid">
         <StatCard
           icon="users"
-          label="کل کاربران"
+          label="Total users"
           value={fa(stats.totalUsers)}
-          hint={<><strong>{fa(stats.newLast7)}</strong> کاربر جدید در ۷ روز گذشته</>}
+          hint={<><strong>{fa(stats.newLast7)}</strong> new users in the last 7 days</>}
         />
         <StatCard
           icon="check"
-          label="پروفایل کامل"
+          label="Complete profiles"
           value={fa(stats.withProfile)}
-          hint={<>{fa(percent(stats.withProfile, stats.totalUsers))}٪ از کل کاربران</>}
+          hint={<>{fa(percent(stats.withProfile, stats.totalUsers))}% of all users</>}
         />
         <StatCard
           icon="chart"
-          label="ثبت‌نام ۳۰ روز"
+          label="Sign-ups, 30 days"
           value={fa(stats.newLast30)}
-          hint="کاربران تازه در یک ماه گذشته"
+          hint="New users in the past month"
         />
         <StatCard
           icon="user"
-          label="میانگین سن"
-          value={stats.averageAge === null ? "نامشخص" : fa(stats.averageAge)}
-          hint="از پروفایل‌هایی که سن دارند"
+          label="Average age"
+          value={stats.averageAge === null ? "Unknown" : fa(stats.averageAge)}
+          hint="Across profiles with an age set"
         />
       </div>
 
@@ -213,10 +212,10 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
         <div className="chart-card">
           <div className="chart-head">
             <div>
-              <h2 className="chart-title">روند ثبت‌نام</h2>
-              <span className="chart-sub">{fa(rangeTotal)} ثبت‌نام در بازه انتخابی</span>
+              <h2 className="chart-title">Sign-up trend</h2>
+              <span className="chart-sub">{fa(rangeTotal)} sign-ups in the selected range</span>
             </div>
-            <div className="range-tabs" role="tablist" aria-label="بازه نمودار">
+            <div className="range-tabs" role="tablist" aria-label="Chart range">
               {([7, 14, 30] as const).map((r) => (
                 <button
                   key={r}
@@ -226,7 +225,7 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
                   className={`range-tab ${range === r ? "active" : ""}`}
                   onClick={() => setRange(r)}
                 >
-                  {fa(r)} روز
+                  {fa(r)} days
                 </button>
               ))}
             </div>
@@ -237,8 +236,8 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
         <div className="chart-card">
           <div className="chart-head">
             <div>
-              <h2 className="chart-title">روش ورود</h2>
-              <span className="chart-sub">تفکیک کاربران بر پایه روش ساخت حساب</span>
+              <h2 className="chart-title">Sign-in method</h2>
+              <span className="chart-sub">Users by how the account was created</span>
             </div>
           </div>
           <MethodDonut stats={stats} />
@@ -249,13 +248,13 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
         <div className="chart-card">
           <div className="chart-head">
             <div>
-              <h2 className="chart-title">تکمیل پروفایل</h2>
-              <span className="chart-sub">وضعیت اطلاعات کاربران</span>
+              <h2 className="chart-title">Profile completeness</h2>
+              <span className="chart-sub">How much users have filled in</span>
             </div>
           </div>
           <div className="sex-row">
             <div className="top">
-              <span>پروفایل کامل</span>
+              <span>Complete profile</span>
               <span className="val">{fa(stats.withProfile)}</span>
             </div>
             <div className="sex-bar">
@@ -264,7 +263,7 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
           </div>
           <div className="sex-row">
             <div className="top">
-              <span>پروفایل ناقص</span>
+              <span>Incomplete profile</span>
               <span className="val">{fa(stats.withoutProfile)}</span>
             </div>
             <div className="sex-bar">
@@ -276,12 +275,12 @@ export default function Dashboard({ stats }: { stats: AdminStats }) {
         <div className="chart-card">
           <div className="chart-head">
             <div>
-              <h2 className="chart-title">جنسیت</h2>
-              <span className="chart-sub">از پروفایل‌هایی که جنسیت دارند</span>
+              <h2 className="chart-title">Gender</h2>
+              <span className="chart-sub">Across profiles with a gender set</span>
             </div>
           </div>
           {stats.sexes.length === 0 ? (
-            <p className="chart-sub">هنوز جنسیتی ثبت نشده است.</p>
+            <p className="chart-sub">No gender recorded yet.</p>
           ) : (
             stats.sexes.map((s, i) => (
               <div className="sex-row" key={s.sex}>

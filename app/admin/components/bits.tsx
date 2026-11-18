@@ -72,11 +72,11 @@ function hash(value: string): number {
 
 export function initialsOf(label: string, fallback: string): string {
   const source = label.trim() || fallback.trim();
-  if (!source) return "؟";
+  if (!source) return "?";
   const parts = source.split(/\s+/).filter(Boolean);
   const first = parts[0]?.[0] ?? "";
   const second = parts.length > 1 ? parts[1]?.[0] ?? "" : "";
-  return (first + second).toUpperCase() || "؟";
+  return (first + second).toUpperCase() || "?";
 }
 
 export function Avatar({
@@ -102,10 +102,10 @@ export function Avatar({
 }
 
 const METHOD_LABEL: Record<UserMethod, string> = {
-  phone: "موبایل",
-  email: "ایمیل",
+  phone: "Phone",
+  email: "Email",
   clerk: "Clerk",
-  unknown: "نامشخص",
+  unknown: "Unknown",
 };
 const METHOD_ICON: Record<UserMethod, IconName> = {
   phone: "phone",
@@ -127,14 +127,14 @@ export function ProfilePill({ complete }: { complete: boolean }) {
   return (
     <span className={`pill ${complete ? "ok" : "warn"}`}>
       <span className="dot" />
-      {complete ? "پروفایل کامل" : "پروفایل ناقص"}
+      {complete ? "Complete profile" : "Incomplete profile"}
     </span>
   );
 }
 
 export function formatDate(iso: string): string {
   try {
-    return new Intl.DateTimeFormat("fa-IR", { dateStyle: "medium" }).format(new Date(iso));
+    return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(new Date(iso));
   } catch {
     return iso.slice(0, 10);
   }

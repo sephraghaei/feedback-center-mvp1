@@ -30,7 +30,7 @@ export default function FormatToolbar({
     if (!el) return;
     const start = el.selectionStart;
     const end = el.selectionEnd;
-    const selected = value.slice(start, end) || "متن";
+    const selected = value.slice(start, end) || "text";
     onChange(value.slice(0, start) + before + selected + after + value.slice(end));
     requestAnimationFrame(() => {
       el.focus();
@@ -55,7 +55,7 @@ export default function FormatToolbar({
     if (!el) return;
     const start = el.selectionStart;
     const end = el.selectionEnd;
-    const selected = value.slice(start, end) || "کد";
+    const selected = value.slice(start, end) || "code";
     const before = "```\n";
     const after = "\n```";
     onChange(value.slice(0, start) + before + selected + after + value.slice(end));
@@ -79,22 +79,22 @@ export default function FormatToolbar({
   }
 
   return (
-    <div className={`fb-format ${compact ? "compact" : ""}`} role="toolbar" aria-label="قالب‌بندی متن">
-      <button type="button" className="fb-tool" onClick={() => prefixLine("## ")} title="عنوان" aria-label="عنوان">
+    <div className={`fb-format ${compact ? "compact" : ""}`} role="toolbar" aria-label="Text formatting">
+      <button type="button" className="fb-tool" onClick={() => prefixLine("## ")} title="Heading" aria-label="Heading">
         <HeadingIcon size={15} />
       </button>
-      <button type="button" className="fb-tool" onClick={() => surround("**")} title="ضخیم" aria-label="ضخیم">
+      <button type="button" className="fb-tool" onClick={() => surround("**")} title="Bold" aria-label="Bold">
         <BoldIcon size={15} />
       </button>
-      <button type="button" className="fb-tool" onClick={() => surround("_")} title="مورب" aria-label="مورب">
+      <button type="button" className="fb-tool" onClick={() => surround("_")} title="Italic" aria-label="Italic">
         <ItalicIcon size={15} />
       </button>
       <button
         type="button"
         className="fb-tool"
         onClick={() => prefixLine("> ")}
-        title="نقل‌قول"
-        aria-label="نقل‌قول"
+        title="Quote"
+        aria-label="Quote"
       >
         <QuoteIcon size={15} />
       </button>
@@ -102,8 +102,8 @@ export default function FormatToolbar({
         type="button"
         className="fb-tool"
         onClick={() => prefixLine("- ")}
-        title="فهرست نقطه‌ای"
-        aria-label="فهرست نقطه‌ای"
+        title="Bulleted list"
+        aria-label="Bulleted list"
       >
         <ListIcon size={15} />
       </button>
@@ -111,8 +111,8 @@ export default function FormatToolbar({
         type="button"
         className="fb-tool"
         onClick={() => prefixLine("1. ")}
-        title="فهرست شماره‌دار"
-        aria-label="فهرست شماره‌دار"
+        title="Numbered list"
+        aria-label="Numbered list"
       >
         <OrderedListIcon size={15} />
       </button>
@@ -120,8 +120,8 @@ export default function FormatToolbar({
         type="button"
         className="fb-tool"
         onClick={() => surround("[", "](https://)")}
-        title="پیوند"
-        aria-label="پیوند"
+        title="Link"
+        aria-label="Link"
       >
         <LinkIcon size={15} />
       </button>
@@ -129,8 +129,8 @@ export default function FormatToolbar({
         type="button"
         className="fb-tool"
         onClick={() => surround("`")}
-        title="کد درون‌خطی"
-        aria-label="کد درون‌خطی"
+        title="Inline code"
+        aria-label="Inline code"
       >
         <CodeIcon size={15} />
       </button>
@@ -138,8 +138,8 @@ export default function FormatToolbar({
         type="button"
         className="fb-tool"
         onClick={fence}
-        title="بلوک کد"
-        aria-label="بلوک کد"
+        title="Code block"
+        aria-label="Code block"
       >
         <CodeBlockIcon size={15} />
       </button>

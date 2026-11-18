@@ -38,10 +38,10 @@ export default function Error({
   return (
     <main className="page">
       <BrandMark className="error-mark" />
-      <h1 className="error-title">مشکلی پیش آمد</h1>
-      <p className="subtitle">یک خطای غیرمنتظره رخ داد. دوباره تلاش کن.</p>
+      <h1 className="error-title">Something went wrong</h1>
+      <p className="subtitle">An unexpected error occurred. Please try again.</p>
       <button type="button" className="primary" style={{ maxWidth: "18rem" }} onClick={retry}>
-        تلاش دوباره
+        Try again
       </button>
     </main>
   );

@@ -21,19 +21,19 @@ type Result = { ok: true } | { ok: false; error: string };
 
 function message(error: unknown): string {
   if (error instanceof PostError) return error.message;
-  return "انجام این کار ممکن نشد. دوباره تلاش کن.";
+  return "That did not work. Try again.";
 }
 
 export async function saveProfileAction(input: unknown): Promise<Result> {
   const viewer = await getViewer();
-  if (!viewer) return { ok: false, error: "برای ویرایش پروفایل اول وارد حسابت شو." };
+  if (!viewer) return { ok: false, error: "Log in first to edit your profile." };
 
   const result = validateProfile(input);
   if ("error" in result) return { ok: false, error: result.error };
 
   const profile = result.profile;
   if (profile.avatarPath && !profile.avatarPath.startsWith(`avatars/${viewer.userId}/`)) {
-    return { ok: false, error: "عکس پروفایل معتبر نیست." };
+    return { ok: false, error: "That profile photo is not valid." };
   }
 
   try {
@@ -55,10 +55,10 @@ export async function createPostAction(input: {
 }): Promise<{ ok: true; id: string } | { ok: false; error: string; signIn?: boolean }> {
   const viewer = await getViewer();
   if (!viewer) {
-    return { ok: false, error: "برای ثبت فید‌بک اول وارد حسابت شو.", signIn: true };
+    return { ok: false, error: "Log in first to post feedback.", signIn: true };
   }
   if (input.type !== "feedback" && input.type !== "support") {
-    return { ok: false, error: "نوع فید‌بک معتبر نیست." };
+    return { ok: false, error: "That feedback type is not valid." };
   }
 
   try {
@@ -72,7 +72,7 @@ export async function createPostAction(input: {
       body: input.body,
     });
     revalidatePath("/feed");
-    revalidatePath("/roadmap");
+    revalidatePath("/");
     revalidatePath("/requests");
     return { ok: true, id };
   } catch (error) {
@@ -84,12 +84,12 @@ export async function toggleUpvoteAction(
   postId: string,
 ): Promise<{ ok: true; upvoted: boolean; count: number } | { ok: false; error: string; signIn?: boolean }> {
   const viewer = await getViewer();
-  if (!viewer) return { ok: false, error: "برای رای دادن اول وارد حسابت شو.", signIn: true };
+  if (!viewer) return { ok: false, error: "Log in first to vote.", signIn: true };
 
   try {
     const state = await toggleUpvote(postId, viewer.userId);
     revalidatePath("/feed");
-    revalidatePath("/roadmap");
+    revalidatePath("/");
     revalidatePath(`/p/${postId}`);
     return { ok: true, ...state };
   } catch (error) {
@@ -103,7 +103,7 @@ export async function addCommentAction(
   parentId?: string | null,
 ): Promise<{ ok: true; comment: CommentView } | { ok: false; error: string; signIn?: boolean }> {
   const viewer = await getViewer();
-  if (!viewer) return { ok: false, error: "برای نوشتن کامنت اول وارد حسابت شو.", signIn: true };
+  if (!viewer) return { ok: false, error: "Log in first to write a comment.", signIn: true };
 
   try {
     const comment = await addComment({
@@ -128,7 +128,7 @@ export async function voteCommentAction(
   { ok: true; score: number; myVote: number } | { ok: false; error: string; signIn?: boolean }
 > {
   const viewer = await getViewer();
-  if (!viewer) return { ok: false, error: "برای رای دادن به کامنت اول وارد حسابت شو.", signIn: true };
+  if (!viewer) return { ok: false, error: "Log in first to vote on comments.", signIn: true };
 
   try {
     const state = await setCommentVote(commentId, viewer.userId, value);
@@ -143,7 +143,7 @@ export async function deleteOwnCommentAction(
   commentId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const viewer = await getViewer();
-  if (!viewer) return { ok: false, error: "برای حذف کامنت اول وارد حسابت شو." };
+  if (!viewer) return { ok: false, error: "Log in first to delete a comment." };
 
   try {
     const { postId } = await removeOwnComment(commentId, viewer.userId);
@@ -158,12 +158,12 @@ export async function deleteOwnPostAction(
   postId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const viewer = await getViewer();
-  if (!viewer) return { ok: false, error: "برای حذف فید‌بک اول وارد حسابت شو." };
+  if (!viewer) return { ok: false, error: "Log in first to delete feedback." };
 
   try {
     await removeOwnPost(postId, viewer.userId);
     revalidatePath("/feed");
-    revalidatePath("/roadmap");
+    revalidatePath("/");
     revalidatePath("/requests");
     revalidatePath("/admin/posts");
     return { ok: true };
@@ -173,10 +173,10 @@ export async function deleteOwnPostAction(
 }
 
 export async function movePostAction(postId: string, status: string): Promise<Result> {
-  if (!(await isAdminRequest())) return { ok: false, error: "دسترسی مدیر لازم است." };
+  if (!(await isAdminRequest())) return { ok: false, error: "Admin access is required." };
   try {
     await movePost(postId, status);
-    revalidatePath("/roadmap");
+    revalidatePath("/");
     revalidatePath("/feed");
     revalidatePath(`/p/${postId}`);
     return { ok: true };
@@ -186,11 +186,11 @@ export async function movePostAction(postId: string, status: string): Promise<Re
 }
 
 export async function hidePostAction(postId: string, hidden: boolean): Promise<Result> {
-  if (!(await isAdminRequest())) return { ok: false, error: "دسترسی مدیر لازم است." };
+  if (!(await isAdminRequest())) return { ok: false, error: "Admin access is required." };
   try {
     await setPostHidden(postId, hidden);
     revalidatePath("/feed");
-    revalidatePath("/roadmap");
+    revalidatePath("/");
     revalidatePath("/admin/posts");
     revalidatePath(`/p/${postId}`);
     return { ok: true };
@@ -200,11 +200,11 @@ export async function hidePostAction(postId: string, hidden: boolean): Promise<R
 }
 
 export async function deletePostAction(postId: string): Promise<Result> {
-  if (!(await isAdminRequest())) return { ok: false, error: "دسترسی مدیر لازم است." };
+  if (!(await isAdminRequest())) return { ok: false, error: "Admin access is required." };
   try {
     await removePost(postId);
     revalidatePath("/feed");
-    revalidatePath("/roadmap");
+    revalidatePath("/");
     revalidatePath("/admin/posts");
     revalidatePath("/admin/inbox");
     return { ok: true };
@@ -218,7 +218,7 @@ export async function answerSupportAction(
   reply: string,
   status: string,
 ): Promise<Result> {
-  if (!(await isAdminRequest())) return { ok: false, error: "دسترسی مدیر لازم است." };
+  if (!(await isAdminRequest())) return { ok: false, error: "Admin access is required." };
   try {
     await answerSupport(postId, reply, status);
     revalidatePath("/admin/inbox");
@@ -235,17 +235,15 @@ export async function publishChangelogAction(input: {
   body: string;
   postIds: string[];
 }): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
-  if (!(await isAdminRequest())) return { ok: false, error: "دسترسی مدیر لازم است." };
+  if (!(await isAdminRequest())) return { ok: false, error: "Admin access is required." };
   try {
     const id = await createChangelogEntry({
       title: input.title,
       body: input.body,
       postIds: Array.isArray(input.postIds) ? input.postIds : [],
     });
-    revalidatePath("/changelog");
     revalidatePath("/admin/changelog");
     revalidatePath("/feed");
-    revalidatePath("/roadmap");
     return { ok: true, id };
   } catch (error) {
     return { ok: false, error: message(error) };

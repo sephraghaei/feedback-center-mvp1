@@ -28,14 +28,14 @@ export const POST = withApiLogging(
     const raw = await request.text();
     if (raw.length === 0) return new NextResponse(null, { status: 204 });
     if (raw.length > MAX_BODY) {
-      return NextResponse.json({ message: "حجم لاگ بیش از حد مجاز است." }, { status: 413 });
+      return NextResponse.json({ message: "Log payload is too large." }, { status: 413 });
     }
 
     let payload: unknown;
     try {
       payload = JSON.parse(raw);
     } catch {
-      return NextResponse.json({ message: "درخواست معتبر نیست." }, { status: 400 });
+      return NextResponse.json({ message: "Invalid request." }, { status: 400 });
     }
 
     const entries =

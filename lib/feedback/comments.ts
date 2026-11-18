@@ -36,7 +36,7 @@ function myVoteOf(viewerId?: string) {
 }
 
 function commentablePost(postId: string) {
-  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("That feedback id is not valid.");
   return getDb()
     .select({ id: posts.id, type: posts.type, hidden: posts.hidden })
     .from(posts)
@@ -54,7 +54,7 @@ export async function listComments(postId: string, viewerId?: string): Promise<C
       body: comments.body,
       createdAt: comments.createdAt,
       authorId: comments.authorId,
-      authorName: sql<string>`coalesce(${profiles.name}, nullif(split_part(${users.email}, '@', 1), ''), 'کاربر')`,
+      authorName: sql<string>`coalesce(${profiles.name}, nullif(split_part(${users.email}, '@', 1), ''), 'Member')`,
       authorAvatarPath: profiles.avatarPath,
       score: scoreOf(),
       myVote: myVoteOf(viewerId),
@@ -68,8 +68,8 @@ export async function listComments(postId: string, viewerId?: string): Promise<C
 
 function cleanComment(value: string): string {
   const body = value.trim();
-  if (body.length < 2) throw new PostError("متن کامنت باید حداقل ۲ نویسه باشد.");
-  if (body.length > 2000) throw new PostError("کامنت حداکثر ۲۰۰۰ نویسه می‌تواند باشد.");
+  if (body.length < 2) throw new PostError("Comments need at least 2 characters.");
+  if (body.length > 2000) throw new PostError("Comments can be up to 2000 characters.");
   return body;
 }
 
@@ -85,12 +85,12 @@ export async function addComment(input: {
 
   const [post] = await commentablePost(input.postId);
   if (!post || post.type !== "feedback" || post.hidden) {
-    throw new PostError("این فید‌بک کامنت نمی‌پذیرد.");
+    throw new PostError("This feedback does not take comments.");
   }
 
   let parentId: string | null = null;
   if (input.parentId) {
-    if (!isUuid(input.parentId)) throw new PostError("کامنتی که پاسخ می‌دهی پیدا نشد.");
+    if (!isUuid(input.parentId)) throw new PostError("The comment you are replying to was not found.");
 
     const [parent] = await getDb()
       .select({ id: comments.id, postId: comments.postId, parentId: comments.parentId })
@@ -99,10 +99,10 @@ export async function addComment(input: {
       .limit(1);
 
     if (!parent || parent.postId !== post.id) {
-      throw new PostError("کامنتی که پاسخ می‌دهی پیدا نشد.");
+      throw new PostError("The comment you are replying to was not found.");
     }
     if (parent.parentId) {
-      throw new PostError("فقط به کامنت اصلی می‌شود پاسخ داد.");
+      throw new PostError("You can only reply to a top level comment.");
     }
     parentId = parent.id;
   }
@@ -112,7 +112,7 @@ export async function addComment(input: {
     .values({ postId: post.id, authorId: input.authorId, parentId, body })
     .returning({ id: comments.id, createdAt: comments.createdAt });
 
-  if (!row) throw new PostError("ثبت کامنت انجام نشد.");
+  if (!row) throw new PostError("The comment could not be saved.");
 
   return {
     id: row.id,
@@ -131,7 +131,7 @@ export async function removeOwnComment(
   commentId: string,
   userId: string,
 ): Promise<{ postId: string }> {
-  if (!isUuid(commentId)) throw new PostError("شناسه کامنت معتبر نیست.");
+  if (!isUuid(commentId)) throw new PostError("That comment id is not valid.");
 
   const db = getDb();
   const [row] = await db
@@ -140,8 +140,8 @@ export async function removeOwnComment(
     .where(eq(comments.id, commentId))
     .limit(1);
 
-  if (!row) throw new PostError("این کامنت پیدا نشد.");
-  if (row.authorId !== userId) throw new PostError("فقط کامنت خودت رو می‌تونی حذف کنی.");
+  if (!row) throw new PostError("That comment was not found.");
+  if (row.authorId !== userId) throw new PostError("You can only delete your own comment.");
 
   if (!row.parentId) {
     const [otherReply] = await db
@@ -149,7 +149,7 @@ export async function removeOwnComment(
       .from(comments)
       .where(and(eq(comments.parentId, commentId), ne(comments.authorId, userId)))
       .limit(1);
-    if (otherReply) throw new PostError("این کامنت پاسخ دارد و حذف نمی‌شه.");
+    if (otherReply) throw new PostError("This comment has replies, so it cannot be deleted.");
   }
 
   await db.delete(comments).where(eq(comments.id, commentId));
@@ -161,8 +161,8 @@ export async function setCommentVote(
   userId: string,
   value: number,
 ): Promise<CommentVoteState> {
-  if (!isUuid(commentId)) throw new PostError("شناسه کامنت معتبر نیست.");
-  if (value !== 1 && value !== -1 && value !== 0) throw new PostError("رای معتبر نیست.");
+  if (!isUuid(commentId)) throw new PostError("That comment id is not valid.");
+  if (value !== 1 && value !== -1 && value !== 0) throw new PostError("That vote is not valid.");
 
   const db = getDb();
   const [row] = await db
@@ -173,7 +173,7 @@ export async function setCommentVote(
     .limit(1);
 
   if (!row || row.type !== "feedback" || row.hidden) {
-    throw new PostError("این کامنت برای رای دادن در دسترس نیست.");
+    throw new PostError("This comment is not open for voting.");
   }
 
   if (value === 0) {

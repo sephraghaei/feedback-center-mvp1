@@ -37,7 +37,7 @@ export default function MoveMenu({ postId, status }: { postId: string; status: s
         className="input fb-move"
         value={value}
         disabled={busy}
-        aria-label="تغییر ستون نقشه راه"
+        aria-label="Change roadmap status"
         onChange={(event) => void change(event.target.value)}
       >
         {ROADMAP_STATUSES.map((option) => (

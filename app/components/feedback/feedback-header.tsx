@@ -8,7 +8,7 @@ import { ClerkSignOutButton, LogoutButton } from "../logout-buttons";
 import ThemeToggle from "../theme-toggle";
 import { mediaUrl } from "@/lib/feedback/media";
 import Avatar from "./avatar";
-import { ChevronDownIcon, CompassIcon, MenuIcon, PlusIcon } from "./icons";
+import { ChevronDownIcon, MenuIcon } from "./icons";
 
 type HeaderViewer = {
   name: string;
@@ -17,16 +17,12 @@ type HeaderViewer = {
   avatarPath: string | null;
 } | null;
 
-const LINKS: { href: string; label: string }[] = [
-  { href: "/feed", label: "فید‌بک‌ها" },
-  { href: "/roadmap", label: "نقشه راه" },
-  { href: "/changelog", label: "تغییرات" },
-];
+const LINKS: { href: string; label: string }[] = [{ href: "/feed", label: "Boards" }];
 
 const METHOD_LABELS: Record<"phone" | "email" | "clerk", string> = {
-  phone: "ورود با شماره موبایل",
-  email: "ورود با ایمیل",
-  clerk: "ورود با ایمیل یا گوگل",
+  phone: "Signed in with mobile",
+  email: "Signed in with email",
+  clerk: "Signed in with email or Google",
 };
 
 export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer; admin: boolean }) {
@@ -37,7 +33,13 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
   const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-  const links = viewer ? [...LINKS, { href: "/requests", label: "درخواست‌های من" }] : LINKS;
+  const links = viewer
+    ? [
+        ...LINKS,
+        { href: "/requests", label: "Your posts" },
+        { href: "/workspace", label: "Workspace" },
+      ]
+    : LINKS;
 
   function isActive(href: string): boolean {
     return pathname === href || pathname.startsWith(`${href}/`);
@@ -113,9 +115,9 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
   return (
     <header className="site-nav">
       <div className="nav-inner">
-        <Link href="/" className="nav-brand" aria-label="وسا">
+        <Link href="/" className="nav-brand" aria-label="Vasa home">
           <BrandMark className="nav-mark" />
-          <span className="nav-name">وسا</span>
+          <span className="nav-name">Vasa</span>
         </Link>
 
         {open ? (
@@ -126,19 +128,19 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
           ref={navRef}
           id="fb-nav"
           className={`fb-nav ${open ? "open" : ""}`}
-          aria-label="بخش‌های فید‌بک"
+          aria-label="Main navigation"
         >
           <div className="fb-sheet-head">
             <span className="fb-sheet-grab" aria-hidden="true" />
             <div className="fb-sheet-row">
-              <span className="fb-sheet-title">منو</span>
+              <span className="fb-sheet-title">Menu</span>
               <button
                 type="button"
                 className="fb-sheet-close"
                 onClick={closeMenu}
-                aria-label="بستن منو"
+                aria-label="Close menu"
               >
-                بستن
+                Close
               </button>
             </div>
           </div>
@@ -158,29 +160,16 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
               className="fb-nav-link fb-nav-login"
               onClick={closeMenu}
             >
-              ورود به حساب
+              Log in
             </Link>
           ) : null}
         </nav>
 
         <div className="fb-nav-actions">
           <ThemeToggle />
-          <button
-            type="button"
-            className="fb-tour-btn"
-            onClick={() => {
-              setOpen(false);
-              window.dispatchEvent(new Event("fc:start-tour"));
-            }}
-            aria-label="آموزش سریع سایت"
-            title="آموزش سریع"
-          >
-            <CompassIcon size={16} />
-            <span>آموزش</span>
-          </button>
           {admin ? (
             <Link href="/admin" className="fb-link">
-              پنل مدیر
+              Admin
             </Link>
           ) : null}
           {viewer ? (
@@ -191,7 +180,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
                 onClick={() => setProfileOpen((value) => !value)}
                 aria-expanded={profileOpen}
                 aria-haspopup="true"
-                aria-label={`حساب ${viewer.name}`}
+                aria-label={`Account: ${viewer.name}`}
                 title={viewer.name}
               >
                 <Avatar
@@ -210,10 +199,10 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
                     <span>{METHOD_LABELS[viewer.method]}</span>
                   </div>
                   <Link href="/profile" className="fb-profile-item" onClick={() => setProfileOpen(false)}>
-                    پروفایل من
+                    My profile
                   </Link>
                   <Link href="/requests" className="fb-profile-item" onClick={() => setProfileOpen(false)}>
-                    درخواست‌های من
+                    Your posts
                   </Link>
                   {viewer.method === "clerk" ? <ClerkSignOutButton /> : <LogoutButton />}
                 </div>
@@ -221,25 +210,14 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
             </div>
           ) : (
             <Link href="/?next=/feed#account" className="fb-link fb-login-inline">
-              ورود
+              Log in
             </Link>
           )}
-          <button
-            type="button"
-            className="fb-btn fb-btn-primary fb-compose-btn"
-            onClick={() => {
-              setOpen(false);
-              window.dispatchEvent(new Event("fc:open-composer"));
-            }}
-          >
-            <PlusIcon size={15} />
-            فید‌بک بده
-          </button>
           <button
             ref={menuButtonRef}
             type="button"
             className="fb-menu"
-            aria-label={open ? "بستن منو" : "باز کردن منو"}
+            aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="fb-nav"
             onClick={() => (open ? closeMenu() : setOpen(true))}

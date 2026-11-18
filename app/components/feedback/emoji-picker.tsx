@@ -121,17 +121,17 @@ export default function EmojiPicker({ onPick }: { onPick: (emoji: string) => voi
       <button
         type="button"
         className="fb-emoji-btn"
-        aria-label="افزودن ایموجی"
+        aria-label="Add emoji"
         aria-haspopup="dialog"
         aria-expanded={open}
-        title="ایموجی"
+        title="Emoji"
         onClick={() => setOpen((current) => !current)}
       >
         <SmileIcon size={16} />
       </button>
 
       {open ? (
-        <div className="fb-emoji-panel" ref={panelRef} role="dialog" aria-label="ایموجی‌ها">
+        <div className="fb-emoji-panel" ref={panelRef} role="dialog" aria-label="Emojis">
           {EMOJIS.map((emoji) => (
             <button
               key={emoji}

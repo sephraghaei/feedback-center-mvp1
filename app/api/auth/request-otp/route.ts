@@ -12,7 +12,7 @@ export const POST = withApiLogging("/api/auth/request-otp", async (request, _con
   if (!sessionConfigured()) {
     log.error("auth.config.missing_secret");
     return NextResponse.json(
-      { message: "پیکربندی سرور کامل نشده. کمی بعد دوباره تلاش کن." },
+      { message: "The server is not configured yet. Try again later." },
       { status: 503 },
     );
   }
@@ -22,7 +22,7 @@ export const POST = withApiLogging("/api/auth/request-otp", async (request, _con
     input = await request.json();
   } catch {
     log.warn("auth.otp.invalid_body");
-    return NextResponse.json({ message: "درخواست معتبر نیست." }, { status: 400 });
+    return NextResponse.json({ message: "That request is not valid." }, { status: 400 });
   }
 
   const body = input as { phone?: unknown; email?: unknown } | null;
@@ -36,7 +36,7 @@ export const POST = withApiLogging("/api/auth/request-otp", async (request, _con
   if (!identifier) {
     log.warn("auth.otp.invalid_identifier");
     return NextResponse.json(
-      { message: "شماره موبایل یا ایمیل را درست وارد کن." },
+      { message: "Enter a valid mobile number or email." },
       { status: 400 },
     );
   }

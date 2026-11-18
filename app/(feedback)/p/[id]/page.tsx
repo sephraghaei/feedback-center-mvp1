@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import AdminPostActions from "@/app/components/feedback/admin-post-actions";
 import Avatar from "@/app/components/feedback/avatar";
 import CommentSection from "@/app/components/feedback/comment-section";
@@ -13,8 +13,9 @@ import ShareButton from "@/app/components/feedback/share-button";
 import StatusChip from "@/app/components/feedback/status-chip";
 import VoteButton from "@/app/components/feedback/vote-button";
 import { CommentIcon, VoteUpIcon } from "@/app/components/feedback/icons";
+import { getCompanyById } from "@/lib/companies";
 import { listComments } from "@/lib/feedback/comments";
-import { TYPE_LABELS, faDate, faNumber, feedbackKind } from "@/lib/feedback/labels";
+import { TYPE_LABELS, formatDate, formatNumber, feedbackKind } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
 import { productContext } from "@/lib/feedback/product";
 import { getPostDetail, isUuid, listFeed } from "@/lib/feedback/posts";
@@ -25,13 +26,13 @@ type Params = { id: string };
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { id } = await params;
   const post = await getPostDetail(id, { isAdmin: false });
-  if (!post) return { title: "فید‌بک پیدا نشد | وسا" };
-  return { title: `${post.title} | وسا` };
+  if (!post) return { title: "Feedback not found | Vasa" };
+  return { title: `${post.title} | Vasa` };
 }
 
 function fileSize(bytes: number): string {
-  if (bytes >= 1024 * 1024) return `${faNumber(Math.round((bytes / (1024 * 1024)) * 10) / 10)} مگابایت`;
-  return `${faNumber(Math.max(1, Math.round(bytes / 1024)))} کیلوبایت`;
+  if (bytes >= 1024 * 1024) return `${formatNumber(Math.round((bytes / (1024 * 1024)) * 10) / 10)} MB`;
+  return `${formatNumber(Math.max(1, Math.round(bytes / 1024)))} KB`;
 }
 
 export default async function PostPage({ params }: { params: Promise<Params> }) {
@@ -41,6 +42,11 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
   const [viewer, admin] = await Promise.all([getViewer(), isAdminRequest()]);
   const post = await getPostDetail(id, { userId: viewer?.userId, isAdmin: admin });
   if (!post) notFound();
+
+  if (post.type === "feedback" && post.companyId) {
+    const company = await getCompanyById(post.companyId);
+    if (company) redirect(`/c/${company.slug}/p/${post.id}`);
+  }
 
   const isAuthor = viewer?.userId === post.authorId;
   const cover = post.coverPath ? mediaUrl(post.coverPath) : "";
@@ -62,7 +68,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
   ]);
 
   const backHref = isSupport ? "/requests" : "/feed";
-  const backLabel = isSupport ? "درخواست‌های من" : "بازگشت به فید";
+  const backLabel = isSupport ? "Your posts" : "Back to boards";
 
   return (
     <div className="fb-detail">
@@ -72,7 +78,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             <span aria-hidden="true">→</span>
             {backLabel}
           </Link>
-          {post.hidden ? <span className="fb-chip urgent">پنهان از دید عمومی</span> : null}
+          {post.hidden ? <span className="fb-chip urgent">Hidden from the public</span> : null}
         </div>
 
         <header className="fb-detail-head">
@@ -90,21 +96,21 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
           <div className="fb-meta-row">
             <Avatar
-              name={post.authorName ?? "کاربر"}
+              name={post.authorName ?? "Member"}
               src={post.authorAvatarPath ? mediaUrl(post.authorAvatarPath) : null}
               size={26}
             />
-            <span className="fb-author">{post.authorName ?? "کاربر"}</span>
+            <span className="fb-author">{post.authorName ?? "Member"}</span>
             <span className="fb-dot" aria-hidden="true" />
-            <time dateTime={post.createdAt.toISOString()}>{faDate(post.createdAt)}</time>
+            <time dateTime={post.createdAt.toISOString()}>{formatDate(post.createdAt)}</time>
           </div>
         </header>
 
         {cover ? <img className="fb-cover-wide" src={cover} alt="" /> : null}
 
-        <section className="fb-detail-panel" aria-label="متن فید‌بک">
+        <section className="fb-detail-panel" aria-label="Feedback text">
           <div className="fb-detail-panel-head">
-            <h2>{isSupport ? "متن درخواست" : "درباره این فید‌بک"}</h2>
+            <h2>{isSupport ? "Request text" : "About this feedback"}</h2>
           </div>
           <Markdown source={post.body} />
         </section>
@@ -123,11 +129,11 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             <a
               href="#comments"
               className="fb-action-btn"
-              aria-label={`${faNumber(post.commentCount)} کامنت`}
-              title="رفتن به گفتگو"
+              aria-label={`${formatNumber(post.commentCount)} comments`}
+              title="Jump to the conversation"
             >
               <CommentIcon size={15} />
-              <span>{faNumber(post.commentCount)}</span>
+              <span>{formatNumber(post.commentCount)}</span>
             </a>
             {post.hidden ? null : <ShareButton path={`/p/${post.id}`} title={post.title} label />}
           </div>
@@ -135,7 +141,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
       {post.attachments.length > 0 ? (
         <div className="fb-attachments">
-          <h2 className="label">پیوست‌ها</h2>
+          <h2 className="label">Attachments</h2>
           {post.attachments.map((file) =>
             file.fileType.startsWith("image/") ? (
               <a
@@ -164,22 +170,16 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
         </div>
       ) : null}
 
-      {post.changelog ? (
-        <p className="fb-note">
-          این فید‌بک توی تغییرات منتشر شد:{" "}
-          <Link href={`/changelog/${post.changelog.id}`}>{post.changelog.title}</Link>
-        </p>
-      ) : null}
-
       {isSupport && isAuthor ? (
         <p className="fb-note">
-          این درخواست خصوصیه. فقط خودت و تیم پشتیبانی می‌بینیدش. پاسخ تیم هم همین‌جا میاد.
+          This request is private. Only you and the support team can see it, and the reply
+          lands right here.
         </p>
       ) : null}
 
       {post.adminReply ? (
         <div className="fb-reply">
-          <h3>پاسخ تیم پشتیبانی</h3>
+          <h3>Reply from support</h3>
           <Markdown source={post.adminReply} className="fb-prose" />
         </div>
       ) : null}
@@ -200,11 +200,11 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           <section className="fb-detail-related" aria-labelledby="related-title">
             <div className="fb-detail-related-head">
               <div>
-                <h2 id="related-title">فید‌بک‌های همین محصول</h2>
-                <p>بقیه چیزهایی که برای {source?.label ?? "این محصول"} نوشتن.</p>
+                <h2 id="related-title">More from this product</h2>
+                <p>Other feedback written for {source?.label ?? "this product"}.</p>
               </div>
               <Link href="/feed" className="fb-link">
-                همه
+                All
               </Link>
             </div>
             <div className="fb-related-list">
@@ -213,7 +213,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
                   <strong>{item.title}</strong>
                   <span className="fb-related-votes">
                     <VoteUpIcon size={11} />
-                    {faNumber(item.upvotes)}
+                    {formatNumber(item.upvotes)}
                   </span>
                 </Link>
               ))}
@@ -226,7 +226,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             <>
               {isSupport ? (
                 <Link href="/admin/inbox" className="fb-btn fb-btn-ghost fb-btn-sm">
-                  پاسخ در صندوق پشتیبانی
+                  Reply in the support inbox
                 </Link>
               ) : (
                 <MoveMenu postId={post.id} status={post.status} />
@@ -236,7 +236,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           ) : (
             <>
               <Link href={isSupport ? "/requests" : "/feed"} className="fb-btn fb-btn-ghost">
-                {isSupport ? "همه درخواست‌های من" : "ادامه در فید"}
+                {isSupport ? "All your posts" : "Continue to boards"}
               </Link>
               {isAuthor && !isSupport ? <PostOwnerActions postId={post.id} /> : null}
             </>

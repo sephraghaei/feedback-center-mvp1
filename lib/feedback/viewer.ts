@@ -6,7 +6,6 @@ import { cache } from "react";
 import { getAdminSession } from "../admin-auth";
 import { getDb } from "../db";
 import { profiles, users } from "../db/schema";
-import { toPersianDigits } from "../phone";
 import { SESSION_COOKIE, readSession } from "../session";
 import { ensureUserByClerkId } from "../user-store";
 
@@ -23,12 +22,11 @@ export type Viewer = {
 
 function maskContact(phone: string | null, email: string | null): string | null {
   if (phone) {
-    const digits = toPersianDigits(phone);
-    return digits.length >= 8 ? `${digits.slice(0, 4)} *** ${digits.slice(-4)}` : digits;
+    return phone.length >= 8 ? `${phone.slice(0, 4)} *** ${phone.slice(-4)}` : phone;
   }
   if (email) {
     const [local, domain] = email.split("@");
-    if (domain) return `${toPersianDigits(local.slice(0, 2))}***@${domain}`;
+    if (domain) return `${local.slice(0, 2)}***@${domain}`;
   }
   return null;
 }
@@ -67,7 +65,7 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
 
   if (!row) return null;
 
-  const fallback = row.email ? row.email.split("@")[0] : "کاربر";
+  const fallback = row.email ? row.email.split("@")[0] : "Member";
 
   return {
     userId,
@@ -100,6 +98,6 @@ export async function requireAdminActor(): Promise<Viewer | null> {
 }
 
 export function safeNext(value: string | undefined | null): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/feed";
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/";
   return value;
 }

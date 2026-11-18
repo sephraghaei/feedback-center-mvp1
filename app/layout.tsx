@@ -1,21 +1,19 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import { faIR } from "@clerk/localizations";
+import { enUS } from "@clerk/localizations";
 import type { Metadata } from "next";
-import "@fontsource-variable/noto-kufi-arabic";
 import ClientLogger from "./components/client-logger";
-import { dastkhat } from "./font";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "وسا",
-  description: "ایده‌ها و مشکل‌ها رو جمع می‌کنیم، با رأی شما مرتب می‌کنیم و تا انتشار دنبالشون می‌مونیم.",
+  title: "Vasa",
+  description: "Collect feedback, let customers vote, and ship what they ask for.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fa" dir="rtl" className={dastkhat.variable} suppressHydrationWarning>
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -26,7 +24,7 @@ export default function RootLayout({
       </head>
       <body>
         <ClerkProvider
-          localization={faIR}
+          localization={enUS}
           appearance={{
             variables: {
               colorPrimary: "var(--clerk-primary)",
@@ -43,7 +41,7 @@ export default function RootLayout({
               colorSuccess: "var(--green)",
               colorDanger: "var(--red)",
               borderRadius: "0.625rem",
-              fontFamily: "var(--font-dastkhat, system-ui, sans-serif)",
+              fontFamily: "var(--font-ui)",
               fontSize: "0.875rem",
             },
             elements: {

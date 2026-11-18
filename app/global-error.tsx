@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { clientLogger } from "@/lib/client-logger";
-import { dastkhat } from "./font";
 
 export default function GlobalError({
   error,
@@ -20,7 +19,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="fa" dir="rtl" className={dastkhat.variable}>
+    <html lang="en" dir="ltr">
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -49,7 +48,7 @@ export default function GlobalError({
           placeItems: "center",
           background: "var(--paper)",
           color: "var(--ink)",
-          fontFamily: "var(--font-dastkhat, system-ui, sans-serif)",
+          fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
           textAlign: "center",
           padding: "2rem",
         }}
@@ -75,10 +74,10 @@ export default function GlobalError({
               lineHeight: 1.2,
             }}
           >
-            مشکلی پیش آمد
+            Something went wrong
           </h1>
           <p style={{ color: "var(--ink-3)", marginTop: "0.6rem", fontSize: "0.9rem" }}>
-            یک خطای غیرمنتظره رخ داد. دوباره تلاش کن.
+            An unexpected error occurred. Please try again.
           </p>
           <button
             type="button"
@@ -96,7 +95,7 @@ export default function GlobalError({
               cursor: "pointer",
             }}
           >
-            تلاش دوباره
+            Try again
           </button>
         </main>
       </body>

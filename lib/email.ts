@@ -38,8 +38,8 @@ export async function sendOtpEmail(email: string, code: string): Promise<EmailRe
       body: JSON.stringify({
         from,
         to: [email],
-        subject: "کد ورود به فید‌بک سنتر",
-        html: `<p>کد ورود تو <b>${code}</b> است. این کد را به کسی نگو و فقط در همین سایت واردش کن.</p>`,
+        subject: "Your Vasa login code",
+        html: `<p>Your login code is <b>${code}</b>. Do not share it, and only enter it on this site.</p>`,
       }),
       cache: "no-store",
       signal: AbortSignal.timeout(10000),
@@ -50,7 +50,7 @@ export async function sendOtpEmail(email: string, code: string): Promise<EmailRe
       logger.warn("email.resend.rejected", {
         context: { httpStatus: response.status, durationMs: Date.now() - startedAt },
       });
-      return { status: "failed", message: "ارسال ایمیل انجام نشد. کمی بعد دوباره تلاش کن." };
+      return { status: "failed", message: "The email could not be sent. Try again shortly." };
     }
 
     logger.debug("email.resend.sent", {
@@ -63,6 +63,6 @@ export async function sendOtpEmail(email: string, code: string): Promise<EmailRe
       error,
       context: { durationMs: Date.now() - startedAt },
     });
-    return { status: "failed", message: "ارتباط با سرویس ایمیل برقرار نشد. کمی بعد دوباره تلاش کن." };
+    return { status: "failed", message: "The email service is unreachable. Try again shortly." };
   }
 }

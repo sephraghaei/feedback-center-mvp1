@@ -35,7 +35,7 @@ export default function ProductTag({
     <div className="fb-product-banner">
       <ProductMark brand={brand} size={46} className="fb-product-mark" />
       <span className="fb-product-text">
-        <span className="fb-product-label">فید‌بک برای</span>
+        <span className="fb-product-label">Feedback for</span>
         {brand.href ? (
           <a
             className="fb-product-name"
@@ -58,8 +58,8 @@ export default function ProductTag({
           href={brand.href}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`باز کردن ${brand.display}`}
-          title="باز کردن سایت"
+          aria-label={`Open ${brand.display}`}
+          title="Open website"
         >
           <ExternalIcon />
         </a>

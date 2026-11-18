@@ -4,19 +4,16 @@ import { SignInButton, useAuth } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import BrandMark from "@/app/components/brand-mark";
 import { clientLogger } from "@/lib/client-logger";
 import { SEX_OPTIONS } from "@/lib/profile";
-import { toPersianDigits } from "@/lib/phone";
 
 type Status = "guest" | "needs-profile" | "ready";
 
 const LAST_PHONE_KEY = "fc:last-phone";
 
 function maskPhone(phone: string): string {
-  const value = toPersianDigits(phone);
-  if (value.length < 8) return value;
-  return `${value.slice(0, 4)} *** ${value.slice(-4)}`;
+  if (phone.length < 8) return phone;
+  return `${phone.slice(0, 4)} *** ${phone.slice(-4)}`;
 }
 
 async function postJson(url: string, body: unknown) {
@@ -30,7 +27,7 @@ async function postJson(url: string, body: unknown) {
     [key: string]: unknown;
   };
   if (!response.ok) {
-    throw new Error(data.message ?? "یک مشکل پیش آمد. لطفا دوباره تلاش کن.");
+    throw new Error(data.message ?? "Something went wrong. Please try again.");
   }
   return data;
 }
@@ -168,7 +165,7 @@ export default function AuthFlow({
       setResendIn(30);
     } catch (issue) {
       clientLogger.warn("ui.auth.otp_request_failed", { error: issue, context: { resend } });
-      setError(issue instanceof Error ? issue.message : "ارسال کد انجام نشد.");
+      setError(issue instanceof Error ? issue.message : "We could not send the code.");
     } finally {
       setLoading(false);
     }
@@ -195,7 +192,7 @@ export default function AuthFlow({
       }
     } catch (issue) {
       clientLogger.warn("ui.auth.otp_verify_failed", { error: issue });
-      setError(issue instanceof Error ? issue.message : "تایید کد انجام نشد.");
+      setError(issue instanceof Error ? issue.message : "We could not verify that code.");
       setCode("");
       codeRef.current?.focus();
     } finally {
@@ -214,7 +211,7 @@ export default function AuthFlow({
       finish(activePhone);
     } catch (issue) {
       clientLogger.warn("ui.auth.profile_save_failed", { error: issue });
-      setError(issue instanceof Error ? issue.message : "ذخیره پروفایل انجام نشد.");
+      setError(issue instanceof Error ? issue.message : "We could not save your profile.");
     } finally {
       setLoading(false);
     }
@@ -222,7 +219,7 @@ export default function AuthFlow({
 
   if (status === "ready") return null;
 
-  const label = status === "needs-profile" ? "تکمیل پروفایل" : "ورود یا ثبت‌نام";
+  const label = status === "needs-profile" ? "Finish your profile" : "Log in or sign up";
 
   return (
     <>
@@ -246,35 +243,34 @@ export default function AuthFlow({
               >
                 <div className="auth-top">
                   <div className="auth-brand" aria-hidden="true">
-                    <BrandMark className="auth-brand-mark" />
-                    <span>وسا</span>
+                    <span>Vasa</span>
                   </div>
                   <button
                     type="button"
                     className="modal-close"
                     onClick={close}
-                    aria-label="بستن"
+                    aria-label="Close"
                     disabled={loading}
                   >
-                    بستن
+                    Close
                   </button>
                 </div>
 
                 <p className="steps" aria-live="polite">
-                  مرحله {toPersianDigits(String(step))} از {toPersianDigits("3")}
+                  Step {step} of 3
                 </p>
 
                 {step === 1 ? (
                   <form className="modal-body" onSubmit={submitPhone}>
                     <h2 id="auth-title" className="modal-title">
-                      خوش آمدی
+                      Welcome to Vasa
                     </h2>
                     <p className="modal-hint">
-                      شماره موبایلت را وارد کن تا کد ورود برایت پیامک شود.
+                      Enter your mobile number and we will text you a login code.
                     </p>
 
                     <label className="label" htmlFor="phone">
-                      شماره موبایل
+                      Mobile number
                     </label>
                     <input
                       id="phone"
@@ -289,26 +285,26 @@ export default function AuthFlow({
                       disabled={loading}
                       required
                     />
-                    <p className="field-hint">با ۰۹ شروع می‌شود و ۱۱ رقم دارد.</p>
+                    <p className="field-hint">Starts with 09 and has 11 digits.</p>
 
                     {error ? <p className="error">{error}</p> : null}
 
                     <button type="submit" className="primary" disabled={loading}>
-                      {loading ? "در حال ارسال کد..." : "دریافت کد ورود"}
+                      {loading ? "Sending code..." : "Send login code"}
                     </button>
 
                     <p className="divider">
-                      <span>یا</span>
+                      <span>or</span>
                     </p>
 
                     <SignInButton mode="modal">
                       <button type="button" className="ghost full" disabled={loading}>
-                        ورود با ایمیل
+                        Continue with email
                       </button>
                     </SignInButton>
                     <SignInButton mode="modal">
                       <button type="button" className="ghost full" disabled={loading}>
-                        ورود با حساب گوگل
+                        Continue with Google
                       </button>
                     </SignInButton>
                   </form>
@@ -317,22 +313,22 @@ export default function AuthFlow({
                 {step === 2 ? (
                   <form className="modal-body" onSubmit={submitCode}>
                     <h2 id="auth-title" className="modal-title">
-                      کد ورود
+                      Enter your code
                     </h2>
                     <p className="modal-hint">
-                      کد {toPersianDigits(String(codeLength))} رقمی را برای{" "}
-                      <span className="mono">{maskPhone(activePhone)}</span> فرستادیم.
+                      We sent a {codeLength} digit code to{" "}
+                      <span className="mono">{maskPhone(activePhone)}</span>.
                     </p>
 
                     {devCode ? (
                       <p className="dev-code">
-                        حالت توسعه: پیامک تنظیم نشده، کد تو{" "}
-                        <span className="mono">{toPersianDigits(devCode)}</span> است.
+                        Development mode: SMS is off, so your code is{" "}
+                        <span className="mono">{devCode}</span>.
                       </p>
                     ) : null}
 
                     <label className="label" htmlFor="code">
-                      کد ورود
+                      Login code
                     </label>
                     <input
                       id="code"
@@ -363,7 +359,7 @@ export default function AuthFlow({
                       className="primary"
                       disabled={loading || code.length < codeLength}
                     >
-                      {loading ? "در حال بررسی..." : "تایید و ادامه"}
+                      {loading ? "Checking..." : "Verify and continue"}
                     </button>
 
                     <div className="row">
@@ -373,7 +369,7 @@ export default function AuthFlow({
                         onClick={() => setStep(1)}
                         disabled={loading}
                       >
-                        ویرایش شماره
+                        Change number
                       </button>
                       <button
                         type="button"
@@ -381,9 +377,7 @@ export default function AuthFlow({
                         onClick={() => requestOtp({ phone: activePhone })}
                         disabled={loading || resendIn > 0}
                       >
-                        {resendIn > 0
-                          ? `ارسال دوباره تا ${toPersianDigits(String(resendIn))} ثانیه`
-                          : "ارسال دوباره کد"}
+                        {resendIn > 0 ? `Resend in ${resendIn}s` : "Resend code"}
                       </button>
                     </div>
                   </form>
@@ -392,14 +386,15 @@ export default function AuthFlow({
                 {step === 3 ? (
                   <form className="modal-body" onSubmit={submitProfile}>
                     <h2 id="auth-title" className="modal-title">
-                      کمی از خودت بگو
+                      Tell us about you
                     </h2>
                     <p className="modal-hint">
-                      فقط اسم لازم است، بقیه موارد اختیاری‌اند و بعدا هم می‌شود کاملشان کرد.
+                      Only your name is required. Everything else is optional and can change
+                      later.
                     </p>
 
                     <label className="label" htmlFor="name">
-                      نام
+                      Name
                     </label>
                     <input
                       id="name"
@@ -417,7 +412,7 @@ export default function AuthFlow({
                     <div className="grid">
                       <div>
                         <label className="label" htmlFor="age">
-                          سن <span className="optional">(اختیاری)</span>
+                          Age <span className="optional">(optional)</span>
                         </label>
                         <input
                           id="age"
@@ -434,7 +429,7 @@ export default function AuthFlow({
 
                       <div>
                         <label className="label" htmlFor="sex">
-                          جنسیت <span className="optional">(اختیاری)</span>
+                          Gender <span className="optional">(optional)</span>
                         </label>
                         <select
                           id="sex"
@@ -443,7 +438,7 @@ export default function AuthFlow({
                           onChange={(event) => setSex(event.target.value)}
                           disabled={loading}
                         >
-                          <option value="">انتخاب نکن</option>
+                          <option value="">Prefer not to say</option>
                           {SEX_OPTIONS.map((option) => (
                             <option key={option} value={option}>
                               {option}
@@ -454,7 +449,7 @@ export default function AuthFlow({
                     </div>
 
                     <label className="label" htmlFor="company">
-                      نام شرکت <span className="optional">(اختیاری)</span>
+                      Company <span className="optional">(optional)</span>
                     </label>
                     <input
                       id="company"
@@ -474,7 +469,7 @@ export default function AuthFlow({
                       className="primary"
                       disabled={loading || name.trim().length < 2}
                     >
-                      {loading ? "در حال ذخیره..." : "ذخیره و ورود"}
+                      {loading ? "Saving..." : "Save and continue"}
                     </button>
                   </form>
                 ) : null}

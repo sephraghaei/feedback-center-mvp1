@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toggleUpvoteAction } from "@/app/feedback-actions";
-import { faNumber } from "@/lib/feedback/labels";
+import { formatNumber } from "@/lib/feedback/labels";
 import { VoteUpIcon } from "./icons";
 
 export default function VoteButton({
@@ -61,12 +61,19 @@ export default function VoteButton({
       onClick={vote}
       disabled={busy}
       aria-pressed={state.upvoted}
-      aria-label={state.upvoted ? "برداشتن رای" : "رای دادن"}
-      title={error ?? (signedIn ? (state.upvoted ? "برداشتن رای" : "رای دادن") : "برای رای دادن وارد شو")}
+      aria-label={state.upvoted ? "Remove vote" : "Vote"}
+      title={
+        error ??
+        (signedIn
+          ? state.upvoted
+            ? "Remove vote"
+            : "Vote"
+          : "Log in to vote")
+      }
     >
       <VoteUpIcon size={15} />
       <span key={roll} className={`fb-vote-num${roll ? " is-rolling" : ""}`}>
-        {faNumber(state.count)}
+        {formatNumber(state.count)}
       </span>
     </button>
   );

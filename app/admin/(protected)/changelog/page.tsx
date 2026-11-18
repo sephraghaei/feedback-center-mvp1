@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Icon } from "../../components/bits";
 import ChangelogForm from "../../components/changelog-form";
 import { resolveableFeedback, listChangelog } from "@/lib/feedback/changelog";
-import { faDate } from "@/lib/feedback/labels";
+import { formatDate } from "@/lib/feedback/labels";
 
-export const metadata: Metadata = { title: "تغییرات | وسا" };
+export const metadata: Metadata = { title: "Updates | Vasa" };
 
 export default async function AdminChangelogPage() {
   const [entries, candidates] = await Promise.all([listChangelog(50), resolveableFeedback()]);
@@ -14,49 +13,41 @@ export default async function AdminChangelogPage() {
     <>
       <div className="page-head">
         <div className="page-title-row">
-          <h1 className="page-title">تغییرات منتشر شده</h1>
-          <span className="count-badge">{entries.length.toLocaleString("fa-IR")}</span>
+          <h1 className="page-title">Published updates</h1>
+          <span className="count-badge">{entries.length.toLocaleString("en-US")}</span>
         </div>
         <p className="page-sub">
-          هر ورودی را با فید‌بک‌هایی که حل کرده وصل کن. بعد از انتشار، آن فید‌بک‌ها خودکار
-          «منتشر شده» می‌شوند و لینک ورودی رویشان می‌آید.
+          Link each entry to the feedback it resolves. On publish, those feedback items move
+          to Shipped and get a link to the entry.
         </p>
       </div>
 
       <div style={{ display: "grid", gap: 20 }}>
         <section aria-labelledby="new-entry">
           <h2 id="new-entry" className="page-title" style={{ fontSize: "0.95rem", marginBottom: 10 }}>
-            ورودی تازه
+            New entry
           </h2>
           <ChangelogForm candidates={candidates} />
         </section>
 
         <section aria-labelledby="entry-list">
           <h2 id="entry-list" className="page-title" style={{ fontSize: "0.95rem", marginBottom: 10 }}>
-            ورودی‌های قبلی
+            Previous entries
           </h2>
           {entries.length === 0 ? (
             <div className="empty-state">
               <Icon name="calendar" size={26} />
-              <h3>هنوز ورودی‌ای منتشر نشده.</h3>
-              <p>اولین تغییر منتشر شده را از فرم بالا بنویس.</p>
+              <h3>No updates published yet.</h3>
+              <p>Write the first update in the form above.</p>
             </div>
           ) : (
             <div className="list-view">
               {entries.map((entry) => (
                 <div key={entry.id} className="list-row">
                   <div>
-                    <span className="name">
-                      <Link href={`/changelog/${entry.id}`} style={{ color: "inherit" }}>
-                        {entry.title}
-                      </Link>
-                    </span>
-                    <span className="meta">{faDate(entry.publishedAt)}</span>
+                    <span className="name">{entry.title}</span>
+                    <span className="meta">{formatDate(entry.publishedAt)}</span>
                   </div>
-                  <Link href={`/changelog/${entry.id}`} className="btn btn-ghost">
-                    <Icon name="external" size={15} />
-                    نمایش عمومی
-                  </Link>
                 </div>
               ))}
             </div>

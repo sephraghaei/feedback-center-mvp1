@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { publishChangelogAction } from "@/app/feedback-actions";
@@ -52,12 +51,12 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
   return (
     <form className="panel" onSubmit={submit} style={{ padding: 18, display: "grid", gap: 14 }}>
       <div className="field">
-        <label htmlFor="entry-title">عنوان ورودی</label>
+        <label htmlFor="entry-title">Entry title</label>
         <input
           id="entry-title"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="مثلا: جستجوی فیدبک‌ها حالا ساده‌تر شد"
+          placeholder="For example: feedback search is now simpler"
           maxLength={140}
           minLength={3}
           required
@@ -67,14 +66,14 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
 
       <div className="field">
         <label htmlFor="entry-body">
-          متن تغییرات <span className="opt">(Markdown)</span>
+          Update body <span className="opt">(Markdown)</span>
         </label>
         <textarea
           id="entry-body"
           rows={6}
           value={body}
           onChange={(event) => setBody(event.target.value)}
-          placeholder={"## چه چیزی تغییر کرد\n\n- ..."}
+          placeholder={"## What changed\n\n- ..."}
           maxLength={20000}
           required
           disabled={busy}
@@ -83,16 +82,16 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
 
       <div className="field">
         <label>
-          فید‌بک‌های حل شده{" "}
+          Resolved feedback{" "}
           <span className="opt">
-            ({selected.length} انتخاب شده)
+            ({selected.length} selected)
           </span>
         </label>
         <input
           type="search"
           value={filter}
           onChange={(event) => setFilter(event.target.value)}
-          placeholder="جستجو در فید‌بک‌ها"
+          placeholder="Search feedback"
           disabled={busy || candidates.length === 0}
         />
         <div
@@ -106,7 +105,7 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
         >
           {visible.length === 0 ? (
             <p style={{ margin: "10px 0", fontSize: "0.78rem", color: "var(--ink-3)" }}>
-              فید‌بک‌ی برای انتخاب نیست.
+              No feedback to pick from.
             </p>
           ) : (
             visible.map((post) => (
@@ -135,7 +134,7 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
           )}
         </div>
         <p style={{ margin: 0, fontSize: "0.72rem", color: "var(--ink-4)" }}>
-          با انتشار، این فید‌بک‌ها خودکار به وضعیت «منتشر شده» می‌روند.
+          On publish, these feedback items move to Shipped automatically.
         </p>
       </div>
 
@@ -143,16 +142,13 @@ export default function ChangelogForm({ candidates }: { candidates: ChangelogLin
 
       {published ? (
         <p className="pill ok" style={{ justifySelf: "start" }}>
-          منتشر شد.{" "}
-          <Link href={`/changelog/${published}`} className="ltr" style={{ textDecoration: "underline" }}>
-            مشاهده ورودی
-          </Link>
+          Published.
         </p>
       ) : null}
 
       <div>
         <button type="submit" className="btn btn-primary" disabled={busy || body.trim().length < 10}>
-          {busy ? "در حال انتشار..." : "انتشار تغییرات"}
+          {busy ? "Publishing..." : "Publish update"}
         </button>
       </div>
     </form>

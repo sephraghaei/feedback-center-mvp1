@@ -38,7 +38,7 @@ export default function AdminPostActions({
     setBusy(false);
     setConfirming(false);
     if (result.ok) {
-      router.push("/feed");
+      router.push("/");
       router.refresh();
       return;
     }
@@ -48,7 +48,7 @@ export default function AdminPostActions({
   return (
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
       <button type="button" className="fb-btn fb-btn-ghost fb-btn-sm" onClick={toggleHidden} disabled={busy}>
-        {hidden ? "بازگرداندن به دید عمومی" : "پنهان کردن"}
+        {hidden ? "Restore to public" : "Hide"}
       </button>
       <button
         type="button"
@@ -56,7 +56,7 @@ export default function AdminPostActions({
         onClick={() => setConfirming(true)}
         disabled={busy}
       >
-        حذف
+        Delete
       </button>
       {error ? (
         <span className="field-hint" style={{ color: "var(--red)" }}>
@@ -65,9 +65,9 @@ export default function AdminPostActions({
       ) : null}
       <ConfirmDialog
         open={confirming}
-        title="حذف این فید‌بک؟"
-        description="این فید‌بک با همه کامنت‌هایش برای همیشه حذف می‌شود."
-        confirmLabel="حذف فید‌بک"
+        title="Delete this feedback?"
+        description="This feedback and all its comments will be deleted for good."
+        confirmLabel="Delete feedback"
         busy={busy}
         onConfirm={() => void remove()}
         onCancel={() => {

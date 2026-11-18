@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { faNumber } from "@/lib/feedback/labels";
+import { formatNumber } from "@/lib/feedback/labels";
 import { CloseIcon } from "./icons";
 
 type StepDef = {
@@ -20,7 +20,7 @@ type Box = { top: number; left: number; width: number; height: number };
 type Placement = { top: number; left: number; dock: boolean };
 
 const SEEN_KEY = "fc-tour";
-const AUTO_ROUTES = new Set(["/", "/feed", "/roadmap", "/changelog"]);
+const AUTO_ROUTES = new Set(["/", "/feed"]);
 
 function firstPostHref(): string | null {
   const link = document.querySelector<HTMLAnchorElement>('.fb-grid a[href^="/p/"]');
@@ -40,7 +40,7 @@ const STEPS: StepDef[] = [
     selector: ".site-nav",
     noScroll: true,
     title: "یه دور کامل، از اول تا آخر",
-    body: "کل مسیر سایت از همین منو می‌گذره: فید‌بک‌ها، نقشه راه و تغییرات. با هم یه دور کامل رو ببینیم.",
+    body: "کل مسیر سایت از همین منو می‌گذره: فید‌بک‌ها، نوشتن فید‌بک تازه و حساب کاربری. با هم یه دور کامل رو ببینیم.",
   },
   {
     id: "feed",
@@ -65,21 +65,6 @@ const STEPS: StepDef[] = [
     optional: true,
     title: "گفتگو رو دنبال کن",
     body: "زیر هر فید‌بک می‌تونی کامنت بذاری، به کامنت‌ها رای بدی و پاسخ بدی. برای نوشتن فقط یه بار وارد حساب می‌شی و جواب تیم هم همین‌جا میاد.",
-  },
-  {
-    id: "roadmap",
-    selector: ".fb-board",
-    route: "/roadmap",
-    title: "نقشه راه: از نوبت تا انتشار",
-    body: "فید‌بک‌های پررأی میان صف ساخت، بعد ساخته و منتشر می‌شن. ستون‌ها همین مرحله‌هاست و مسیر هر فید‌بک روی خود کارتش هم معلومه.",
-  },
-  {
-    id: "changelog",
-    selector: ".fb-entry",
-    route: "/changelog",
-    optional: true,
-    title: "تغییرات: نتیجه‌ی نهایی",
-    body: "هر چیزی که منتشر می‌شه این‌جا ثبت می‌شه و می‌گه کدوم فید‌بک‌ها رو حل کرده. مسیر هر فید‌بک تا آخر شفافه.",
   },
   {
     id: "compose",
@@ -415,7 +400,7 @@ export default function SiteTour() {
       >
         <div className="fb-tour-top">
           <span className="fb-tour-step">
-            {faNumber(index + 1)} از {faNumber(total)}
+            {formatNumber(index + 1)} از {formatNumber(total)}
           </span>
           <div className="fb-tour-top-actions">
             <button

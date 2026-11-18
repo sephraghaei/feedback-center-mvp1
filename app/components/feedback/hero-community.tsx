@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { faNumber } from "@/lib/feedback/labels";
+import { formatNumber } from "@/lib/feedback/labels";
 
 type Comment = {
   name: string;
@@ -156,13 +156,13 @@ function LikeButton({
       type="button"
       className={`hero-like${small ? " hero-like-sm" : ""}${liked ? " is-liked" : ""}`}
       aria-pressed={liked}
-      aria-label={`${liked ? "رای داده شد" : "رای دادن به این نمونه فید‌بک"}، ${faNumber(count)} رای`}
+      aria-label={`${liked ? "رای داده شد" : "رای دادن به این نمونه فید‌بک"}، ${formatNumber(count)} رای`}
       onClick={onToggle}
     >
       <span className="hero-like-icon">
         <HeroIcon name="heart" filled={liked} />
       </span>
-      <span className="hero-like-count">{faNumber(count)}</span>
+      <span className="hero-like-count">{formatNumber(count)}</span>
     </button>
   );
 }

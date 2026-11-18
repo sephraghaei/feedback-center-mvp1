@@ -27,7 +27,7 @@ export function LogoutButton() {
 
   return (
     <button type="button" className="ghost" onClick={logout} disabled={loading}>
-      {loading ? "در حال خروج..." : "خروج از حساب"}
+      {loading ? "Signing out..." : "Sign out"}
     </button>
   );
 }
@@ -52,7 +52,7 @@ export function ClerkSignOutButton() {
 
   return (
     <button type="button" className="ghost" onClick={logout} disabled={loading}>
-      {loading ? "در حال خروج..." : "خروج از حساب"}
+      {loading ? "Signing out..." : "Sign out"}
     </button>
   );
 }

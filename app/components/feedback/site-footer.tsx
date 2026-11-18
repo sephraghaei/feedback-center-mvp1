@@ -1,23 +1,24 @@
 import Link from "next/link";
 import BrandMark from "@/app/components/brand-mark";
-import ComposerButton from "./composer-button";
-import TourTrigger from "./tour-trigger";
 
 const COLUMNS = [
   {
-    title: "محصول",
+    title: "Product",
+    links: [{ href: "/", label: "Public boards" }],
+  },
+  {
+    title: "Account",
     links: [
-      { href: "/feed", label: "فیدبک‌ها" },
-      { href: "/roadmap", label: "نقشه راه" },
-      { href: "/changelog", label: "تغییرات" },
+      { href: "/sign-in", label: "Log in or sign up" },
+      { href: "/profile", label: "My profile" },
+      { href: "/requests", label: "Your posts" },
     ],
   },
   {
-    title: "حساب",
+    title: "For companies",
     links: [
-      { href: "/sign-in", label: "ورود یا ثبت‌نام" },
-      { href: "/profile", label: "پروفایل من" },
-      { href: "/requests", label: "درخواست‌های من" },
+      { href: "/workspace", label: "Company workspace" },
+      { href: "/", label: "How Vasa works" },
     ],
   },
 ];
@@ -28,24 +29,26 @@ export default function SiteFooter() {
       <div className="footer-inner">
         <div className="footer-top">
           <div className="footer-brand-col">
-            <Link href="/" className="footer-brand" aria-label="وسا، صفحه اصلی">
+            <Link href="/" className="footer-brand" aria-label="Vasa home">
               <BrandMark className="footer-mark" simple />
-              <span className="footer-name">وسا</span>
+              <span className="footer-name">Vasa</span>
             </Link>
             <p className="footer-tagline">
-              ایده‌ها رو جمع می‌کنیم، با رأی شما مرتبشون می‌کنیم و تا انتشار دنبالشون
-              می‌مونیم.
+              Collect feedback, let customers vote, and keep a public roadmap that tells them
+              what shipped.
             </p>
-            <ComposerButton className="footer-cta">فیدبک بده</ComposerButton>
+            <Link href="/workspace" className="footer-cta">
+              Open the company panel
+            </Link>
           </div>
 
-          <nav className="footer-nav" aria-label="پیوندهای پاصفحه">
+          <nav className="footer-nav" aria-label="Footer links">
             {COLUMNS.map((column) => (
               <div key={column.title} className="footer-col">
                 <h2 className="footer-col-title">{column.title}</h2>
                 <ul>
                   {column.links.map((link) => (
-                    <li key={link.href}>
+                    <li key={`${column.title}-${link.label}`}>
                       <Link href={link.href} className="footer-link">
                         {link.label}
                       </Link>
@@ -54,30 +57,12 @@ export default function SiteFooter() {
                 </ul>
               </div>
             ))}
-            <div className="footer-col">
-              <h2 className="footer-col-title">راهنما</h2>
-              <ul>
-                <li>
-                  <Link href="/#story-title" className="footer-link">
-                    داستان یک فیدبک
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/#account" className="footer-link">
-                    حساب و ورود
-                  </Link>
-                </li>
-                <li>
-                  <TourTrigger className="footer-link" />
-                </li>
-              </ul>
-            </div>
           </nav>
         </div>
 
         <div className="footer-bottom">
-          <span>© ۱۴۰۵ وسا. همه حقوق محفوظ است.</span>
-          <span className="footer-note">ساخته‌شده برای شنیده شدن</span>
+          <span>© 2026 Vasa. All rights reserved.</span>
+          <span className="footer-note">Built so customers get heard</span>
         </div>
       </div>
     </footer>

@@ -11,20 +11,20 @@ function isSnapshot(value: unknown): value is UserSnapshot {
 
 export const POST = withApiLogging("/api/admin/users/restore", async (request, _context, log) => {
   if (!adminFromRequest(request)) {
-    return NextResponse.json({ message: "اول وارد پنل مدیریت شو." }, { status: 401 });
+    return NextResponse.json({ message: "Sign in to the admin panel first." }, { status: 401 });
   }
 
   let input: unknown;
   try {
     input = await request.json();
   } catch {
-    return NextResponse.json({ message: "درخواست معتبر نیست." }, { status: 400 });
+    return NextResponse.json({ message: "Invalid request." }, { status: 400 });
   }
 
   const raw = (input as { snapshots?: unknown })?.snapshots;
   const snapshots = Array.isArray(raw) ? raw.filter(isSnapshot) : isSnapshot(raw) ? [raw] : [];
   if (snapshots.length === 0) {
-    return NextResponse.json({ message: "چیزی برای بازگردانی نیست." }, { status: 400 });
+    return NextResponse.json({ message: "Nothing to restore." }, { status: 400 });
   }
 
   const rows = [];

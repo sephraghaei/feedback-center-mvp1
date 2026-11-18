@@ -75,7 +75,7 @@ export default function PostAdminActions({
           value={value}
           onChange={(event) => void move(event.target.value)}
           disabled={busy}
-          aria-label="تغییر ستون نقشه راه"
+          aria-label="Change roadmap status"
         >
           {ROADMAP_STATUSES.map((option) => (
             <option key={option} value={option}>
@@ -89,8 +89,8 @@ export default function PostAdminActions({
         className="btn btn-ghost btn-icon"
         onClick={toggleHidden}
         disabled={busy}
-        title={isHidden ? "بازگرداندن به فید" : "پنهان کردن از فید"}
-        aria-label={isHidden ? "بازگرداندن به فید" : "پنهان کردن از فید"}
+        title={isHidden ? "Restore to the board" : "Hide from the board"}
+        aria-label={isHidden ? "Restore to the board" : "Hide from the board"}
       >
         <Icon name={isHidden ? "eye" : "eye-off"} size={16} />
       </button>
@@ -99,8 +99,8 @@ export default function PostAdminActions({
         className="btn btn-ghost btn-icon danger"
         onClick={() => setConfirming(true)}
         disabled={busy}
-        title="حذف فید‌بک"
-        aria-label="حذف فید‌بک"
+        title="Delete feedback"
+        aria-label="Delete feedback"
       >
         <Icon name="trash" size={16} />
       </button>
@@ -111,9 +111,9 @@ export default function PostAdminActions({
       ) : null}
       <ConfirmDialog
         open={confirming}
-        title="حذف این فید‌بک؟"
-        description="این فید‌بک با همه کامنت‌هایش برای همیشه حذف می‌شود."
-        confirmLabel="حذف فید‌بک"
+        title="Delete this feedback?"
+        description="This feedback and all its comments will be deleted for good."
+        confirmLabel="Delete feedback"
         busy={busy}
         onConfirm={() => void remove()}
         onCancel={() => {

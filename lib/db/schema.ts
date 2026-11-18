@@ -59,6 +59,40 @@ export const verifications = pgTable(
   (table) => [index("verifications_phone_idx").on(table.phone), index("verifications_email_idx").on(table.email)],
 );
 
+export const companies = pgTable(
+  "companies",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: text("slug").notNull().unique(),
+    name: text("name").notNull(),
+    tagline: text("tagline"),
+    accent: text("accent").notNull().default("#2563eb"),
+    website: text("website"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [check("companies_slug_check", sql`${table.slug} ~ '^[a-z0-9][a-z0-9-]{1,38}$'`)],
+);
+
+export const companyMembers = pgTable(
+  "company_members",
+  {
+    companyId: uuid("company_id")
+      .notNull()
+      .references(() => companies.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    role: text("role").notNull().default("member"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({ name: "company_members_pkey", columns: [table.companyId, table.userId] }),
+    index("company_members_user_idx").on(table.userId),
+    check("company_members_role_check", sql`${table.role} in ('owner', 'admin', 'member')`),
+  ],
+);
+
 export const posts = pgTable(
   "posts",
   {
@@ -66,6 +100,7 @@ export const posts = pgTable(
     authorId: uuid("author_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+    companyId: uuid("company_id").references(() => companies.id, { onDelete: "cascade" }),
     type: text("type").notNull(),
     category: text("category"),
     product: text("product"),
@@ -81,6 +116,7 @@ export const posts = pgTable(
   },
   (table) => [
     index("posts_author_idx").on(table.authorId),
+    index("posts_company_idx").on(table.companyId, table.type, table.createdAt),
     index("posts_feed_idx").on(table.type, table.hidden, table.createdAt),
     check(
       "posts_shape_check",
@@ -173,13 +209,18 @@ export const commentVotes = pgTable(
   ],
 );
 
-export const changelogEntries = pgTable("changelog_entries", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  title: text("title").notNull(),
-  body: text("body").notNull(),
-  publishedAt: timestamp("published_at", { withTimezone: true }).notNull().defaultNow(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
+export const changelogEntries = pgTable(
+  "changelog_entries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    companyId: uuid("company_id").references(() => companies.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    body: text("body").notNull(),
+    publishedAt: timestamp("published_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("changelog_entries_company_idx").on(table.companyId, table.publishedAt)],
+);
 
 export const changelogPosts = pgTable(
   "changelog_posts",
@@ -198,6 +239,8 @@ export const changelogPosts = pgTable(
 );
 
 export type UserRow = typeof users.$inferSelect;
+export type CompanyRow = typeof companies.$inferSelect;
+export type CompanyMemberRow = typeof companyMembers.$inferSelect;
 export type ProfileRow = typeof profiles.$inferSelect;
 export type VerificationRow = typeof verifications.$inferSelect;
 export type PostRow = typeof posts.$inferSelect;

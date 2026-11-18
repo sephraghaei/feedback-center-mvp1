@@ -1,4 +1,4 @@
-export const SEX_OPTIONS = ["زن", "مرد", "ترجیح می‌دهم نگویم"] as const;
+export const SEX_OPTIONS = ["Female", "Male", "Prefer not to say"] as const;
 
 export const MAX_BIO_LENGTH = 280;
 
@@ -31,16 +31,16 @@ export function isAvatarPath(value: string): boolean {
 
 export function validateProfile(input: unknown): { profile: Profile } | { error: string } {
   if (typeof input !== "object" || input === null) {
-    return { error: "اطلاعات پروفایل را کامل بفرست." };
+    return { error: "Send the profile fields." };
   }
 
   const data = input as Record<string, unknown>;
   const name = typeof data.name === "string" ? data.name.trim() : "";
   if (name.length < 2) {
-    return { error: "اسمت را بنویس، حداقل دو حرف." };
+    return { error: "Enter your name, at least two characters." };
   }
   if (name.length > 60) {
-    return { error: "اسم بیش از حد بلند است." };
+    return { error: "That name is too long." };
   }
 
   const profile: Profile = { name };
@@ -48,7 +48,7 @@ export function validateProfile(input: unknown): { profile: Profile } | { error:
   if (data.age !== undefined && data.age !== null && data.age !== "") {
     const age = Number(data.age);
     if (!Number.isInteger(age) || age < 5 || age > 120) {
-      return { error: "سن باید عددی بین ۵ تا ۱۲۰ باشد." };
+      return { error: "Age must be a number between 5 and 120." };
     }
     profile.age = age;
   } else if ("age" in data) {
@@ -58,7 +58,7 @@ export function validateProfile(input: unknown): { profile: Profile } | { error:
   if (data.sex !== undefined && data.sex !== null && data.sex !== "") {
     const sex = String(data.sex);
     if (!(SEX_OPTIONS as readonly string[]).includes(sex)) {
-      return { error: "جنسیت را از گزینه‌ها انتخاب کن." };
+      return { error: "Pick one of the gender options." };
     }
     profile.sex = sex;
   } else if ("sex" in data) {
@@ -68,7 +68,7 @@ export function validateProfile(input: unknown): { profile: Profile } | { error:
   if (data.company !== undefined && data.company !== null && data.company !== "") {
     const company = String(data.company).trim();
     if (company.length > 80) {
-      return { error: "نام شرکت بیش از حد بلند است." };
+      return { error: "That company name is too long." };
     }
     profile.company = company;
   } else if ("company" in data) {
@@ -78,7 +78,7 @@ export function validateProfile(input: unknown): { profile: Profile } | { error:
   if ("bio" in data) {
     const bio = typeof data.bio === "string" ? data.bio.trim() : "";
     if (bio.length > MAX_BIO_LENGTH) {
-      return { error: "معرفی کوتاه حداکثر ۲۸۰ نویسه است." };
+      return { error: "The bio can be up to 280 characters." };
     }
     profile.bio = bio || null;
   }
@@ -89,7 +89,7 @@ export function validateProfile(input: unknown): { profile: Profile } | { error:
     } else if (typeof data.avatarPath === "string" && isAvatarPath(data.avatarPath)) {
       profile.avatarPath = data.avatarPath;
     } else {
-      return { error: "عکس پروفایل معتبر نیست." };
+      return { error: "That profile photo is not valid." };
     }
   }
 

@@ -24,11 +24,11 @@ export default function LoginForm({ configured }: { configured: boolean }) {
         body: JSON.stringify({ password }),
       });
       const data = (await response.json().catch(() => ({}))) as { message?: string };
-      if (!response.ok) throw new Error(data.message ?? "ورود انجام نشد.");
+      if (!response.ok) throw new Error(data.message ?? "Sign-in failed.");
       router.push("/admin");
       router.refresh();
     } catch (issue) {
-      setError(issue instanceof Error ? issue.message : "ورود انجام نشد.");
+      setError(issue instanceof Error ? issue.message : "Sign-in failed.");
       setLoading(false);
     }
   }
@@ -38,13 +38,13 @@ export default function LoginForm({ configured }: { configured: boolean }) {
       <ThemeToggle />
       <form className="login-card" onSubmit={submit}>
         <BrandMark className="login-logo" />
-        <h1 className="login-title">ورود مدیر</h1>
+        <h1 className="login-title">Admin sign-in</h1>
         <p className="login-sub">
-          برای ورود به پنل مدیریت فقط رمز عبور را وارد کن. بدون ایمیل، بدون شماره و بدون نام کاربری.
+          Enter the admin password to open the panel. No email, phone or username.
         </p>
 
         <div className="login-field">
-          <label htmlFor="admin-password">رمز عبور</label>
+          <label htmlFor="admin-password">Password</label>
           <div className="password-wrap">
             <input
               id="admin-password"
@@ -60,7 +60,7 @@ export default function LoginForm({ configured }: { configured: boolean }) {
               type="button"
               className="eye-btn"
               onClick={() => setShow((v) => !v)}
-              aria-label={show ? "پنهان کردن رمز" : "نمایش رمز"}
+              aria-label={show ? "Hide password" : "Show password"}
             >
               <Icon name={show ? "eye-off" : "eye"} size={18} />
             </button>
@@ -70,15 +70,15 @@ export default function LoginForm({ configured }: { configured: boolean }) {
         {error ? <p className="login-error">{error}</p> : null}
         {!configured ? (
           <p className="login-error">
-            ورود مدیر فعال نیست. متغیر ADMIN_PASSWORD را در محیط (یا فایل .env) تنظیم کن.
+            Admin sign-in is not enabled. Set ADMIN_PASSWORD in the environment (or in .env).
           </p>
         ) : null}
 
         <button type="submit" className="btn btn-primary" disabled={!configured || loading || password.length === 0}>
-          {loading ? "در حال ورود..." : "ورود به پنل"}
+          {loading ? "Signing in..." : "Open the panel"}
         </button>
 
-        <p className="login-note">رمز عبور فقط از محیط خوانده می‌شود و در کد یا مخزن ذخیره نشده است.</p>
+        <p className="login-note">The password is read from the environment only and is never stored in code or the repository.</p>
       </form>
     </div>
   );

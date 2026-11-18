@@ -53,14 +53,14 @@ export default function SupportReply({
     >
       <div className="field">
         <label htmlFor={`reply-${postId}`}>
-          پاسخ به کاربر <span className="opt">(Markdown پشتیبانی می‌شود)</span>
+          Reply to the user <span className="opt">(Markdown supported)</span>
         </label>
         <textarea
           id={`reply-${postId}`}
           rows={4}
           value={text}
           onChange={(event) => setText(event.target.value)}
-          placeholder="پاسخ روشن و کوتاه بنویس."
+          placeholder="Write a clear, short reply."
           maxLength={10000}
           disabled={busy}
         />
@@ -72,7 +72,7 @@ export default function SupportReply({
             value={nextStatus}
             onChange={(event) => setNextStatus(event.target.value)}
             disabled={busy}
-            aria-label="وضعیت درخواست"
+            aria-label="Request status"
           >
             {SUPPORT_STATUSES.map((option) => (
               <option key={option} value={option}>
@@ -82,9 +82,9 @@ export default function SupportReply({
           </select>
         </div>
         <button type="submit" className="btn btn-primary" disabled={busy} style={{ marginTop: 4 }}>
-          {busy ? "در حال ذخیره..." : "ذخیره پاسخ و وضعیت"}
+          {busy ? "Saving..." : "Save reply and status"}
         </button>
-        {saved ? <span className="pill ok">ذخیره شد</span> : null}
+        {saved ? <span className="pill ok">Saved</span> : null}
       </div>
 
       {error ? <p className="form-error">{error}</p> : null}

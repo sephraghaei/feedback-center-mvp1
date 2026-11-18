@@ -8,6 +8,7 @@
     "db:generate": "drizzle-kit generate",
     "migrate": "tsx scripts/migrate.ts",
     "seed": "tsx scripts/seed-feedback.ts",
+    "seed:company": "tsx scripts/seed-company.ts",
     "build:cf": "NODE_OPTIONS=--max-old-space-size=2048 opennextjs-cloudflare build",
     "preview": "npm run build:cf && opennextjs-cloudflare preview",
     "deploy": "npm run migrate && npm run build:cf && opennextjs-cloudflare deploy"

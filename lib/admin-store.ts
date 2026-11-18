@@ -273,18 +273,18 @@ function parseInput(input: UserInput, requireIdentifier: boolean): ParsedInput {
   let email: string | null = null;
   if (input.email !== undefined && input.email !== null && String(input.email).trim() !== "") {
     const value = String(input.email).trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return { ok: false, error: "ایمیل معتبر نیست." };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return { ok: false, error: "Enter a valid email." };
     email = value;
   }
 
   let phone: string | null = null;
   if (input.phone !== undefined && input.phone !== null && String(input.phone).trim() !== "") {
     phone = normalizePhone(input.phone);
-    if (!phone) return { ok: false, error: "شماره موبایل معتبر نیست." };
+    if (!phone) return { ok: false, error: "Enter a valid phone number." };
   }
 
   if (requireIdentifier && !email && !phone) {
-    return { ok: false, error: "حداقل یک ایمیل یا شماره موبایل لازم است." };
+    return { ok: false, error: "An email or a phone number is required." };
   }
 
   return { ok: true, name: validated.profile.name, email, phone, profile: validated.profile };
@@ -294,11 +294,11 @@ async function identifierTaken(email: string | null, phone: string | null, excep
   const db = getDb();
   if (email) {
     const [row] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
-    if (row && row.id !== exceptId) return "این ایمیل قبلا ثبت شده است.";
+    if (row && row.id !== exceptId) return "This email is already registered.";
   }
   if (phone) {
     const [row] = await db.select({ id: users.id }).from(users).where(eq(users.phone, phone)).limit(1);
-    if (row && row.id !== exceptId) return "این شماره موبایل قبلا ثبت شده است.";
+    if (row && row.id !== exceptId) return "This phone number is already registered.";
   }
   return null;
 }
@@ -325,7 +325,7 @@ export async function createUser(input: UserInput): Promise<{ row: AdminUserRow 
   });
 
   const row = await getUserById(user.id);
-  return row ? { row } : { error: "ساخت کاربر انجام نشد." };
+  return row ? { row } : { error: "Could not create the user." };
 }
 
 export async function updateUser(
@@ -333,7 +333,7 @@ export async function updateUser(
   input: UserInput,
 ): Promise<{ row: AdminUserRow } | { error: string }> {
   const existing = await getUserById(id);
-  if (!existing) return { error: "کاربر پیدا نشد." };
+  if (!existing) return { error: "User not found." };
 
   const parsed = parseInput(input, false);
   if (!parsed.ok) return { error: parsed.error };
@@ -341,7 +341,7 @@ export async function updateUser(
   const email = parsed.email;
   const phone = parsed.phone;
   if (!email && !phone && !existing.clerkId) {
-    return { error: "حداقل یک ایمیل یا شماره موبایل لازم است." };
+    return { error: "An email or a phone number is required." };
   }
 
   const taken = await identifierTaken(email, phone, id);
@@ -374,12 +374,12 @@ export async function updateUser(
     });
 
   const row = await getUserById(id);
-  return row ? { row } : { error: "ویرایش کاربر انجام نشد." };
+  return row ? { row } : { error: "Could not update the user." };
 }
 
 export async function deleteUser(id: string): Promise<{ snapshot: UserSnapshot } | { error: string }> {
   const existing = await getUserById(id);
-  if (!existing) return { error: "کاربر پیدا نشد." };
+  if (!existing) return { error: "User not found." };
 
   const snapshot: UserSnapshot = {
     id: existing.id,
@@ -424,7 +424,7 @@ export async function restoreUser(snapshot: UserSnapshot): Promise<{ row: AdminU
   }
 
   const row = await getUserById(snapshot.id);
-  return row ? { row } : { error: "بازگردانی کاربر انجام نشد." };
+  return row ? { row } : { error: "Could not restore the user." };
 }
 
 export { SEX_OPTIONS };

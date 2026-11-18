@@ -4,7 +4,7 @@ import { createUser, listUsers } from "@/lib/admin-store";
 import { withApiLogging } from "@/lib/api-logger";
 
 function unauthorized() {
-  return NextResponse.json({ message: "اول وارد پنل مدیریت شو." }, { status: 401 });
+  return NextResponse.json({ message: "Sign in to the admin panel first." }, { status: 401 });
 }
 
 export const GET = withApiLogging("/api/admin/users", async (request, _context, log) => {
@@ -32,7 +32,7 @@ export const POST = withApiLogging("/api/admin/users", async (request, _context,
   try {
     input = await request.json();
   } catch {
-    return NextResponse.json({ message: "درخواست معتبر نیست." }, { status: 400 });
+    return NextResponse.json({ message: "Invalid request." }, { status: 400 });
   }
 
   const result = await createUser((input ?? {}) as Record<string, unknown>);

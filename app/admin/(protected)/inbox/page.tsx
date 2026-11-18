@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "../../components/bits";
 import SupportReply from "../../components/support-reply";
-import { STATUS_LABELS, faDate } from "@/lib/feedback/labels";
+import { STATUS_LABELS, formatDate } from "@/lib/feedback/labels";
 import { SUPPORT_STATUSES, excerpt, listSupportRequests } from "@/lib/feedback/posts";
-import { toPersianDigits } from "@/lib/phone";
 
-export const metadata: Metadata = { title: "صندوق پشتیبانی | وسا" };
+export const metadata: Metadata = { title: "Support inbox | Vasa" };
 
 type Search = { status?: string };
 
@@ -36,7 +35,7 @@ export default async function AdminInboxPage({ searchParams }: { searchParams: P
   const rows = await listSupportRequests(status);
 
   const tabs = [
-    { key: undefined, label: "همه" },
+    { key: undefined, label: "All" },
     ...SUPPORT_STATUSES.map((value) => ({ key: value, label: STATUS_LABELS[value] })),
   ];
 
@@ -44,17 +43,17 @@ export default async function AdminInboxPage({ searchParams }: { searchParams: P
     <>
       <div className="page-head">
         <div className="page-title-row">
-          <h1 className="page-title">صندوق پشتیبانی</h1>
-          <span className="count-badge">{toPersianDigits(String(rows.length))}</span>
+          <h1 className="page-title">Support inbox</h1>
+          <span className="count-badge">{rows.length}</span>
         </div>
         <p className="page-sub">
-          درخواست‌های شخصی کاربران. این موارد در هیچ صفحه عمومی نمایش داده نمی‌شوند و فقط
-          نویسنده و مدیر به آن‌ها دسترسی دارند.
+          Personal requests from users. They never appear on a public page and only the
+          author and admins can see them.
         </p>
       </div>
 
       <div className="toolbar">
-        <div className="view-tabs" role="tablist" aria-label="فیلتر وضعیت">
+        <div className="view-tabs" role="tablist" aria-label="Filter by status">
           {tabs.map((tab) => {
             const active = status === tab.key || (!status && !tab.key);
             const href = tab.key ? `/admin/inbox?status=${tab.key}` : "/admin/inbox";
@@ -76,8 +75,8 @@ export default async function AdminInboxPage({ searchParams }: { searchParams: P
       {rows.length === 0 ? (
         <div className="empty-state">
           <Icon name="mail" size={26} />
-          <h3>درخواستی با این فیلتر نیست.</h3>
-          <p>وقتی کاربران درخواست شخصی ثبت کنند، همین‌جا برای پاسخ دادن ظاهر می‌شود.</p>
+          <h3>No requests match this filter.</h3>
+          <p>When users send a personal request, it shows up here so you can reply.</p>
         </div>
       ) : (
         <div style={{ display: "grid", gap: 14 }}>
@@ -100,11 +99,11 @@ export default async function AdminInboxPage({ searchParams }: { searchParams: P
                     </Link>
                   </h2>
                 </div>
-                <span className="cell-date">{faDate(row.createdAt)}</span>
+                <span className="cell-date">{formatDate(row.createdAt)}</span>
               </div>
 
               <p className="page-sub" style={{ margin: "8px 0 0" }}>
-                {row.authorName ?? "کاربر"}
+                {row.authorName ?? "Member"}
                 {row.authorEmail ? (
                   <>
                     {" · "}

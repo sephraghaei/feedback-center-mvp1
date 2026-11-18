@@ -7,10 +7,7 @@ The feedback surfaces are RTL and Persian like the rest of the app. Guests can r
 | Route | Access | Purpose |
 | --- | --- | --- |
 | `/feed` | public | Post feed with category and status filters, vote buttons and the composer |
-| `/roadmap` | public | Three columns: planned, in progress, shipped |
-| `/changelog` | public | Published changelog entries |
-| `/changelog/[id]` | public | One entry, its Markdown body and the feedback it closed |
-| `/p/[id]` | public for feedback | Post detail with cover, body, attachments and changelog link |
+| `/p/[id]` | public for feedback | Post detail with cover, body and attachments |
 | `/p/[id]` | author and admins for support | Support request detail |
 | `/requests` | signed in | The viewer's own posts, split into public feedback and private support |
 | `/admin/inbox` | admin | Support requests with reply and status |
@@ -23,7 +20,7 @@ There is no upload endpoint. The composer sends text only and the profile editor
 
 `posts` holds both kinds in one table, separated by `type`:
 
-- `feedback`: public. Categories are `bug`, `feature` and `improvement`. Statuses are `new`, `planned`, `in_progress` and `shipped`. Only `planned`, `in_progress` and `shipped` appear on the roadmap.
+- `feedback`: public. Categories are `bug`, `feature` and `improvement`. Statuses are `new`, `planned`, `in_progress` and `shipped`.
 - `support`: private. Statuses are `open`, `answered` and `closed`. `admin_reply` keeps the answer the admin saved from the inbox.
 
 A check constraint keeps each type on its own category and status set. Attachments live in `attachments` (at most 5 per post, 10 MB each, images and PDF) and votes in `upvotes` with a unique pair per user and post, so a second vote from the same account updates rather than duplicates.

@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, isNotNull, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, inArray, isNotNull, ne, or, sql } from "drizzle-orm";
 import { getDb } from "../db";
 import {
   attachments,
@@ -31,6 +31,7 @@ export type {
 
 export type PostSummary = {
   id: string;
+  companyId: string | null;
   type: string;
   category: string | null;
   product: string | null;
@@ -93,6 +94,7 @@ function viewerVoted(viewerId?: string) {
 function summarySelect(viewerId?: string) {
   return {
     id: posts.id,
+    companyId: posts.companyId,
     type: posts.type,
     category: posts.category,
     product: posts.product,
@@ -131,16 +133,21 @@ export type FeedSort = "votes" | "newest";
 
 export async function listFeed(options: {
   status?: string;
+  companyId?: string;
   product?: string | null;
   excludeId?: string;
   viewerId?: string;
   limit?: number;
   sort?: FeedSort;
+  category?: string | null;
+  search?: string | null;
 }): Promise<PostSummary[]> {
   const order =
     options.sort === "votes"
       ? [desc(upvoteCount()), desc(posts.createdAt)]
       : [desc(posts.createdAt)];
+
+  const search = options.search?.trim();
 
   const rows = await getDb()
     .select(summarySelect(options.viewerId))
@@ -154,8 +161,15 @@ export async function listFeed(options: {
         options.status && (FEEDBACK_STATUSES as readonly string[]).includes(options.status)
           ? eq(posts.status, options.status)
           : undefined,
+        options.companyId ? eq(posts.companyId, options.companyId) : undefined,
         options.product ? eq(posts.product, options.product) : undefined,
         options.excludeId ? ne(posts.id, options.excludeId) : undefined,
+        options.category === "bug" || options.category === "praise" || options.category === "improvement"
+          ? eq(posts.category, options.category)
+          : undefined,
+        search && search.length > 0
+          ? or(ilike(posts.title, `%${search}%`), ilike(posts.body, `%${search}%`))
+          : undefined,
       ),
     )
     .orderBy(...order)
@@ -179,9 +193,12 @@ export async function listFeedCompanies(): Promise<string[]> {
     .filter((company): company is string => Boolean(company));
 }
 
-export async function listRoadmap(viewerId?: string): Promise<PostSummary[]> {
+export async function listRoadmap(options: {
+  viewerId?: string;
+  companyId?: string;
+} = {}): Promise<PostSummary[]> {
   return getDb()
-    .select(summarySelect(viewerId))
+    .select(summarySelect(options.viewerId))
     .from(posts)
     .innerJoin(users, eq(users.id, posts.authorId))
     .leftJoin(profiles, eq(profiles.userId, users.id))
@@ -190,6 +207,7 @@ export async function listRoadmap(viewerId?: string): Promise<PostSummary[]> {
         eq(posts.type, "feedback"),
         eq(posts.hidden, false),
         inArray(posts.status, [...ROADMAP_STATUSES]),
+        options.companyId ? eq(posts.companyId, options.companyId) : undefined,
       ),
     )
     .orderBy(
@@ -329,26 +347,27 @@ export async function getProfileStats(userId: string): Promise<ProfileStats> {
 
 function cleanTitle(value: string): string {
   const title = value.trim();
-  if (title.length < 3) throw new PostError("عنوان باید حداقل ۳ نویسه باشد.");
-  if (title.length > 140) throw new PostError("عنوان باید حداکثر ۱۴۰ نویسه باشد.");
+  if (title.length < 3) throw new PostError("Title must be at least 3 characters.");
+  if (title.length > 140) throw new PostError("Title must be 140 characters or fewer.");
   return title;
 }
 
 function cleanBody(value: string): string {
   const body = value.trim();
-  if (body.length < 10) throw new PostError("متن باید حداقل ۱۰ نویسه باشد.");
-  if (body.length > 20000) throw new PostError("متن بیش از حد بلند است.");
+  if (body.length < 10) throw new PostError("Details must be at least 10 characters.");
+  if (body.length > 20000) throw new PostError("Details are too long.");
   return body;
 }
 
 function cleanCategory(value: string | null | undefined): FeedbackKind {
   if (!value) return "improvement";
-  if (!isFeedbackKind(value)) throw new PostError("نوع فید‌بک باید خطا، تشکر یا بهبود باشد.");
+  if (!isFeedbackKind(value)) throw new PostError("Feedback type must be bug, praise or improvement.");
   return value;
 }
 
 export async function createPost(input: {
   authorId: string;
+  companyId?: string | null;
   type: "feedback" | "support";
   category?: string | null;
   product?: string | null;
@@ -361,7 +380,7 @@ export async function createPost(input: {
   const category = input.type === "feedback" ? cleanCategory(input.category) : null;
   const product = parseProduct(input.product);
   if (!product.ok) throw new PostError(product.message);
-  if (!product.value) throw new PostError("نام محصول را بنویس.");
+  if (!product.value && !input.companyId) throw new PostError("Add a product or company name.");
   const site = parseSiteUrl(input.productUrl);
   if (!site.ok) throw new PostError(site.message);
 
@@ -378,6 +397,7 @@ export async function createPost(input: {
       .insert(posts)
       .values({
         authorId: input.authorId,
+        companyId: input.companyId ?? null,
         type: input.type,
         category,
         product: productName,
@@ -388,7 +408,7 @@ export async function createPost(input: {
       })
       .returning({ id: posts.id });
 
-    if (!row) throw new PostError("ثبت فید‌بک انجام نشد.");
+    if (!row) throw new PostError("Could not save your feedback.");
 
     return row.id;
   });
@@ -398,7 +418,7 @@ export async function toggleUpvote(
   postId: string,
   userId: string,
 ): Promise<{ upvoted: boolean; count: number }> {
-  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("That feedback could not be found.");
 
   const db = getDb();
   const [post] = await db
@@ -408,7 +428,7 @@ export async function toggleUpvote(
     .limit(1);
 
   if (!post || post.type !== "feedback" || post.hidden) {
-    throw new PostError("این فید‌بک برای رای دادن در دسترس نیست.");
+    throw new PostError("This feedback is not open for voting.");
   }
 
   const [existing] = await db
@@ -432,9 +452,9 @@ export async function toggleUpvote(
 }
 
 export async function movePost(postId: string, status: string): Promise<void> {
-  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("That feedback could not be found.");
   if (!(ROADMAP_STATUSES as readonly string[]).includes(status)) {
-    throw new PostError("وضعیت انتخابی معتبر نیست.");
+    throw new PostError("That status is not valid.");
   }
 
   const updated = await getDb()
@@ -443,11 +463,26 @@ export async function movePost(postId: string, status: string): Promise<void> {
     .where(and(eq(posts.id, postId), eq(posts.type, "feedback")))
     .returning({ id: posts.id });
 
-  if (updated.length === 0) throw new PostError("فید‌بک پیدا نشد.");
+  if (updated.length === 0) throw new PostError("Feedback not found.");
+}
+
+export async function setPostStatus(postId: string, status: string): Promise<void> {
+  if (!isUuid(postId)) throw new PostError("That feedback could not be found.");
+  if (!(FEEDBACK_STATUSES as readonly string[]).includes(status)) {
+    throw new PostError("That status is not valid.");
+  }
+
+  const updated = await getDb()
+    .update(posts)
+    .set({ status, updatedAt: new Date() })
+    .where(and(eq(posts.id, postId), eq(posts.type, "feedback")))
+    .returning({ id: posts.id });
+
+  if (updated.length === 0) throw new PostError("Feedback not found.");
 }
 
 export async function setPostHidden(postId: string, hidden: boolean): Promise<void> {
-  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("That feedback could not be found.");
   await getDb()
     .update(posts)
     .set({ hidden, updatedAt: new Date() })
@@ -455,19 +490,19 @@ export async function setPostHidden(postId: string, hidden: boolean): Promise<vo
 }
 
 export async function removePost(postId: string): Promise<void> {
-  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("That feedback could not be found.");
   await getDb().delete(posts).where(eq(posts.id, postId));
 }
 
 export async function removeOwnPost(postId: string, authorId: string): Promise<void> {
-  if (!isUuid(postId)) throw new PostError("شناسه فید‌بک معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("That feedback could not be found.");
 
   const deleted = await getDb()
     .delete(posts)
     .where(and(eq(posts.id, postId), eq(posts.authorId, authorId)))
     .returning({ id: posts.id });
 
-  if (deleted.length === 0) throw new PostError("این فید‌بک پیدا نشد یا مال تو نیست.");
+  if (deleted.length === 0) throw new PostError("We could not find that post, or it is not yours.");
 }
 
 export async function answerSupport(
@@ -475,13 +510,13 @@ export async function answerSupport(
   reply: string,
   status: string,
 ): Promise<void> {
-  if (!isUuid(postId)) throw new PostError("شناسه درخواست معتبر نیست.");
+  if (!isUuid(postId)) throw new PostError("That request could not be found.");
   if (!(SUPPORT_STATUSES as readonly string[]).includes(status)) {
-    throw new PostError("وضعیت انتخابی معتبر نیست.");
+    throw new PostError("That status is not valid.");
   }
 
   const text = reply.trim();
-  if (text.length > 10000) throw new PostError("متن پاسخ بیش از حد بلند است.");
+  if (text.length > 10000) throw new PostError("The reply is too long.");
 
   const updated = await getDb()
     .update(posts)
@@ -489,10 +524,11 @@ export async function answerSupport(
     .where(and(eq(posts.id, postId), eq(posts.type, "support")))
     .returning({ id: posts.id });
 
-  if (updated.length === 0) throw new PostError("درخواست پشتیبانی پیدا نشد.");
+  if (updated.length === 0) throw new PostError("Support request not found.");
 }
 
 export async function createChangelogEntry(input: {
+  companyId?: string | null;
   title: string;
   body: string;
   postIds: string[];
@@ -504,10 +540,10 @@ export async function createChangelogEntry(input: {
   return getDb().transaction(async (tx) => {
     const [entry] = await tx
       .insert(changelogEntries)
-      .values({ title, body })
+      .values({ companyId: input.companyId ?? null, title, body })
       .returning({ id: changelogEntries.id });
 
-    if (!entry) throw new PostError("ثبت تغییرات انجام نشد.");
+    if (!entry) throw new PostError("Could not publish the update.");
 
     if (ids.length > 0) {
       const valid = await tx

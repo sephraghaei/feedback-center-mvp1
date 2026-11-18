@@ -22,7 +22,7 @@ export const POST = withApiLogging("/api/auth/profile", async (request, _context
   const clerkId = clerkAuth?.userId ?? null;
   if (!session && !clerkId) {
     log.warn("auth.profile.unauthorized");
-    return NextResponse.json({ message: "اول وارد حسابت شو." }, { status: 401 });
+    return NextResponse.json({ message: "Log in first." }, { status: 401 });
   }
 
   const sessionRef = userRef(session?.phone ?? session?.email ?? clerkId);
@@ -32,7 +32,7 @@ export const POST = withApiLogging("/api/auth/profile", async (request, _context
     input = await request.json();
   } catch {
     log.warn("auth.profile.invalid_body", { context: { userRef: sessionRef } });
-    return NextResponse.json({ message: "درخواست معتبر نیست." }, { status: 400 });
+    return NextResponse.json({ message: "That request is not valid." }, { status: 400 });
   }
 
   const result = validateProfile(input);

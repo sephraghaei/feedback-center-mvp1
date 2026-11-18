@@ -129,7 +129,7 @@ export function withApiLogging<Context = unknown>(
 
       const response = NextResponse.json(
         {
-          message: "یک مشکل پیش آمد. لطفا دوباره تلاش کن.",
+          message: "Something went wrong. Please try again.",
           requestId,
         },
         { status: 500 },

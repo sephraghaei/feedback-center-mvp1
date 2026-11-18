@@ -48,11 +48,11 @@ export default function PostCard({
               <ProductMark brand={brand} size={30} />
             ) : (
               <span className="fb-mark fb-mark-plain" aria-hidden="true">
-                ؟
+                ?
               </span>
             )}
             <span className="fb-card-product" dir="auto">
-              {brand?.display ?? "بدون محصول"}
+              {brand?.display ?? "No product"}
             </span>
           </span>
 
@@ -65,11 +65,11 @@ export default function PostCard({
             <PostOwnerActions
               postId={post.id}
               redirectTo={nextPath}
-              label={post.type === "support" ? "حذف درخواست" : "حذف فید‌بک"}
+              label={post.type === "support" ? "Delete request" : "Delete feedback"}
               confirmText={
                 post.type === "support"
-                  ? "این درخواست پشتیبانی برای همیشه حذف شود؟"
-                  : "این فید‌بک با همه کامنت‌هایش برای همیشه حذف شود؟"
+                  ? "Delete this support request for good?"
+                  : "Delete this feedback and all its comments for good?"
               }
             />
           ) : null}
