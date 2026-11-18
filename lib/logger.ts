@@ -111,7 +111,7 @@ function isSensitiveKey(key: string): boolean {
   );
 }
 
-const SECRET_ENV_NAMES = ["BETTER_AUTH_SECRET", "KAVENEGAR_API_KEY", "DATABASE_URL"];
+const SECRET_ENV_NAMES = ["BETTER_AUTH_SECRET", "CLERK_SECRET_KEY", "DATABASE_URL"];
 let cachedSecrets: string[] | null = null;
 
 function secretValues(): string[] {

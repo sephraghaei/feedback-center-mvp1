@@ -21,7 +21,7 @@ Deploy this project on Cloudflare Workers using `@opennextjs/cloudflare`. Do not
 
 - Never run migrations at startup. Run them in the deploy script or in CI before deploying.
 - Do not use sharp or libvips. Set `images.unoptimized` to `true` in the Next config, or use Cloudflare Images.
-- Never bake secrets into the build. Keep variable names in `.env`, use `.dev.vars` for local Wrangler, and set production values with `wrangler secret put` (`DATABASE_URL`, `KAVENEGAR_API_KEY`, `BETTER_AUTH_SECRET`, and so on).
+- Never bake secrets into the build. Keep variable names in `.env`, use `.dev.vars` for local Wrangler, and set production values with `wrangler secret put` (`DATABASE_URL`, `BETTER_AUTH_SECRET`, `CLERK_SECRET_KEY`, and so on).
 - If the database is Postgres, connect through Hyperdrive and add the binding in `wrangler.jsonc`.
 - Use the default npm registry. Remove any custom mirror or registry config.
 - Build command for Cloudflare Git integration: `npx opennextjs-cloudflare build`

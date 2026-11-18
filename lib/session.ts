@@ -1,55 +1,24 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { logger } from "./logger";
 import type { Session } from "./profile";
 
 export const SESSION_COOKIE = "fc_session";
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 
-const warned = new Set<string>();
-
-/**
- * A session key is needed to sign cookies. BETTER_AUTH_SECRET is the intended
- * one; the Kavenegar key is a server only secret too, so it can stand in and
- * keep login working when the dedicated variable has not been set yet.
- */
-function keyMaterial(): { value: string; source: string } | null {
-  const explicit = process.env.BETTER_AUTH_SECRET?.trim();
-  if (explicit) return { value: explicit, source: "BETTER_AUTH_SECRET" };
-
-  const kavenegar = process.env.KAVENEGAR_API_KEY?.trim();
-  if (kavenegar) return { value: kavenegar, source: "KAVENEGAR_API_KEY" };
-
-  return null;
-}
-
-export function sessionConfigured(): boolean {
-  return Boolean(keyMaterial()) || process.env.NODE_ENV !== "production";
-}
-
 function secret(): string {
-  const material = keyMaterial();
-  if (material) {
-    if (material.source !== "BETTER_AUTH_SECRET" && !warned.has("fallback")) {
-      warned.add("fallback");
-      logger.warn("auth.session.secret_fallback", {
-        message:
-          "BETTER_AUTH_SECRET is not set, signing sessions with KAVENEGAR_API_KEY. Set BETTER_AUTH_SECRET to use a dedicated key.",
-      });
-    }
-    return material.value;
-  }
+  const explicit = process.env.BETTER_AUTH_SECRET?.trim();
+  if (explicit) return explicit;
   if (process.env.NODE_ENV === "production") {
     throw new Error("No session secret available: set BETTER_AUTH_SECRET");
   }
   return "dev-only-session-secret";
 }
 
-export function getSessionSecret(): string {
-  return secret();
+export function sessionConfigured(): boolean {
+  return Boolean(process.env.BETTER_AUTH_SECRET?.trim()) || process.env.NODE_ENV !== "production";
 }
 
 function sign(body: string): string {
-  return createHmac("sha256", getSessionSecret()).update(`fc-session.v1.${body}`).digest("base64url");
+  return createHmac("sha256", secret()).update(`fc-session.v1.${body}`).digest("base64url");
 }
 
 export function seal(payload: unknown): string {
@@ -89,20 +58,6 @@ export function readSession(token: string | undefined | null): Session | null {
   if (!session || (typeof session.phone !== "string" && typeof session.email !== "string")) return null;
   if (typeof session.expiresAt !== "number" || session.expiresAt < Date.now()) return null;
   return session;
-}
-
-export function createSession(
-  identifier: { phone: string } | { email: string },
-  userId: string,
-): Session {
-  const now = Date.now();
-  return {
-    userId,
-    ...identifier,
-    method: "phone" in identifier ? "phone" : "email",
-    createdAt: now,
-    expiresAt: now + SESSION_MAX_AGE * 1000,
-  };
 }
 
 export const sessionCookieOptions = {

@@ -1,25 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import ComposerButton from "./composer-button";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 
 function ShotStart() {
   return (
     <>
       <div className="fb-shot-head">
-        <span className="fb-shot-brand">فید‌بک‌ها</span>
-        <span className="fb-shot-pill">جدید</span>
+        <span className="fb-shot-brand">Vasa boards</span>
+        <span className="fb-shot-pill">New</span>
       </div>
       <div className="fb-shot-item is-ghost">
-        <span className="fb-shot-num">۱</span>
+        <span className="fb-shot-num">1</span>
         <span className="fb-shot-lines">
           <span className="fb-shot-line w80" />
           <span className="fb-shot-line w50" />
         </span>
       </div>
       <div className="fb-shot-item is-ghost">
-        <span className="fb-shot-num">۲</span>
+        <span className="fb-shot-num">2</span>
         <span className="fb-shot-lines">
           <span className="fb-shot-line w65" />
           <span className="fb-shot-line w40" />
@@ -27,8 +34,8 @@ function ShotStart() {
       </div>
       <div className="fb-shot-empty">
         <span className="fb-shot-plus" />
-        <strong>اینجا یه چیزی کمه</strong>
-        <span>هر ایده‌ای داری، همین‌جا بنویس</span>
+        <strong>No feedback yet</strong>
+        <span>Every board starts with one honest note</span>
       </div>
     </>
   );
@@ -38,15 +45,15 @@ function ShotWrite() {
   return (
     <>
       <div className="fb-shot-head">
-        <span className="fb-shot-brand">فید‌بک جدید</span>
-        <span className="fb-shot-pill">پیش‌نویس</span>
+        <span className="fb-shot-brand">New feedback</span>
+        <span className="fb-shot-pill">Draft</span>
       </div>
       <div className="fb-shot-field">
-        <span className="fb-shot-label">عنوان</span>
-        <span className="fb-shot-input">دکمه پرداخت توی موبایل کار نمی‌کنه</span>
+        <span className="fb-shot-label">Title</span>
+        <span className="fb-shot-input">Checkout button breaks on mobile</span>
       </div>
       <div className="fb-shot-field is-grow">
-        <span className="fb-shot-label">توضیح</span>
+        <span className="fb-shot-label">Details</span>
         <span className="fb-shot-box">
           <span className="fb-shot-line w90" />
           <span className="fb-shot-line w75" />
@@ -55,10 +62,10 @@ function ShotWrite() {
         </span>
       </div>
       <div className="fb-shot-chips">
-        <span className="fb-shot-chip">فروشگاه</span>
-        <span className="fb-shot-chip is-soft">موبایل</span>
+        <span className="fb-shot-chip">Storefront</span>
+        <span className="fb-shot-chip is-soft">Mobile</span>
       </div>
-      <span className="fb-shot-btn">فیدبک بده</span>
+      <span className="fb-shot-btn">Post feedback</span>
     </>
   );
 }
@@ -67,48 +74,126 @@ function ShotVote() {
   return (
     <>
       <div className="fb-shot-head">
-        <span className="fb-shot-brand">فید‌بک‌ها</span>
-        <span className="fb-shot-pill">داغ‌ترین</span>
+        <span className="fb-shot-brand">Vasa boards</span>
+        <span className="fb-shot-pill">Top voted</span>
       </div>
       <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
-          <span className="fb-shot-arrow" />۲۴
+          <span className="fb-shot-arrow" />
+          <span className="fb-shot-count">24</span>
         </span>
         <span className="fb-shot-lines">
           <span className="fb-shot-line w85" />
           <span className="fb-shot-line w55" />
         </span>
-        <span className="fb-shot-meta">۸ کامنت</span>
+        <span className="fb-shot-meta">8 comments</span>
       </div>
       <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
-          <span className="fb-shot-arrow" />۱۶
+          <span className="fb-shot-arrow" />
+          <span className="fb-shot-count">16</span>
         </span>
         <span className="fb-shot-lines">
           <span className="fb-shot-line w70" />
           <span className="fb-shot-line w45" />
         </span>
-        <span className="fb-shot-meta">۳ کامنت</span>
+        <span className="fb-shot-meta">3 comments</span>
       </div>
       <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
-          <span className="fb-shot-arrow" />۱۱
+          <span className="fb-shot-arrow" />
+          <span className="fb-shot-count">11</span>
         </span>
         <span className="fb-shot-lines">
           <span className="fb-shot-line w60" />
           <span className="fb-shot-line w35" />
         </span>
-        <span className="fb-shot-meta">۱ کامنت</span>
+        <span className="fb-shot-meta">1 comment</span>
       </div>
       <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
-          <span className="fb-shot-arrow" />۸
+          <span className="fb-shot-arrow" />
+          <span className="fb-shot-count">8</span>
         </span>
         <span className="fb-shot-lines">
           <span className="fb-shot-line w75" />
           <span className="fb-shot-line w40" />
         </span>
-        <span className="fb-shot-meta">۲ کامنت</span>
+        <span className="fb-shot-meta">2 comments</span>
+      </div>
+    </>
+  );
+}
+
+function ShotPlan() {
+  return (
+    <>
+      <div className="fb-shot-head">
+        <span className="fb-shot-brand">Roadmap</span>
+        <span className="fb-shot-pill">Public</span>
+      </div>
+      <div className="fb-shot-board">
+        <div className="fb-shot-col">
+          <span className="fb-shot-col-title">Planned</span>
+          <span className="fb-shot-card">
+            <i />
+            <i />
+          </span>
+          <span className="fb-shot-card">
+            <i />
+            <i />
+          </span>
+        </div>
+        <div className="fb-shot-col is-live">
+          <span className="fb-shot-col-title">Building</span>
+          <span className="fb-shot-card">
+            <i />
+            <i />
+          </span>
+          <span className="fb-shot-progress">
+            <i />
+          </span>
+        </div>
+        <div className="fb-shot-col">
+          <span className="fb-shot-col-title">Shipped</span>
+          <span className="fb-shot-card">
+            <i />
+            <i />
+          </span>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function ShotRelease() {
+  return (
+    <>
+      <div className="fb-shot-head">
+        <span className="fb-shot-brand">Updates</span>
+        <span className="fb-shot-pill">v3.2</span>
+      </div>
+      <div className="fb-shot-release-block">
+        <span className="fb-shot-release">Dark mode is live</span>
+        <span className="fb-shot-release-meta">Published today, 2 feedback items closed</span>
+      </div>
+      <div className="fb-shot-check">
+        <i />
+        <span>Dark mode across the public board</span>
+      </div>
+      <div className="fb-shot-check">
+        <i />
+        <span>Saved filters per board</span>
+      </div>
+      <div className="fb-shot-versions">
+        <div className="fb-shot-version">
+          <span>v3.1</span>
+          <i />
+        </div>
+        <div className="fb-shot-version">
+          <span>v3.0</span>
+          <i />
+        </div>
       </div>
     </>
   );
@@ -121,53 +206,106 @@ type Chapter = {
   accent: "blue" | "violet" | "rose" | "amber" | "green";
   icon: ReactNode;
   scene: ReactNode;
-  cta: { kind: "composer"; label: string } | { kind: "link"; href: string; label: string };
+  href: string;
+  cta: string;
 };
 
-const CHAPTERS: Chapter[] = [
-  {
-    title: "یه چیزی کمه",
-    body: "یه مشکل، ایده یا جای بهتر شدن پیدا کردی؟ همون اول ماجراست. لازم نیست متن آماده داشته باشی.",
-    url: "vasa.app/feed",
-    accent: "blue",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M9.2 18h5.6M10.2 21h3.6" />
-        <path d="M12 3a6 6 0 0 0-3.4 10.9c.6.5 1 1.2 1.1 2h4.6c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z" />
-      </svg>
-    ),
-    scene: <ShotStart />,
-    cta: { kind: "composer", label: "فید‌بک بده" },
-  },
-  {
-    title: "می‌نویسی",
-    body: "چی شد و چی می‌خوای رو بنویس. یه عنوان روشن و دو سه خط توضیح کافیه تا بقیه سریع بفهمن.",
-    url: "vasa.app/new",
-    accent: "violet",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4.5 19.5l.9-3.6L15 6.3l3.2 3.2L8.6 19.1z" />
-        <path d="M13.9 7.4l3.2 3.2" />
-      </svg>
-    ),
-    scene: <ShotWrite />,
-    cta: { kind: "link", href: "/feed", label: "بقیه چطور نوشتن" },
-  },
-  {
-    title: "رای می‌گیره",
-    body: "بقیه می‌خونن، رای می‌دن و کامنت می‌ذارن. هرچی رای بیشتر، فید‌بک زودتر بررسی می‌شه.",
-    url: "vasa.app/feed",
-    accent: "rose",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 19.5V6.5" />
-        <path d="M6.8 11.7L12 6.5l5.2 5.2" />
-      </svg>
-    ),
-    scene: <ShotVote />,
-    cta: { kind: "link", href: "/feed", label: "فید‌بک‌ها" },
-  },
-];
+function chapterLinks(slug?: string) {
+  const board = slug ? `/c/${slug}` : "#boards";
+  const site = slug ? `vasa.app/c/${slug}` : "vasa.app";
+  return {
+    board,
+    newPost: slug ? `${board}/new` : "#boards",
+    roadmap: slug ? `${board}/roadmap` : "/workspace",
+    updates: slug ? `${board}/updates` : "/workspace",
+    urlBoard: site,
+    urlNewPost: `${site}/new`,
+    urlRoadmap: slug ? `${site}/roadmap` : "vasa.app/workspace",
+    urlUpdates: slug ? `${site}/updates` : "vasa.app/workspace",
+  };
+}
+
+function buildChapters(slug?: string): Chapter[] {
+  const links = chapterLinks(slug);
+  return [
+    {
+      title: "A gap shows up",
+      body: "A customer hits a bug, a missing feature or a better way. That is where the loop starts, and no draft is needed to begin.",
+      url: links.urlBoard,
+      accent: "blue",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9.2 18h5.6M10.2 21h3.6" />
+          <path d="M12 3a6 6 0 0 0-3.4 10.9c.6.5 1 1.2 1.1 2h4.6c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z" />
+        </svg>
+      ),
+      scene: <ShotStart />,
+      href: links.newPost,
+      cta: "Start with a note",
+    },
+    {
+      title: "Write it down",
+      body: "A clear title and two lines of detail are enough for everyone on the board to understand what happened and what you want.",
+      url: links.urlNewPost,
+      accent: "violet",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4.5 19.5l.9-3.6L15 6.3l3.2 3.2L8.6 19.1z" />
+          <path d="M13.9 7.4l3.2 3.2" />
+        </svg>
+      ),
+      scene: <ShotWrite />,
+      href: links.board,
+      cta: "See what others wrote",
+    },
+    {
+      title: "Votes decide",
+      body: "Customers vote and comment, so the team sees what matters most to the most people, not just what is loudest.",
+      url: links.urlBoard,
+      accent: "rose",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 19.5V6.5" />
+          <path d="M6.8 11.7L12 6.5l5.2 5.2" />
+        </svg>
+      ),
+      scene: <ShotVote />,
+      href: links.board,
+      cta: "Open the board",
+    },
+    {
+      title: "The team plans",
+      body: "Triage moves the note along a public roadmap, and the status changes for everyone watching it.",
+      url: links.urlRoadmap,
+      accent: "amber",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="4" y="4" width="4.6" height="9" rx="1.3" />
+          <rect x="9.7" y="4" width="4.6" height="16" rx="1.3" />
+          <rect x="15.4" y="4" width="4.6" height="6" rx="1.3" />
+        </svg>
+      ),
+      scene: <ShotPlan />,
+      href: links.roadmap,
+      cta: "Walk the roadmap",
+    },
+    {
+      title: "It ships",
+      body: "A release note closes the loop: published updates mark the linked feedback as shipped and subscribers hear about it.",
+      url: links.urlUpdates,
+      accent: "green",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="8.4" />
+          <path d="M8.4 12.2l2.5 2.5 4.9-5.2" />
+        </svg>
+      ),
+      scene: <ShotRelease />,
+      href: links.updates,
+      cta: "Read the updates",
+    },
+  ];
+}
 
 function probeOffset() {
   return window.innerHeight * (window.matchMedia("(max-width: 900px)").matches ? 0.68 : 0.46);
@@ -181,8 +319,9 @@ function chapterCenter(row: HTMLLIElement | null) {
   return row.getBoundingClientRect().top + head.offsetHeight / 2;
 }
 
-export default function HomeStory() {
+export default function HomeStory({ slug }: { slug?: string }) {
   const uid = useId();
+  const chapters = buildChapters(slug);
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState<"down" | "up">("down");
   const activeRef = useRef(0);
@@ -353,22 +492,34 @@ export default function HomeStory() {
     setActive(index);
   }
 
-  const current = CHAPTERS[active];
+  const current = chapters[active];
 
   return (
     <section className="fb-section fb-story" aria-labelledby="story-title">
-      <div className="fb-section-head">
+      <div className="fb-section-head" data-reveal>
         <div>
           <h2 id="story-title" className="fb-section-title">
-            از یک جمله تا یه فید‌بک پررای
+            From a first note to a shipped release
           </h2>
-          <p className="fb-section-sub">با اسکرول، مسیر یه فید‌بک رو ببین: از نوشتن تا رأی گرفتن.</p>
+          <p className="fb-section-sub">
+            Scroll the story: one piece of feedback as it is written, voted on, planned and
+            shipped.
+          </p>
+          <div className="fb-story-meter" aria-hidden="true">
+            {chapters.map((chapter, index) => (
+              <span
+                key={chapter.title}
+                data-accent={chapter.accent}
+                className={index === active ? "is-on" : ""}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
       <div className="fb-story-grid" ref={gridRef}>
         <ol className="fb-story-track">
-          {CHAPTERS.map((chapter, index) => {
+          {chapters.map((chapter, index) => {
             const isActive = index === active;
             return (
               <li
@@ -398,13 +549,9 @@ export default function HomeStory() {
                 <div className="fb-story-reveal" id={`${uid}-panel-${index}`} inert={!isActive}>
                   <div className="fb-story-reveal-inner">
                     <p className="fb-story-chapter-body">{chapter.body}</p>
-                    {chapter.cta.kind === "composer" ? (
-                      <ComposerButton className="fb-story-link">{chapter.cta.label}</ComposerButton>
-                    ) : (
-                      <Link href={chapter.cta.href} className="fb-story-link">
-                        {chapter.cta.label}
-                      </Link>
-                    )}
+                    <Link href={chapter.href} className="fb-story-link">
+                      {chapter.cta}
+                    </Link>
                   </div>
                 </div>
               </li>
@@ -419,6 +566,7 @@ export default function HomeStory() {
             data-accent={current.accent}
             data-dir={direction}
           >
+            <span key={active} className="fb-story-beam" aria-hidden="true" />
             <div className="fb-story-frame" data-tilt>
               <div className="fb-story-bar">
                 <span className="fb-story-window" aria-hidden="true">
@@ -433,7 +581,7 @@ export default function HomeStory() {
                 </span>
               </div>
               <div className="fb-story-screen" aria-hidden="true">
-                {CHAPTERS.map((chapter, index) => (
+                {chapters.map((chapter, index) => (
                   <div
                     key={chapter.title}
                     className={`fb-story-shot ${index === active ? "is-active" : ""}`}

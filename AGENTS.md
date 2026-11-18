@@ -9,7 +9,6 @@ The full stack lives in [docs/main-stack.md](docs/main-stack.md), with the detai
 - [docs/agent.md](docs/agent.md)
 - [docs/cloudflare.md](docs/cloudflare.md)
 - [docs/authentication.md](docs/authentication.md)
-- [docs/sms.md](docs/sms.md)
 - [docs/persian.md](docs/persian.md)
 
 <!-- BEGIN:nextjs-agent-rules -->

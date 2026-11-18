@@ -7,9 +7,8 @@ The project has one small logging layer in `lib/logger.ts`. It has no runtime de
 - `instrumentation.ts` logs server startup and errors captured by Next.js outside a route handler, such as rendering and proxy errors.
 - `lib/api-logger.ts` wraps every API route. It logs the request id, method, path, status and duration. Unexpected route exceptions are logged and converted to a safe 500 response.
 - `lib/client-logger.ts` logs browser interactions and browser errors. Client entries are shown locally and forwarded in small batches to `app/api/logs/route.ts`, which writes them through the same server logger.
-- `app/components/auth-flow.tsx` logs important login actions: opening the modal, requesting a code, verifying a code, saving a profile and logout.
+- `app/components/auth-flow.tsx` logs important login actions: opening and closing the modal, saving a profile and logout.
 - `app/error.tsx` and `app/global-error.tsx` log render errors caught by the React error boundaries.
-- `lib/sms.ts` logs Kavenegar failures, including network errors and rejected provider responses.
 
 ## Entry shape
 
@@ -24,9 +23,9 @@ Every entry has the same fields:
   "context": {
     "service": "feedback-center",
     "requestId": "9f2c...",
-    "route": "/api/auth/request-otp",
+    "route": "/api/auth/profile",
     "method": "POST",
-    "path": "/api/auth/request-otp",
+    "path": "/api/auth/profile",
     "status": 200,
     "durationMs": 42,
     "userRef": "1a2b3c4d5e6f7788"
@@ -39,9 +38,9 @@ Every entry has the same fields:
 }
 ```
 
-Event names use `area.action`, for example `auth.otp.sent`, `auth.profile.updated`, `client.page.view`, `sms.kavenegar.rejected` and `api.request.failed`. The event field is stable, so it is the best field to search and filter on.
+Event names use `area.action`, for example `auth.profile.updated`, `client.page.view`, `client.ui.auth.modal_opened` and `api.request.failed`. The event field is stable, so it is the best field to search and filter on.
 
-`userRef` is an HMAC of the user identifier. It is stable across requests and cannot be reversed into a phone number without the server secret.
+`userRef` is an HMAC of the user identifier. It is stable across requests and cannot be reversed into the raw identifier without the server secret.
 
 ## Levels and settings
 
@@ -51,7 +50,7 @@ Event names use `area.action`, for example `auth.otp.sent`, `auth.profile.update
 | `NEXT_PUBLIC_LOG_LEVEL` | `INFO` | Minimum browser level, also forwarded to the server |
 | `LOG_FORMAT` | `pretty` in development, `json` in production | `json` for machines, `pretty` for humans |
 
-Set `LOG_LEVEL=DEBUG` temporarily to see request start details, SMS success and other low volume diagnostics. Keep `INFO` in production so normal traffic does not flood the logs.
+Set `LOG_LEVEL=DEBUG` temporarily to see request start details and other low volume diagnostics. Keep `INFO` in production so normal traffic does not flood the logs.
 
 ## Reading and filtering
 
@@ -85,9 +84,8 @@ Browser entries are prefixed with `client.` on the server, so `page.view` become
 The logger never receives request bodies, cookies, authorization headers or query strings. Before writing, it redacts:
 
 - Sensitive context keys such as password, token, secret, cookie, api key, otp, code, phone, mobile, email, name, age, company and address.
-- Secret values from `BETTER_AUTH_SECRET`, `KAVENEGAR_API_KEY` and `DATABASE_URL` if they appear inside a message or error.
+- Secret values from `BETTER_AUTH_SECRET`, `CLERK_SECRET_KEY` and `DATABASE_URL` if they appear inside a message or error.
 - Email addresses, Iranian mobile numbers and bearer tokens found in text.
-- OTP codes are never logged. Development logs only say that a development code is ready; the code itself stays in the response and the UI.
 
 Client payloads are limited to 24 KB and 20 entries per request, and each field is truncated before it is written.
 

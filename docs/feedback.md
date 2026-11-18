@@ -36,10 +36,10 @@ Support requests must never be visible to anyone but their author and admins. Th
 
 The database `postgres` role has `rolbypassrls`, so the RLS policies in `drizzle/0004_feedback_guards.sql` are defense in depth, not the boundary that keeps support private. Keep the checks in `lib/feedback/posts.ts` intact.
 
-The signed in session is the existing `fc_session` cookie. The admin panel keeps its own `fc_admin` password cookie; the feedback admin pages require that cookie plus `users.role = 'admin'`. Set the role by hand:
+Signed-in requests use the Clerk session. The `fc_session` cookie is read only for accounts created before the switch, and new sign-ins never create one. The admin panel keeps its own `fc_admin` password cookie; the feedback admin pages require that cookie plus `users.role = 'admin'`. Set the role by hand:
 
 ```sql
-update users set role = 'admin' where phone = '09...';
+update users set role = 'admin' where clerk_id = 'user_...';
 ```
 
 ## Uploads
@@ -61,4 +61,4 @@ npm run migrate
 npm run seed
 ```
 
-`npm run seed` is idempotent. It replaces only its own rows: users `09120000001` to `09120000004`, `admin@feedback.local` and the demo changelog entry it creates. It also removes no other user or entry. Log in as `admin@feedback.local` through the email flow (development answers with `devCode`) to see the admin role, and use the phone numbers through the SMS flow (also `devCode` in development) to see the customer view and the support privacy behavior between two accounts.
+`npm run seed` is idempotent. It replaces only its own rows: users `09120000001` to `09120000004`, `admin@feedback.local` and the demo changelog entry it creates. It also removes no other user or entry. The seeded accounts exist to carry the demo posts, votes and support requests. Sign in with your own email or Google account, then set `role = 'admin'` on that row to see the admin role, and open a second account to see the customer view and the support privacy behavior between two accounts.

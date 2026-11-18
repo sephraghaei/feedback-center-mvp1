@@ -3,11 +3,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { CSSProperties } from "react";
 import AuthFlow from "@/app/components/auth-flow";
+import HomeStory from "@/app/components/feedback/home-story";
 import PointerFx from "@/app/components/feedback/pointer-fx";
 import ScrollReveal from "@/app/components/feedback/scroll-reveal";
 import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-buttons";
 import { listCompanies } from "@/lib/companies";
-import { OTP_LENGTH } from "@/lib/config";
 import { formatNumber } from "@/lib/feedback/labels";
 import { getViewer } from "@/lib/feedback/viewer";
 import { getProfile } from "@/lib/user-store";
@@ -42,21 +42,6 @@ const MODES = [
     ],
     href: "/workspace",
     link: "Open the workspace",
-  },
-];
-
-const STEPS = [
-  {
-    title: "Customers write",
-    body: "A customer picks a board and posts an idea, a bug or a compliment.",
-  },
-  {
-    title: "Everyone votes",
-    body: "Votes and comments show the team what actually matters, not just what is loudest.",
-  },
-  {
-    title: "The team ships",
-    body: "The company moves the idea through the roadmap and publishes an update when it lands.",
   },
 ];
 
@@ -103,7 +88,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               Company panel
             </Link>
           </div>
-          <div className="fb-hero-demo" aria-hidden="true">
+          <div className="fb-hero-demo" data-tilt aria-hidden="true">
             <span className="fb-demo-vote">
               <span className="fb-demo-arrow" />
               <strong>42</strong>
@@ -146,6 +131,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           </article>
         ))}
       </div>
+
+      <HomeStory slug={companies[0]?.slug} />
 
       <section className="fb-section" id="boards" aria-labelledby="boards-title">
         <div className="fb-section-head" data-reveal>
@@ -204,33 +191,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         )}
       </section>
 
-      <section className="fb-section" aria-labelledby="steps-title">
-        <div className="fb-section-head" data-reveal>
-          <div>
-            <h2 id="steps-title" className="fb-section-title">
-              How it works
-            </h2>
-            <p className="fb-section-sub">One loop, from the first idea to the shipped note.</p>
-          </div>
-        </div>
-        <ol className="fb-steps">
-          {STEPS.map((step, index) => (
-            <li
-              key={step.title}
-              className="fb-step"
-              data-reveal
-              style={{ "--i": index } as CSSProperties}
-            >
-              <span className="fb-step-num" aria-hidden="true">
-                {index + 1}
-              </span>
-              <strong>{step.title}</strong>
-              <span>{step.body}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
-
       <section id="account" className="fb-section" aria-labelledby="account-title">
         <div className="fb-section-head" data-reveal>
           <div>
@@ -269,9 +229,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         ) : (
           <div className="fb-account" data-reveal>
             <p className="fb-lede">
-              Log in with your mobile, email or Google account to post feedback and vote.
+              Log in with your email or Google account to post feedback and vote.
             </p>
-            <AuthFlow status={status} codeLength={OTP_LENGTH} nextPath={nextPath} />
+            <AuthFlow status={status} nextPath={nextPath} />
           </div>
         )}
       </section>

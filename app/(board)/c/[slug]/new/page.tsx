@@ -52,10 +52,7 @@ export default async function NewFeedbackPage({
               href={`/?next=${encodeURIComponent(here)}#account`}
               className="bd-btn bd-btn-primary"
             >
-              Continue with phone or email
-            </Link>
-            <Link href={`/sign-in?redirect_url=${encodeURIComponent(here)}`} className="bd-btn">
-              Continue with Google
+              Continue with email or Google
             </Link>
           </div>
         </div>

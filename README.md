@@ -1,10 +1,10 @@
 # وسا
 
-A Next.js feedback center, RTL and Persian, with Dastkhat as the main font and Noto Kufi Arabic for the wordmark. Guests read the feed, the roadmap and the changelog. Signed in customers post feedback or a private support request, upload images and PDFs, and vote. Admins triage posts and publish changelog entries. Login runs through phone OTP, email OTP or Clerk. The feedback details are in [docs/feedback.md](docs/feedback.md).
+A Next.js feedback center, RTL and Persian, with Dastkhat as the main font and Noto Kufi Arabic for the wordmark. Guests read the feed, the roadmap and the changelog. Signed in customers post feedback or a private support request, upload images and PDFs, and vote. Admins triage posts and publish changelog entries. Login runs through Clerk with email or Google. The feedback details are in [docs/feedback.md](docs/feedback.md).
 
 ## Stack
 
-Next.js (app router) with React 19 and TypeScript, deployed on Vercel. Users, OTP verifications and profiles are stored in Postgres through Drizzle ORM. The full stack is documented in [docs/main-stack.md](docs/main-stack.md) and the related files in [docs/](docs). Logging conventions are in [docs/logging.md](docs/logging.md).
+Next.js (app router) with React 19 and TypeScript, deployed on Vercel. Users and profiles are stored in Postgres through Drizzle ORM. The full stack is documented in [docs/main-stack.md](docs/main-stack.md) and the related files in [docs/](docs). Logging conventions are in [docs/logging.md](docs/logging.md).
 
 ## Local development
 
@@ -26,7 +26,7 @@ Open http://localhost:3000. Node 22 is required. After changing `lib/db/schema.t
 
 Every variable lives in `.env` (see `.env.example` for the names). Production values are set in the Vercel dashboard, never in the repository.
 
-OTP behavior is configured by `OTP_LENGTH`, `OTP_EXPIRES_IN_SECONDS` and `OTP_ALLOWED_ATTEMPS`; Kavenegar uses `KAVENEGAR_API_KEY`, `KAVENEGAR_TEMPLATE` and `KAVENEGAR_SENDER_TYPE`. `BETTER_AUTH_SECRET` signs the session cookie. If it is missing, the signing key is derived from `KAVENEGAR_API_KEY` so login still works; set a dedicated secret to keep the two independent. With neither set, production auth routes answer 503.
+`BETTER_AUTH_SECRET` signs the legacy session cookie that older accounts still carry; new sign-ins do not create one.
 
 `DATABASE_URL` is the Postgres connection string, for example `postgresql://USER@localhost:5432/feedback_center`. If it is absent, the app also accepts the values that managed Postgres integrations on Vercel inject: `POSTGRES_URL`, `POSTGRES_PRISMA_URL` and `POSTGRES_URL_NON_POOLING`, in that order. Run `npm run migrate` against that database before the app starts.
 
@@ -36,9 +36,7 @@ When the host ends in `.supabase.co` or `.supabase.com`, the app removes the `ss
 
 Logging uses `LOG_LEVEL`, `LOG_FORMAT` and `NEXT_PUBLIC_LOG_LEVEL`. Production defaults to structured JSON at `INFO`; see [docs/logging.md](docs/logging.md) for levels, fields and filtering.
 
-Login works with a phone number through Kavenegar SMS or with an email through Resend. `KAVENEGAR_API_KEY` enables SMS codes; `RESEND_API_KEY` and `RESEND_FROM` enable email codes. Without either provider the request still succeeds in development and returns `devCode` for the interface.
-
-Email and Google sign-in run through Clerk. `npx clerk init` writes development keys to `.env.local` (gitignored); in production set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` from the Clerk dashboard. The interface stays Persian and RTL through the `faIR` localization. Clerk users are linked to the same `users`/`profiles` tables by `clerk_id`, so the profile step and account card behave the same as phone login.
+Sign-in runs through Clerk with email or Google. `npx clerk init` writes development keys to `.env.local` (gitignored); in production set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` from the Clerk dashboard. Clerk users are linked to the same `users`/`profiles` tables by `clerk_id`; the account card offers a profile step until a display name is saved.
 
 File uploads are disabled: the composer has no attachments and profiles have no avatar upload. Existing media URLs still render through `NEXT_PUBLIC_SUPABASE_URL`, and no server-only Supabase key is needed.
 
@@ -67,12 +65,6 @@ BETTER_AUTH_SECRET
 ADMIN_PASSWORD
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 CLERK_SECRET_KEY
-OTP_LENGTH
-OTP_EXPIRES_IN_SECONDS
-OTP_ALLOWED_ATTEMPS
-KAVENEGAR_API_KEY
-KAVENEGAR_TEMPLATE
-KAVENEGAR_SENDER_TYPE
 LOG_LEVEL
 LOG_FORMAT
 NEXT_PUBLIC_LOG_LEVEL
@@ -89,7 +81,7 @@ DATABASE_URL="postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pool
 curl -s https://feedback-center-mvp1.vercel.app/api/health
 ```
 
-A healthy deploy answers `{"ok":true,"database":"connected","tables":{"users":true,"profiles":true,"verifications":true}}`. A deployment that starts without a connection string logs `app.database.missing` and phone login answers 500, so check `/api/health` and the function logs after the first deploy.
+A healthy deploy answers `{"ok":true,"database":"connected","tables":{"users":true,"profiles":true,"verifications":true}}`. A deployment that starts without a connection string logs `app.database.missing` and signed-in pages return errors, so check `/api/health` and the function logs after the first deploy.
 
 4. Deploy. Every push to `main` redeploys the project, and every branch and pull request gets a preview deployment.
 
