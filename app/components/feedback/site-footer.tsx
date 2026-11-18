@@ -2,15 +2,14 @@ import Link from "next/link";
 import BrandMark from "@/app/components/brand-mark";
 import ComposerButton from "./composer-button";
 import TourTrigger from "./tour-trigger";
-import WipBadge from "./wip-badge";
 
-const COLUMNS: { title: string; links: { href: string; label: string; wip?: boolean }[] }[] = [
+const COLUMNS = [
   {
     title: "محصول",
     links: [
       { href: "/feed", label: "فیدبک‌ها" },
-      { href: "/roadmap", label: "نقشه راه", wip: true },
-      { href: "/changelog", label: "تغییرات", wip: true },
+      { href: "/roadmap", label: "نقشه راه" },
+      { href: "/changelog", label: "تغییرات" },
     ],
   },
   {
@@ -48,8 +47,7 @@ export default function SiteFooter() {
                   {column.links.map((link) => (
                     <li key={link.href}>
                       <Link href={link.href} className="footer-link">
-                        {link.label}{" "}
-                        {link.wip ? <WipBadge /> : null}
+                        {link.label}
                       </Link>
                     </li>
                   ))}

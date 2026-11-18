@@ -3,7 +3,6 @@ import Link from "next/link";
 import BrandMark from "@/app/components/brand-mark";
 import ComposerButton from "@/app/components/feedback/composer-button";
 import Markdown from "@/app/components/feedback/markdown";
-import WipBadge from "@/app/components/feedback/wip-badge";
 import { faDate } from "@/lib/feedback/labels";
 import { listChangelog } from "@/lib/feedback/changelog";
 
@@ -20,8 +19,7 @@ export default async function ChangelogPage() {
       <section className="fb-hero fb-page-head">
         <p className="fb-eyebrow">
           <BrandMark className="eyebrow-mark" simple />
-          تغییرات{" "}
-          <WipBadge />
+          تغییرات
         </p>
         <h1 className="fb-title">هر چیزی که منتشر شد</h1>
         <p className="fb-lede">

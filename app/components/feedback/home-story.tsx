@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import ComposerButton from "./composer-button";
-import WipBadge from "./wip-badge";
+import SoonBadge from "./soon-badge";
 
 function ShotStart() {
   return (
@@ -221,7 +221,7 @@ type Chapter = {
   accent: "blue" | "violet" | "rose" | "amber" | "green";
   icon: ReactNode;
   scene: ReactNode;
-  cta: { kind: "composer"; label: string } | { kind: "link"; href: string; label: string; wip?: boolean };
+  cta: { kind: "composer"; label: string } | { kind: "link"; href: string; label: string; soon?: boolean };
 };
 
 const CHAPTERS: Chapter[] = [
@@ -280,7 +280,7 @@ const CHAPTERS: Chapter[] = [
       </svg>
     ),
     scene: <ShotRoadmap />,
-    cta: { kind: "link", href: "/roadmap", label: "نقشه راه", wip: true },
+    cta: { kind: "link", href: "/roadmap", label: "نقشه راه", soon: true },
   },
   {
     title: "منتشر می‌شه",
@@ -294,7 +294,7 @@ const CHAPTERS: Chapter[] = [
       </svg>
     ),
     scene: <ShotShip />,
-    cta: { kind: "link", href: "/changelog", label: "تغییرات", wip: true },
+    cta: { kind: "link", href: "/changelog", label: "تغییرات", soon: true },
   },
 ];
 
@@ -532,7 +532,7 @@ export default function HomeStory() {
                     ) : (
                       <Link href={chapter.cta.href} className="fb-story-link">
                         {chapter.cta.label}{" "}
-                        {chapter.cta.wip ? <WipBadge /> : null}
+                        {chapter.cta.soon ? <SoonBadge /> : null}
                       </Link>
                     )}
                   </div>
