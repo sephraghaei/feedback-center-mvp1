@@ -1,4 +1,22 @@
+import type { Locale } from "@/lib/i18n/locale";
+
 export const SEX_OPTIONS = ["Female", "Male", "Prefer not to say"] as const;
+
+const SEX_LABELS_FA: Record<string, string> = {
+  Female: "زن",
+  Male: "مرد",
+  "Prefer not to say": "ترجیح می‌دهم نگویم",
+  زن: "زن",
+  مرد: "مرد",
+  "ترجیح می‌دهم نگویم": "ترجیح می‌دهم نگویم",
+};
+
+const LEGACY_SEX_OPTIONS = ["زن", "مرد", "ترجیح می‌دهم نگویم"];
+
+export function sexLabel(value: string, locale: Locale): string {
+  if (locale !== "fa") return value;
+  return SEX_LABELS_FA[value] ?? value;
+}
 
 export const MAX_BIO_LENGTH = 280;
 
@@ -57,7 +75,7 @@ export function validateProfile(input: unknown): { profile: Profile } | { error:
 
   if (data.sex !== undefined && data.sex !== null && data.sex !== "") {
     const sex = String(data.sex);
-    if (!(SEX_OPTIONS as readonly string[]).includes(sex)) {
+    if (![...SEX_OPTIONS, ...LEGACY_SEX_OPTIONS].includes(sex)) {
       return { error: "Pick one of the gender options." };
     }
     profile.sex = sex;

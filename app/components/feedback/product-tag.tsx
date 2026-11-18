@@ -1,4 +1,5 @@
 import { productBrand } from "@/lib/feedback/product";
+import { getT } from "@/lib/i18n/server";
 import ProductMark from "./product-mark";
 
 function ExternalIcon() {
@@ -21,13 +22,14 @@ function ExternalIcon() {
   );
 }
 
-export default function ProductTag({
+export default async function ProductTag({
   product,
   productUrl,
 }: {
   product: string | null;
   productUrl?: string | null;
 }) {
+  const t = await getT();
   const brand = productBrand(product, productUrl);
   if (!brand) return null;
 
@@ -35,7 +37,7 @@ export default function ProductTag({
     <div className="fb-product-banner">
       <ProductMark brand={brand} size={46} className="fb-product-mark" />
       <span className="fb-product-text">
-        <span className="fb-product-label">Feedback for</span>
+        <span className="fb-product-label">{t("فیدبک برای", "Feedback for")}</span>
         {brand.href ? (
           <a
             className="fb-product-name"
@@ -58,8 +60,8 @@ export default function ProductTag({
           href={brand.href}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`Open ${brand.display}`}
-          title="Open website"
+          aria-label={t(`باز کردن ${brand.display}`, `Open ${brand.display}`)}
+          title={t("باز کردن سایت", "Open website")}
         >
           <ExternalIcon />
         </a>

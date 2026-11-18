@@ -4,9 +4,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { movePostAction } from "@/app/feedback-actions";
 import { ROADMAP_STATUSES } from "@/lib/feedback/constants";
-import { STATUS_LABELS } from "@/lib/feedback/labels";
+import { statusLabel } from "@/lib/feedback/labels";
+import { useLocale, useT } from "@/lib/i18n/client";
 
 export default function MoveMenu({ postId, status }: { postId: string; status: string }) {
+  const locale = useLocale();
+  const t = useT();
   const router = useRouter();
   const [value, setValue] = useState(status);
   const [busy, setBusy] = useState(false);
@@ -37,12 +40,12 @@ export default function MoveMenu({ postId, status }: { postId: string; status: s
         className="input fb-move"
         value={value}
         disabled={busy}
-        aria-label="Change roadmap status"
+        aria-label={t("تغییر ستون نقشه راه", "Change roadmap status")}
         onChange={(event) => void change(event.target.value)}
       >
         {ROADMAP_STATUSES.map((option) => (
           <option key={option} value={option}>
-            {STATUS_LABELS[option]}
+            {statusLabel(option, locale)}
           </option>
         ))}
       </select>

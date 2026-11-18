@@ -15,24 +15,30 @@ import VoteButton from "@/app/components/feedback/vote-button";
 import { CommentIcon, VoteUpIcon } from "@/app/components/feedback/icons";
 import { getCompanyById } from "@/lib/companies";
 import { listComments } from "@/lib/feedback/comments";
-import { TYPE_LABELS, formatDate, formatNumber, feedbackKind } from "@/lib/feedback/labels";
+import { formatDate, formatNumber, feedbackKind, typeLabel } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
 import { productContext } from "@/lib/feedback/product";
 import { getPostDetail, isUuid, listFeed } from "@/lib/feedback/posts";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
+import { translator } from "@/lib/i18n/locale";
+import type { Locale } from "@/lib/i18n/locale";
+import { getLocale } from "@/lib/i18n/server";
 
 type Params = { id: string };
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { id } = await params;
-  const post = await getPostDetail(id, { isAdmin: false });
-  if (!post) return { title: "Feedback not found | Vasa" };
-  return { title: `${post.title} | Vasa` };
+  const [post, locale] = await Promise.all([getPostDetail(id, { isAdmin: false }), getLocale()]);
+  const t = translator(locale);
+  if (!post) return { title: t("فیدبک پیدا نشد | وسا", "Feedback not found | Vasa") };
+  return { title: `${post.title} | ${t("وسا", "Vasa")}` };
 }
 
-function fileSize(bytes: number): string {
-  if (bytes >= 1024 * 1024) return `${formatNumber(Math.round((bytes / (1024 * 1024)) * 10) / 10)} MB`;
-  return `${formatNumber(Math.max(1, Math.round(bytes / 1024)))} KB`;
+function fileSize(bytes: number, locale: Locale): string {
+  if (bytes >= 1024 * 1024) {
+    return `${formatNumber(Math.round((bytes / (1024 * 1024)) * 10) / 10, locale)} MB`;
+  }
+  return `${formatNumber(Math.max(1, Math.round(bytes / 1024)), locale)} KB`;
 }
 
 export default async function PostPage({ params }: { params: Promise<Params> }) {
@@ -48,6 +54,8 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
     if (company) redirect(`/c/${company.slug}/p/${post.id}`);
   }
 
+  const locale = await getLocale();
+  const t = translator(locale);
   const isAuthor = viewer?.userId === post.authorId;
   const cover = post.coverPath ? mediaUrl(post.coverPath) : "";
   const isSupport = post.type === "support";
@@ -68,7 +76,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
   ]);
 
   const backHref = isSupport ? "/requests" : "/feed";
-  const backLabel = isSupport ? "Your posts" : "Back to boards";
+  const backLabel = isSupport ? t("درخواست‌های من", "Your posts") : t("بازگشت به بردها", "Back to boards");
 
   return (
     <div className="fb-detail">
@@ -78,39 +86,41 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             <span aria-hidden="true">→</span>
             {backLabel}
           </Link>
-          {post.hidden ? <span className="fb-chip urgent">Hidden from the public</span> : null}
+          {post.hidden ? (
+            <span className="fb-chip urgent">{t("پنهان از دید عمومی", "Hidden from the public")}</span>
+          ) : null}
         </div>
 
         <header className="fb-detail-head">
           {source ? <ProductTag product={post.product} productUrl={post.productUrl} /> : null}
 
           <div className="fb-card-top">
-            {kind ? <FeedbackKindBadge kind={kind} /> : null}
+            {kind ? <FeedbackKindBadge kind={kind} locale={locale} /> : null}
             {isSupport || isAuthor ? (
-              <span className="fb-chip">{TYPE_LABELS[post.type] ?? post.type}</span>
+              <span className="fb-chip">{typeLabel(post.type, locale)}</span>
             ) : null}
-            <StatusChip status={post.status} />
+            <StatusChip status={post.status} locale={locale} />
           </div>
 
           <h1 className="fb-detail-title">{post.title}</h1>
 
           <div className="fb-meta-row">
             <Avatar
-              name={post.authorName ?? "Member"}
+              name={post.authorName ?? t("کاربر", "Member")}
               src={post.authorAvatarPath ? mediaUrl(post.authorAvatarPath) : null}
               size={26}
             />
-            <span className="fb-author">{post.authorName ?? "Member"}</span>
+            <span className="fb-author">{post.authorName ?? t("کاربر", "Member")}</span>
             <span className="fb-dot" aria-hidden="true" />
-            <time dateTime={post.createdAt.toISOString()}>{formatDate(post.createdAt)}</time>
+            <time dateTime={post.createdAt.toISOString()}>{formatDate(post.createdAt, locale)}</time>
           </div>
         </header>
 
         {cover ? <img className="fb-cover-wide" src={cover} alt="" /> : null}
 
-        <section className="fb-detail-panel" aria-label="Feedback text">
+        <section className="fb-detail-panel" aria-label={t("متن فیدبک", "Feedback text")}>
           <div className="fb-detail-panel-head">
-            <h2>{isSupport ? "Request text" : "About this feedback"}</h2>
+            <h2>{isSupport ? t("متن درخواست", "Request text") : t("درباره این فیدبک", "About this feedback")}</h2>
           </div>
           <Markdown source={post.body} />
         </section>
@@ -129,82 +139,87 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             <a
               href="#comments"
               className="fb-action-btn"
-              aria-label={`${formatNumber(post.commentCount)} comments`}
-              title="Jump to the conversation"
+              aria-label={t(
+                `${formatNumber(post.commentCount, locale)} کامنت`,
+                `${formatNumber(post.commentCount, locale)} comments`,
+              )}
+              title={t("رفتن به گفتگو", "Jump to the conversation")}
             >
               <CommentIcon size={15} />
-              <span>{formatNumber(post.commentCount)}</span>
+              <span>{formatNumber(post.commentCount, locale)}</span>
             </a>
             {post.hidden ? null : <ShareButton path={`/p/${post.id}`} title={post.title} label />}
           </div>
         )}
 
-      {post.attachments.length > 0 ? (
-        <div className="fb-attachments">
-          <h2 className="label">Attachments</h2>
-          {post.attachments.map((file) =>
-            file.fileType.startsWith("image/") ? (
-              <a
-                key={file.id}
-                className="fb-attachment"
-                href={mediaUrl(file.path)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span dir="ltr">{file.fileName}</span>
-                <span>{fileSize(file.size)}</span>
-              </a>
-            ) : (
-              <a
-                key={file.id}
-                className="fb-attachment"
-                href={mediaUrl(file.path)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span dir="ltr">{file.fileName}</span>
-                <span>{fileSize(file.size)} · PDF</span>
-              </a>
-            ),
-          )}
-        </div>
-      ) : null}
+        {post.attachments.length > 0 ? (
+          <div className="fb-attachments">
+            <h2 className="label">{t("پیوست‌ها", "Attachments")}</h2>
+            {post.attachments.map((file) =>
+              file.fileType.startsWith("image/") ? (
+                <a
+                  key={file.id}
+                  className="fb-attachment"
+                  href={mediaUrl(file.path)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span dir="ltr">{file.fileName}</span>
+                  <span>{fileSize(file.size, locale)}</span>
+                </a>
+              ) : (
+                <a
+                  key={file.id}
+                  className="fb-attachment"
+                  href={mediaUrl(file.path)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span dir="ltr">{file.fileName}</span>
+                  <span>{fileSize(file.size, locale)} · PDF</span>
+                </a>
+              ),
+            )}
+          </div>
+        ) : null}
 
-      {isSupport && isAuthor ? (
-        <p className="fb-note">
-          This request is private. Only you and the support team can see it, and the reply
-          lands right here.
-        </p>
-      ) : null}
+        {isSupport && isAuthor ? (
+          <p className="fb-note">
+            {t(
+              "این درخواست خصوصیه. فقط خودت و تیم پشتیبانی می‌بینیدش. پاسخ تیم هم همین‌جا میاد.",
+              "This request is private. Only you and the support team can see it, and the reply lands right here.",
+            )}
+          </p>
+        ) : null}
 
-      {post.adminReply ? (
-        <div className="fb-reply">
-          <h3>Reply from support</h3>
-          <Markdown source={post.adminReply} className="fb-prose" />
-        </div>
-      ) : null}
+        {post.adminReply ? (
+          <div className="fb-reply">
+            <h3>{t("پاسخ تیم پشتیبانی", "Reply from support")}</h3>
+            <Markdown source={post.adminReply} className="fb-prose" />
+          </div>
+        ) : null}
 
-      {isSupport ? null : (
-        <CommentSection
-          postId={post.id}
-          postAuthorId={post.authorId}
-          comments={comments}
-          signedIn={Boolean(viewer)}
-          viewerId={viewer?.userId ?? null}
-          nextPath={`/p/${post.id}`}
-          locked={post.hidden}
-        />
-      )}
+        {isSupport ? null : (
+          <CommentSection
+            postId={post.id}
+            postAuthorId={post.authorId}
+            comments={comments}
+            signedIn={Boolean(viewer)}
+            viewerId={viewer?.userId ?? null}
+            nextPath={`/p/${post.id}`}
+            locked={post.hidden}
+          />
+        )}
 
         {related.length > 0 ? (
           <section className="fb-detail-related" aria-labelledby="related-title">
             <div className="fb-detail-related-head">
               <div>
-                <h2 id="related-title">More from this product</h2>
-                <p>Other feedback written for {source?.label ?? "this product"}.</p>
+                <h2 id="related-title">{t("فیدبک‌های همین محصول", "More from this product")}</h2>
+                <p>{t(`بقیه چیزهایی که برای ${source?.label ?? "این محصول"} نوشتن.`, `Other feedback written for ${source?.label ?? "this product"}.`)}</p>
               </div>
               <Link href="/feed" className="fb-link">
-                All
+                {t("همه", "All")}
               </Link>
             </div>
             <div className="fb-related-list">
@@ -213,7 +228,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
                   <strong>{item.title}</strong>
                   <span className="fb-related-votes">
                     <VoteUpIcon size={11} />
-                    {formatNumber(item.upvotes)}
+                    {formatNumber(item.upvotes, locale)}
                   </span>
                 </Link>
               ))}
@@ -226,7 +241,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             <>
               {isSupport ? (
                 <Link href="/admin/inbox" className="fb-btn fb-btn-ghost fb-btn-sm">
-                  Reply in the support inbox
+                  {t("پاسخ در صندوق پشتیبانی", "Reply in the support inbox")}
                 </Link>
               ) : (
                 <MoveMenu postId={post.id} status={post.status} />
@@ -236,7 +251,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           ) : (
             <>
               <Link href={isSupport ? "/requests" : "/feed"} className="fb-btn fb-btn-ghost">
-                {isSupport ? "All your posts" : "Continue to boards"}
+                {isSupport ? t("همه درخواست‌های من", "All your posts") : t("ادامه در فید", "Continue to boards")}
               </Link>
               {isAuthor && !isSupport ? <PostOwnerActions postId={post.id} /> : null}
             </>

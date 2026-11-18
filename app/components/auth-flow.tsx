@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { clientLogger } from "@/lib/client-logger";
-import { SEX_OPTIONS } from "@/lib/profile";
+import { useLocale, useT } from "@/lib/i18n/client";
+import { SEX_OPTIONS, sexLabel } from "@/lib/profile";
 
 type Status = "guest" | "needs-profile" | "ready";
 
@@ -32,6 +33,8 @@ export default function AuthFlow({
   status: Status;
   nextPath?: string;
 }) {
+  const locale = useLocale();
+  const t = useT();
   const router = useRouter();
   const { isSignedIn } = useAuth();
   const [open, setOpen] = useState(false);
@@ -125,7 +128,11 @@ export default function AuthFlow({
       finish();
     } catch (issue) {
       clientLogger.warn("ui.auth.profile_save_failed", { error: issue });
-      setError(issue instanceof Error ? issue.message : "We could not save your profile.");
+      setError(
+        issue instanceof Error
+          ? issue.message
+          : t("ذخیره پروفایل انجام نشد.", "We could not save your profile."),
+      );
     } finally {
       setLoading(false);
     }
@@ -133,7 +140,10 @@ export default function AuthFlow({
 
   if (status === "ready") return null;
 
-  const label = status === "needs-profile" ? "Finish your profile" : "Log in or sign up";
+  const label =
+    status === "needs-profile"
+      ? t("تکمیل پروفایل", "Finish your profile")
+      : t("ورود یا ثبت‌نام", "Log in or sign up");
 
   return (
     <>
@@ -157,51 +167,56 @@ export default function AuthFlow({
               >
                 <div className="auth-top">
                   <div className="auth-brand" aria-hidden="true">
-                    <span>Vasa</span>
+                    <span>{t("وسا", "Vasa")}</span>
                   </div>
                   <button
                     type="button"
                     className="modal-close"
                     onClick={close}
-                    aria-label="Close"
+                    aria-label={t("بستن", "Close")}
                     disabled={loading}
                   >
-                    Close
+                    {t("بستن", "Close")}
                   </button>
                 </div>
 
                 {view === "signin" ? (
                   <div className="modal-body">
                     <h2 id="auth-title" className="modal-title">
-                      Welcome to Vasa
+                      {t("خوش آمدی", "Welcome to Vasa")}
                     </h2>
                     <p className="modal-hint">
-                      Use your email or Google account. There is no password to remember.
+                      {t(
+                        "با ایمیل یا حساب گوگل وارد شو. رمزی برای به خاطر سپردن نیست.",
+                        "Use your email or Google account. There is no password to remember.",
+                      )}
                     </p>
 
                     <SignInButton mode="modal">
                       <button type="button" className="ghost full">
-                        Continue with email
+                        {t("ادامه با ایمیل", "Continue with email")}
                       </button>
                     </SignInButton>
                     <SignInButton mode="modal">
                       <button type="button" className="ghost full">
-                        Continue with Google
+                        {t("ادامه با گوگل", "Continue with Google")}
                       </button>
                     </SignInButton>
                   </div>
                 ) : (
                   <form className="modal-body" onSubmit={submitProfile}>
                     <h2 id="auth-title" className="modal-title">
-                      Tell us about you
+                      {t("کمی از خودت بگو", "Tell us about you")}
                     </h2>
                     <p className="modal-hint">
-                      Only your name is required. Everything else is optional and can change
-                      later.
+                      {t(
+                        "فقط اسم لازمه. بقیه اختیاری‌اند و بعداً هم می‌شه عوضشون کرد.",
+                        "Only your name is required. Everything else is optional and can change later.",
+                      )}
                     </p>
 
                     <label className="label" htmlFor="name">
-                      Name
+                      {t("نام", "Name")}
                     </label>
                     <input
                       id="name"
@@ -219,7 +234,7 @@ export default function AuthFlow({
                     <div className="grid">
                       <div>
                         <label className="label" htmlFor="age">
-                          Age <span className="optional">(optional)</span>
+                          {t("سن", "Age")} <span className="optional">{t("(اختیاری)", "(optional)")}</span>
                         </label>
                         <input
                           id="age"
@@ -236,7 +251,7 @@ export default function AuthFlow({
 
                       <div>
                         <label className="label" htmlFor="sex">
-                          Gender <span className="optional">(optional)</span>
+                          {t("جنسیت", "Gender")} <span className="optional">{t("(اختیاری)", "(optional)")}</span>
                         </label>
                         <select
                           id="sex"
@@ -245,10 +260,10 @@ export default function AuthFlow({
                           onChange={(event) => setSex(event.target.value)}
                           disabled={loading}
                         >
-                          <option value="">Prefer not to say</option>
+                          <option value="">{t("ترجیح می‌دهم نگویم", "Prefer not to say")}</option>
                           {SEX_OPTIONS.map((option) => (
                             <option key={option} value={option}>
-                              {option}
+                              {sexLabel(option, locale)}
                             </option>
                           ))}
                         </select>
@@ -256,7 +271,7 @@ export default function AuthFlow({
                     </div>
 
                     <label className="label" htmlFor="company">
-                      Company <span className="optional">(optional)</span>
+                      {t("شرکت", "Company")} <span className="optional">{t("(اختیاری)", "(optional)")}</span>
                     </label>
                     <input
                       id="company"
@@ -276,7 +291,7 @@ export default function AuthFlow({
                       className="primary"
                       disabled={loading || name.trim().length < 2}
                     >
-                      {loading ? "Saving..." : "Save and continue"}
+                      {loading ? t("در حال ذخیره...", "Saving...") : t("ذخیره و ادامه", "Save and continue")}
                     </button>
                   </form>
                 )}

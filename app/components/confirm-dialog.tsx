@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useT } from "@/lib/i18n/client";
 
 export default function ConfirmDialog({
   open,
@@ -22,6 +23,7 @@ export default function ConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
+  const t = useT();
   const titleId = useId();
   const descriptionId = useId();
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -83,7 +85,7 @@ export default function ConfirmDialog({
             {cancelLabel}
           </button>
           <button type="button" className="confirm-btn confirm-btn-danger" onClick={onConfirm} disabled={busy}>
-            {busy ? "Deleting..." : confirmLabel}
+            {busy ? t("در حال حذف...", "Deleting...") : confirmLabel}
           </button>
         </div>
       </div>

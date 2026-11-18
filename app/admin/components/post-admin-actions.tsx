@@ -5,7 +5,8 @@ import { useState } from "react";
 import { deletePostAction, hidePostAction, movePostAction } from "@/app/feedback-actions";
 import ConfirmDialog from "@/app/components/confirm-dialog";
 import { ROADMAP_STATUSES } from "@/lib/feedback/constants";
-import { STATUS_LABELS } from "@/lib/feedback/labels";
+import { statusLabel } from "@/lib/feedback/labels";
+import { useLocale, useT } from "@/lib/i18n/client";
 import { Icon } from "./bits";
 
 export default function PostAdminActions({
@@ -18,6 +19,8 @@ export default function PostAdminActions({
   hidden: boolean;
 }) {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useT();
   const [value, setValue] = useState(status);
   const [isHidden, setIsHidden] = useState(hidden);
   const [busy, setBusy] = useState(false);
@@ -68,6 +71,8 @@ export default function PostAdminActions({
     setError(result.error);
   }
 
+  const hiddenLabel = isHidden ? t("بازگرداندن به فید", "Restore to the board") : t("پنهان کردن از فید", "Hide from the board");
+
   return (
     <div className="row-actions" style={{ flexWrap: "wrap" }}>
       <span className="filter-select" style={{ minWidth: 130 }}>
@@ -75,11 +80,11 @@ export default function PostAdminActions({
           value={value}
           onChange={(event) => void move(event.target.value)}
           disabled={busy}
-          aria-label="Change roadmap status"
+          aria-label={t("تغییر ستون نقشه راه", "Change roadmap status")}
         >
           {ROADMAP_STATUSES.map((option) => (
             <option key={option} value={option}>
-              {STATUS_LABELS[option]}
+              {statusLabel(option, locale)}
             </option>
           ))}
         </select>
@@ -89,8 +94,8 @@ export default function PostAdminActions({
         className="btn btn-ghost btn-icon"
         onClick={toggleHidden}
         disabled={busy}
-        title={isHidden ? "Restore to the board" : "Hide from the board"}
-        aria-label={isHidden ? "Restore to the board" : "Hide from the board"}
+        title={hiddenLabel}
+        aria-label={hiddenLabel}
       >
         <Icon name={isHidden ? "eye" : "eye-off"} size={16} />
       </button>
@@ -99,8 +104,8 @@ export default function PostAdminActions({
         className="btn btn-ghost btn-icon danger"
         onClick={() => setConfirming(true)}
         disabled={busy}
-        title="Delete feedback"
-        aria-label="Delete feedback"
+        title={t("حذف فیدبک", "Delete feedback")}
+        aria-label={t("حذف فیدبک", "Delete feedback")}
       >
         <Icon name="trash" size={16} />
       </button>
@@ -111,9 +116,12 @@ export default function PostAdminActions({
       ) : null}
       <ConfirmDialog
         open={confirming}
-        title="Delete this feedback?"
-        description="This feedback and all its comments will be deleted for good."
-        confirmLabel="Delete feedback"
+        title={t("حذف این فیدبک؟", "Delete this feedback?")}
+        description={t(
+          "این فیدبک با همه کامنت‌هایش برای همیشه حذف می‌شود.",
+          "This feedback and all its comments will be deleted for good.",
+        )}
+        confirmLabel={t("حذف فیدبک", "Delete feedback")}
         busy={busy}
         onConfirm={() => void remove()}
         onCancel={() => {

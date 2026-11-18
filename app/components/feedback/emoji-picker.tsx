@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useT } from "@/lib/i18n/client";
 import { SmileIcon } from "./icons";
 
 const EMOJIS = [
@@ -55,6 +56,7 @@ const EMOJIS = [
 ];
 
 export default function EmojiPicker({ onPick }: { onPick: (emoji: string) => void }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -121,17 +123,17 @@ export default function EmojiPicker({ onPick }: { onPick: (emoji: string) => voi
       <button
         type="button"
         className="fb-emoji-btn"
-        aria-label="Add emoji"
+        aria-label={t("افزودن ایموجی", "Add emoji")}
         aria-haspopup="dialog"
         aria-expanded={open}
-        title="Emoji"
+        title={t("ایموجی", "Emoji")}
         onClick={() => setOpen((current) => !current)}
       >
         <SmileIcon size={16} />
       </button>
 
       {open ? (
-        <div className="fb-emoji-panel" ref={panelRef} role="dialog" aria-label="Emojis">
+        <div className="fb-emoji-panel" ref={panelRef} role="dialog" aria-label={t("ایموجی‌ها", "Emojis")}>
           {EMOJIS.map((emoji) => (
             <button
               key={emoji}

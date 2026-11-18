@@ -5,54 +5,70 @@ import PostCard from "@/app/components/feedback/post-card";
 import { formatNumber } from "@/lib/feedback/labels";
 import { listMyPosts } from "@/lib/feedback/posts";
 import { requireViewer } from "@/lib/feedback/viewer";
+import { translator } from "@/lib/i18n/locale";
+import { getLocale } from "@/lib/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Your posts | Vasa",
-  description: "Public feedback and private support requests, with live status.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = translator(await getLocale());
+  return {
+    title: t("درخواست‌های من | وسا", "Your posts | Vasa"),
+    description: t(
+      "فیدبک‌های عمومی و درخواست‌های خصوصی‌ات، با وضعیت به‌روز.",
+      "Public feedback and private support requests, with live status.",
+    ),
+  };
+}
 
 export default async function RequestsPage() {
   const viewer = await requireViewer("/requests");
   const posts = await listMyPosts(viewer.userId);
 
+  const locale = await getLocale();
+  const t = translator(locale);
   const publicPosts = posts.filter((post) => post.type === "feedback" && !post.hidden);
   const supportPosts = posts.filter((post) => post.type === "support");
   const hiddenPosts = posts.filter((post) => post.type === "feedback" && post.hidden);
+  const items = (count: number) => t(`${formatNumber(count, locale)} مورد`, `${formatNumber(count, locale)} items`);
 
   return (
     <>
       <section className="fb-hero fb-page-head">
         <p className="fb-eyebrow">
           <BrandMark className="eyebrow-mark" simple />
-          Your posts
+          {t("درخواست‌های من", "Your posts")}
         </p>
-        <h1 className="fb-title">Everything you sent, in one place</h1>
+        <h1 className="fb-title">{t("هر چی فرستادی، یک جا", "Everything you sent, in one place")}</h1>
         <p className="fb-lede">
-          Follow your public feedback and private support requests, and see where each one
-          stands right now.
+          {t(
+            "فیدبک‌های عمومی و درخواست‌های خصوصی‌ت رو همین‌جا دنبال کن و وضعیت هر کدوم رو ببین.",
+            "Follow your public feedback and private support requests, and see where each one stands right now.",
+          )}
         </p>
         <div className="fb-hero-actions">
           <Link href="/" className="fb-btn fb-btn-primary">
-            Browse boards
+            {t("دیدن بردها", "Browse boards")}
           </Link>
           <Link href="/profile" className="fb-btn">
-            My profile
+            {t("پروفایل من", "My profile")}
           </Link>
         </div>
         <ul className="fb-hero-stats">
           <li>
-            <strong>{formatNumber(publicPosts.length)}</strong> public feedback
+            <strong>{formatNumber(publicPosts.length, locale)}</strong> {t("فیدبک عمومی", "public feedback")}
           </li>
           <li>
-            <strong>{formatNumber(supportPosts.length)}</strong> support requests
+            <strong>{formatNumber(supportPosts.length, locale)}</strong> {t("درخواست پشتیبانی", "support requests")}
           </li>
         </ul>
       </section>
 
       {posts.length === 0 ? (
         <div className="fb-empty">
-          <strong>Nothing sent yet.</strong>
-          Open a board and post your first piece of feedback. It will show up here.
+          <strong>{t("هنوز چیزی ننوشتی.", "Nothing sent yet.")}</strong>
+          {t(
+            "از دکمه بالا شروع کن؛ وضعیتش رو همین‌جا می‌بینی.",
+            "Open a board and post your first piece of feedback. It will show up here.",
+          )}
         </div>
       ) : null}
 
@@ -61,11 +77,13 @@ export default async function RequestsPage() {
           <div className="fb-section-head">
             <div>
               <h2 id="mine-feedback" className="fb-section-title">
-                Public feedback
+                {t("فیدبک‌های عمومی", "Public feedback")}
               </h2>
-              <p className="fb-section-sub">Everything you posted for others to see.</p>
+              <p className="fb-section-sub">
+                {t("هر چی نوشتی که بقیه هم می‌بینن.", "Everything you posted for others to see.")}
+              </p>
             </div>
-            <p className="fb-count">{formatNumber(publicPosts.length)} items</p>
+            <p className="fb-count">{items(publicPosts.length)}</p>
           </div>
           <div className="fb-grid">
             {publicPosts.map((post) => (
@@ -88,13 +106,13 @@ export default async function RequestsPage() {
           <div className="fb-section-head">
             <div>
               <h2 id="mine-support" className="fb-section-title">
-                Support requests
+                {t("درخواست‌های پشتیبانی", "Support requests")}
               </h2>
               <p className="fb-section-sub">
-                Private: only you and the support team can see them.
+                {t("خصوصیه؛ فقط خودت و تیم پشتیبانی می‌بینیدشون.", "Private: only you and the support team can see them.")}
               </p>
             </div>
-            <p className="fb-count">{formatNumber(supportPosts.length)} items</p>
+            <p className="fb-count">{items(supportPosts.length)}</p>
           </div>
           <div className="fb-grid">
             {supportPosts.map((post) => (
@@ -117,14 +135,16 @@ export default async function RequestsPage() {
           <div className="fb-section-head">
             <div>
               <h2 id="mine-hidden" className="fb-section-title">
-                Hidden
+                {t("پنهان شده", "Hidden")}
               </h2>
               <p className="fb-section-sub">
-                An admin removed these from the public board. Only you and the admin can see
-                them.
+                {t(
+                  "مدیر این‌ها رو از فید عمومی کنار گذاشته؛ فقط خودت و مدیر می‌بینیدشون.",
+                  "An admin removed these from the public board. Only you and the admin can see them.",
+                )}
               </p>
             </div>
-            <p className="fb-count">{formatNumber(hiddenPosts.length)} items</p>
+            <p className="fb-count">{items(hiddenPosts.length)}</p>
           </div>
           <div className="fb-grid">
             {hiddenPosts.map((post) => (

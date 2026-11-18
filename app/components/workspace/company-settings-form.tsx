@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { saveCompanySettingsAction } from "@/app/(workspace)/actions";
+import { useT } from "@/lib/i18n/client";
 
 export default function CompanySettingsForm({
   company,
@@ -11,6 +12,7 @@ export default function CompanySettingsForm({
   company: { name: string; tagline: string | null; website: string | null; accent: string };
   canEdit: boolean;
 }) {
+  const t = useT();
   const router = useRouter();
   const [name, setName] = useState(company.name);
   const [tagline, setTagline] = useState(company.tagline ?? "");
@@ -42,7 +44,7 @@ export default function CompanySettingsForm({
     <form className="wk-form" onSubmit={submit}>
       <div className="wk-form-cols">
         <div className="wk-field-row">
-          <label htmlFor="company-name">Company name</label>
+          <label htmlFor="company-name">{t("نام شرکت", "Company name")}</label>
           <input
             id="company-name"
             value={name}
@@ -56,7 +58,7 @@ export default function CompanySettingsForm({
 
         <div className="wk-field-row">
           <label htmlFor="company-site">
-            Website <span className="wk-hint">(optional)</span>
+            {t("وب‌سایت", "Website")} <span className="wk-hint">{t("(اختیاری)", "(optional)")}</span>
           </label>
           <input
             id="company-site"
@@ -70,20 +72,25 @@ export default function CompanySettingsForm({
       </div>
 
       <div className="wk-field-row">
-        <label htmlFor="company-tagline">Tagline</label>
+        <label htmlFor="company-tagline">{t("شعار", "Tagline")}</label>
         <input
           id="company-tagline"
           value={tagline}
           onChange={(event) => setTagline(event.target.value)}
-          placeholder="One line about what you make"
+          placeholder={t("یک جمله درباره چیزی که می‌سازی", "One line about what you make")}
           maxLength={160}
           disabled={busy || !canEdit}
         />
-        <p className="wk-hint">Shown next to the company name on the public board.</p>
+        <p className="wk-hint">
+          {t(
+            "کنار اسم شرکت توی برد عمومی نشون داده می‌شه.",
+            "Shown next to the company name on the public board.",
+          )}
+        </p>
       </div>
 
       <div className="wk-field-row">
-        <label htmlFor="company-accent">Accent color</label>
+        <label htmlFor="company-accent">{t("رنگ اصلی", "Accent color")}</label>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <input
             id="company-accent"
@@ -94,7 +101,7 @@ export default function CompanySettingsForm({
             style={{ width: 48, height: 38, padding: 2 }}
           />
           <input
-            aria-label="Accent hex value"
+            aria-label={t("کد رنگ", "Accent hex value")}
             value={accent}
             onChange={(event) => setAccent(event.target.value)}
             pattern="#[0-9a-fA-F]{6}"
@@ -103,20 +110,29 @@ export default function CompanySettingsForm({
             style={{ maxWidth: 120 }}
           />
         </div>
-        <p className="wk-hint">Used for buttons and highlights on your board.</p>
+        <p className="wk-hint">
+          {t("برای دکمه‌ها و هایلایت‌های بردت استفاده می‌شه.", "Used for buttons and highlights on your board.")}
+        </p>
       </div>
 
       {error ? <p className="bd-alert">{error}</p> : null}
-      {saved ? <p className="wk-success">Saved. Your board is up to date.</p> : null}
+      {saved ? (
+        <p className="wk-success">{t("ذخیره شد. بردت به‌روزه.", "Saved. Your board is up to date.")}</p>
+      ) : null}
 
       {canEdit ? (
         <div>
           <button type="submit" className="bd-btn bd-btn-primary" disabled={busy}>
-            {busy ? "Saving..." : "Save changes"}
+            {busy ? t("در حال ذخیره...", "Saving...") : t("ذخیره تغییرات", "Save changes")}
           </button>
         </div>
       ) : (
-        <p className="wk-hint">Only company owners and admins can change these settings.</p>
+        <p className="wk-hint">
+          {t(
+            "فقط مالک‌ها و مدیرهای شرکت می‌تونن این تنظیمات رو عوض کنن.",
+            "Only company owners and admins can change these settings.",
+          )}
+        </p>
       )}
     </form>
   );

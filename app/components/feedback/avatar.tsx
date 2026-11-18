@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useLocale } from "@/lib/i18n/client";
 
 export default function Avatar({
   name,
@@ -13,10 +14,11 @@ export default function Avatar({
   size?: number;
   className?: string;
 }) {
+  const locale = useLocale();
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const initial = (name ?? "").trim().charAt(0) || "?";
+  const initial = (name ?? "").trim().charAt(0) || (locale === "fa" ? "؟" : "?");
   const showImage = Boolean(src) && failedSrc !== src;
   const loaded = Boolean(src) && loadedSrc === src;
 

@@ -1,6 +1,6 @@
 # وسا
 
-A Next.js feedback center, RTL and Persian, with Dastkhat as the main font and Noto Kufi Arabic for the wordmark. Guests read the feed, the roadmap and the changelog. Signed in customers post feedback or a private support request, upload images and PDFs, and vote. Admins triage posts and publish changelog entries. Login runs through Clerk with email or Google. The feedback details are in [docs/feedback.md](docs/feedback.md).
+A Next.js feedback center with a bilingual interface: Persian RTL by default and English LTR behind the language toggle (the `fc_locale` cookie). Vazirmatn is the Persian UI font, the Apple Helvetica stack the English one, and Noto Kufi Arabic sets the وسا wordmark. Guests read the feed, the roadmap and the changelog. Signed in customers post feedback or a private support request, upload images and PDFs, and vote. Admins triage posts and publish changelog entries. Login runs through Clerk with email or Google. The feedback details are in [docs/feedback.md](docs/feedback.md).
 
 ## Stack
 

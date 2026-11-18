@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { adminFromRequest } from "@/lib/admin-auth";
 import { restoreUser, type UserSnapshot } from "@/lib/admin-store";
 import { withApiLogging } from "@/lib/api-logger";
+import { localizeError } from "@/lib/i18n/errors";
+import { getLocale } from "@/lib/i18n/server";
 
 function isSnapshot(value: unknown): value is UserSnapshot {
   if (typeof value !== "object" || value === null) return false;
@@ -10,21 +12,25 @@ function isSnapshot(value: unknown): value is UserSnapshot {
 }
 
 export const POST = withApiLogging("/api/admin/users/restore", async (request, _context, log) => {
+  const locale = await getLocale();
   if (!adminFromRequest(request)) {
-    return NextResponse.json({ message: "Sign in to the admin panel first." }, { status: 401 });
+    return NextResponse.json(
+      { message: localizeError("Sign in to the admin panel first.", locale) },
+      { status: 401 },
+    );
   }
 
   let input: unknown;
   try {
     input = await request.json();
   } catch {
-    return NextResponse.json({ message: "Invalid request." }, { status: 400 });
+    return NextResponse.json({ message: localizeError("Invalid request.", locale) }, { status: 400 });
   }
 
   const raw = (input as { snapshots?: unknown })?.snapshots;
   const snapshots = Array.isArray(raw) ? raw.filter(isSnapshot) : isSnapshot(raw) ? [raw] : [];
   if (snapshots.length === 0) {
-    return NextResponse.json({ message: "Nothing to restore." }, { status: 400 });
+    return NextResponse.json({ message: localizeError("Nothing to restore.", locale) }, { status: 400 });
   }
 
   const rows = [];

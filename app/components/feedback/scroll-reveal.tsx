@@ -24,7 +24,7 @@ export default function ScrollReveal() {
           observer.unobserve(entry.target);
         }
       },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.12 },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
     );
 
     for (const node of nodes) observer.observe(node);

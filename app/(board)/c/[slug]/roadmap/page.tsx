@@ -4,15 +4,11 @@ import { notFound } from "next/navigation";
 import FeedbackKindBadge from "@/app/components/feedback/kind-badge";
 import { VoteUpIcon } from "@/app/components/feedback/icons";
 import { getCompanyBySlug } from "@/lib/companies";
-import { formatNumber, feedbackKind, STATUS_LABELS } from "@/lib/feedback/labels";
+import { formatNumber, feedbackKind, statusLabel } from "@/lib/feedback/labels";
 import { listRoadmap } from "@/lib/feedback/posts";
 import { getViewer } from "@/lib/feedback/viewer";
-
-const COLUMNS = [
-  { status: "planned", hint: "Next up on the roadmap." },
-  { status: "in_progress", hint: "Being built right now." },
-  { status: "shipped", hint: "Live and in your hands." },
-] as const;
+import { translator } from "@/lib/i18n/locale";
+import { getLocale } from "@/lib/i18n/server";
 
 export async function generateMetadata({
   params,
@@ -20,8 +16,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const company = await getCompanyBySlug(slug);
-  return { title: company ? `${company.name} roadmap | Vasa` : "Roadmap | Vasa" };
+  const [company, locale] = await Promise.all([getCompanyBySlug(slug), getLocale()]);
+  const t = translator(locale);
+  return {
+    title: company
+      ? t(`نقشه راه ${company.name} | وسا`, `${company.name} roadmap | Vasa`)
+      : t("نقشه راه | وسا", "Roadmap | Vasa"),
+  };
 }
 
 export default async function CompanyRoadmapPage({
@@ -33,6 +34,14 @@ export default async function CompanyRoadmapPage({
   const company = await getCompanyBySlug(slug);
   if (!company) notFound();
 
+  const locale = await getLocale();
+  const t = translator(locale);
+  const columns = [
+    { status: "planned", hint: t("مرحله بعدی نقشه راه.", "Next up on the roadmap.") },
+    { status: "in_progress", hint: t("همین حالا داریم می‌سازیمش.", "Being built right now.") },
+    { status: "shipped", hint: t("منتشر شده و در دسترسه.", "Live and in your hands.") },
+  ] as const;
+
   const viewer = await getViewer();
   const posts = await listRoadmap({ companyId: company.id, viewerId: viewer?.userId });
   const base = `/c/${company.slug}`;
@@ -41,34 +50,36 @@ export default async function CompanyRoadmapPage({
     <>
       <section className="bd-hero">
         <div>
-          <h1>Roadmap</h1>
+          <h1>{t("نقشه راه", "Roadmap")}</h1>
           <p>
-            What {company.name} is planning, building and shipping. Every card links to the
-            feedback behind it.
+            {t(
+              `چیزی که ${company.name} برنامه‌ریزی کرده، می‌سازه و منتشر می‌کنه. هر کارت به فیدبک پشتش وصل هست.`,
+              `What ${company.name} is planning, building and shipping. Every card links to the feedback behind it.`,
+            )}
           </p>
         </div>
         <div className="bd-hero-actions">
           <Link href={`${base}/new`} className="bd-submit">
-            Submit feedback
+            {t("ثبت فیدبک", "Submit feedback")}
           </Link>
         </div>
       </section>
 
       <div className="bd-cols">
-        {COLUMNS.map((column) => {
+        {columns.map((column) => {
           const items = posts.filter((post) => post.status === column.status);
           return (
             <section key={column.status} className="bd-col" data-status={column.status}>
               <div className="bd-col-head">
                 <span className="bd-col-dot" aria-hidden="true" />
-                <h2>{STATUS_LABELS[column.status]}</h2>
-                <span className="bd-col-count">{formatNumber(items.length)}</span>
+                <h2>{statusLabel(column.status, locale)}</h2>
+                <span className="bd-col-count">{formatNumber(items.length, locale)}</span>
               </div>
               <p className="bd-helpful-sub" style={{ margin: "10px 2px 0" }}>
                 {column.hint}
               </p>
               {items.length === 0 ? (
-                <p className="bd-col-empty">Nothing here yet.</p>
+                <p className="bd-col-empty">{t("هنوز چیزی اینجا نیست.", "Nothing here yet.")}</p>
               ) : (
                 <ul className="bd-col-list">
                   {items.map((post) => {
@@ -78,9 +89,9 @@ export default async function CompanyRoadmapPage({
                         <Link href={`${base}/p/${post.id}`} className="bd-col-card">
                           <strong>{post.title}</strong>
                           <span className="bd-col-card-foot">
-                            {kind ? <FeedbackKindBadge kind={kind} /> : null}
+                            {kind ? <FeedbackKindBadge kind={kind} locale={locale} /> : null}
                             <span style={{ marginInlineStart: "auto" }}>
-                              <VoteUpIcon size={10} /> {formatNumber(post.upvotes)}
+                              <VoteUpIcon size={10} /> {formatNumber(post.upvotes, locale)}
                             </span>
                           </span>
                         </Link>

@@ -4,18 +4,20 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteOwnPostAction } from "@/app/feedback-actions";
 import ConfirmDialog from "@/app/components/confirm-dialog";
+import { useT } from "@/lib/i18n/client";
 
 export default function PostOwnerActions({
   postId,
   redirectTo = "/",
-  label = "Delete feedback",
-  confirmText = "Delete this feedback and all its comments for good?",
+  label,
+  confirmText,
 }: {
   postId: string;
   redirectTo?: string;
   label?: string;
   confirmText?: string;
 }) {
+  const t = useT();
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +49,7 @@ export default function PostOwnerActions({
         onClick={() => setConfirming(true)}
         disabled={busy}
       >
-        {busy ? "Deleting..." : label}
+        {busy ? t("در حال حذف...", "Deleting...") : (label ?? t("حذف فیدبک", "Delete feedback"))}
       </button>
       {error ? (
         <span className="field-hint" style={{ color: "var(--red)" }}>
@@ -56,9 +58,9 @@ export default function PostOwnerActions({
       ) : null}
       <ConfirmDialog
         open={confirming}
-        title="Delete feedback?"
-        description={confirmText}
-        confirmLabel="Delete feedback"
+        title={t("حذف فیدبک؟", "Delete feedback?")}
+        description={confirmText ?? t("این فیدبک با همه کامنت‌هایش برای همیشه حذف شود؟", "Delete this feedback and all its comments for good?")}
+        confirmLabel={t("حذف فیدبک", "Delete feedback")}
         busy={busy}
         onConfirm={() => void remove()}
         onCancel={() => {

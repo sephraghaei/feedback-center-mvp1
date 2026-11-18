@@ -15,22 +15,27 @@ import {
   formatDate,
   formatNumber,
   feedbackKind,
-  KIND_LABELS,
+  kindLabel,
   STATUS_LABELS,
+  STATUS_LABELS_FA,
 } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
 import { getPostDetail, isUuid, listFeed } from "@/lib/feedback/posts";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
+import { translator } from "@/lib/i18n/locale";
+import { getLocale } from "@/lib/i18n/server";
 
 type Params = { slug: string; id: string };
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug, id } = await params;
-  const [company, post] = await Promise.all([
+  const [company, post, locale] = await Promise.all([
     getCompanyBySlug(slug),
     getPostDetail(id, { isAdmin: false }),
+    getLocale(),
   ]);
-  if (!company || !post) return { title: "Feedback | Vasa" };
+  const t = translator(locale);
+  if (!company || !post) return { title: t("فیدبک | وسا", "Feedback | Vasa") };
   return { title: `${post.title} | ${company.name}` };
 }
 
@@ -50,6 +55,8 @@ export default async function BoardPostPage({ params }: { params: Promise<Params
   const post = await getPostDetail(id, { userId: viewer?.userId, isAdmin: admin });
   if (!post || post.companyId !== company.id || post.type !== "feedback") notFound();
 
+  const locale = await getLocale();
+  const t = translator(locale);
   const base = `/c/${company.slug}`;
   const here = `${base}/p/${post.id}`;
   const kind = feedbackKind(post.type, post.category);
@@ -70,7 +77,7 @@ export default async function BoardPostPage({ params }: { params: Promise<Params
     <>
       <Link href={base} className="bd-back">
         <span aria-hidden="true">←</span>
-        Back to feedback
+        {t("بازگشت به فیدبک", "Back to feedback")}
       </Link>
 
       <div className="bd-detail">
@@ -87,19 +94,21 @@ export default async function BoardPostPage({ params }: { params: Promise<Params
             </div>
             <div>
               <div className="bd-detail-kicker">
-                {kind ? <FeedbackKindBadge kind={kind} /> : null}
-                <StatusChip status={post.status} />
+                {kind ? <FeedbackKindBadge kind={kind} locale={locale} /> : null}
+                <StatusChip status={post.status} locale={locale} />
               </div>
               <h1>{post.title}</h1>
               <div className="bd-detail-author">
                 <Avatar
-                  name={post.authorName ?? "Member"}
+                  name={post.authorName ?? t("یکی از اعضا", "Member")}
                   src={post.authorAvatarPath ? mediaUrl(post.authorAvatarPath) : null}
                   size={20}
                 />
-                {post.authorName ?? "Member"}
+                {post.authorName ?? t("یکی از اعضا", "Member")}
                 <span className="bd-meta-dot" aria-hidden="true" />
-                <time dateTime={post.createdAt.toISOString()}>{formatDate(post.createdAt)}</time>
+                <time dateTime={post.createdAt.toISOString()}>
+                  {formatDate(post.createdAt, locale)}
+                </time>
               </div>
             </div>
           </header>
@@ -110,7 +119,7 @@ export default async function BoardPostPage({ params }: { params: Promise<Params
 
           {post.attachments.length > 0 ? (
             <div className="fb-attachments">
-              <h2 className="label">Attachments</h2>
+              <h2 className="label">{t("پیوست‌ها", "Attachments")}</h2>
               {post.attachments.map((file) => (
                 <a
                   key={file.id}
@@ -129,7 +138,7 @@ export default async function BoardPostPage({ params }: { params: Promise<Params
           <div className="bd-detail-actions">
             <a href="#comments" className="fb-action-btn">
               <CommentIcon size={14} />
-              {formatNumber(post.commentCount)}
+              {formatNumber(post.commentCount, locale)}
             </a>
             <a
               className="fb-action-btn"
@@ -138,7 +147,7 @@ export default async function BoardPostPage({ params }: { params: Promise<Params
               rel="noopener noreferrer"
             >
               <ShareIcon size={14} />
-              Share
+              {t("هم‌رسانی", "Share")}
             </a>
           </div>
 
@@ -156,11 +165,11 @@ export default async function BoardPostPage({ params }: { params: Promise<Params
             <section className="fb-detail-related" aria-labelledby="related-title">
               <div className="fb-detail-related-head">
                 <div>
-                  <h2 id="related-title">More from this board</h2>
-                  <p>Other feedback people shared with {company.name}.</p>
+                  <h2 id="related-title">{t("بیشتر از این برد", "More from this board")}</h2>
+                  <p>{t(`فیدبک‌های دیگر که برای ${company.name} نوشته شده.`, `Other feedback people shared with ${company.name}.`)}</p>
                 </div>
                 <Link href={base} className="fb-link">
-                  All
+                  {t("همه", "All")}
                 </Link>
               </div>
               <div className="fb-related-list">
@@ -169,7 +178,7 @@ export default async function BoardPostPage({ params }: { params: Promise<Params
                     <strong>{item.title}</strong>
                     <span className="fb-related-votes">
                       <VoteUpIcon size={11} />
-                      {formatNumber(item.upvotes)}
+                      {formatNumber(item.upvotes, locale)}
                     </span>
                   </Link>
                 ))}
@@ -181,35 +190,35 @@ export default async function BoardPostPage({ params }: { params: Promise<Params
         <aside className="bd-rail">
           <dl className="bd-rail-rows">
             <div className="bd-rail-row">
-              <dt>Board</dt>
-              <dd>{kind ? KIND_LABELS[kind] : "Feedback"}</dd>
+              <dt>{t("برد", "Board")}</dt>
+              <dd>{kind ? kindLabel(kind, locale) : t("فیدبک", "Feedback")}</dd>
             </div>
             <div className="bd-rail-row">
-              <dt>Status</dt>
+              <dt>{t("وضعیت", "Status")}</dt>
               <dd>
-                <StatusChip status={post.status} />
+                <StatusChip status={post.status} locale={locale} />
               </dd>
             </div>
             <div className="bd-rail-row">
-              <dt>Created by</dt>
+              <dt>{t("نویسنده", "Created by")}</dt>
               <dd>
                 <span className="bd-rail-person">
                   <Avatar
-                    name={post.authorName ?? "Member"}
+                    name={post.authorName ?? t("یکی از اعضا", "Member")}
                     src={post.authorAvatarPath ? mediaUrl(post.authorAvatarPath) : null}
                     size={18}
                   />
-                  {post.authorName ?? "Member"}
+                  {post.authorName ?? t("یکی از اعضا", "Member")}
                 </span>
               </dd>
             </div>
             <div className="bd-rail-row">
-              <dt>Date</dt>
-              <dd>{formatDate(post.createdAt)}</dd>
+              <dt>{t("تاریخ", "Date")}</dt>
+              <dd>{formatDate(post.createdAt, locale)}</dd>
             </div>
             <div className="bd-rail-row">
-              <dt>Votes</dt>
-              <dd>{formatNumber(post.upvotes)}</dd>
+              <dt>{t("رأی‌ها", "Votes")}</dt>
+              <dd>{formatNumber(post.upvotes, locale)}</dd>
             </div>
           </dl>
 
@@ -220,22 +229,25 @@ export default async function BoardPostPage({ params }: { params: Promise<Params
                 <input type="hidden" name="postId" value={post.id} />
                 <input type="hidden" name="back" value={here} />
                 <label className="bd-rail-label" htmlFor="status-select">
-                  Move this feedback
+                  {t("جابه‌جایی این فیدبک", "Move this feedback")}
                 </label>
                 <select id="status-select" name="status" defaultValue={post.status}>
                   {Object.entries(STATUS_LABELS)
                     .filter(([value]) => ["new", "planned", "in_progress", "shipped"].includes(value))
                     .map(([value, label]) => (
                       <option key={value} value={value}>
-                        {label}
+                        {t(STATUS_LABELS_FA[value] ?? label, label)}
                       </option>
                     ))}
                 </select>
-                <button type="submit">Save status</button>
+                <button type="submit">{t("ذخیره وضعیت", "Save status")}</button>
               </form>
             ) : (
               <p className="bd-rail-hint">
-                Voting helps {company.name} decide what to build next.
+                {t(
+                  `رأی دادن کمک می‌کنه ${company.name} بفهمه بعدی چی رو بسازه.`,
+                  `Voting helps ${company.name} decide what to build next.`,
+                )}
               </p>
             )}
           </div>

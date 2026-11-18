@@ -7,6 +7,7 @@ import ConfirmDialog from "@/app/components/confirm-dialog";
 import type { CommentView } from "@/lib/feedback/comments";
 import { formatDate, formatNumber } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
+import { useLocale, useT } from "@/lib/i18n/client";
 import Avatar from "./avatar";
 import FormatToolbar from "./format-toolbar";
 import { CommentIcon, ReplyIcon, TrashIcon, VoteDownIcon, VoteUpIcon } from "./icons";
@@ -35,6 +36,8 @@ function CommentComposer({
   autoFocus?: boolean;
   onCancel?: () => void;
 }) {
+  const locale = useLocale();
+  const t = useT();
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   return (
@@ -52,11 +55,16 @@ function CommentComposer({
       />
       <FormatToolbar value={value} onChange={onChange} textareaRef={inputRef} compact />
       <div className="fb-comment-form-foot">
-        <span className="fb-comment-hint">{formatNumber(value.trim().length)} of 2000 characters</span>
+        <span className="fb-comment-hint">
+          {t(
+            `${formatNumber(value.trim().length, locale)} از ۲۰۰۰ نویسه`,
+            `${formatNumber(value.trim().length, locale)} of 2000 characters`,
+          )}
+        </span>
         <div className="fb-comment-foot-actions">
           {onCancel ? (
             <button type="button" className="fb-btn fb-btn-ghost fb-btn-sm" onClick={onCancel}>
-              Cancel
+              {t("بی‌خیال", "Cancel")}
             </button>
           ) : null}
           <button
@@ -64,7 +72,7 @@ function CommentComposer({
             className="fb-btn fb-btn-primary fb-btn-sm"
             disabled={busy || value.trim().length < 2}
           >
-            {busy ? "Posting..." : submitLabel}
+            {busy ? t("در حال ارسال...", "Posting...") : submitLabel}
           </button>
         </div>
       </div>
@@ -96,6 +104,9 @@ function CommentRow({
   onDelete?: () => void;
   footer?: ReactNode;
 }) {
+  const locale = useLocale();
+  const t = useT();
+
   return (
     <div className={`fb-comment ${compact ? "fb-comment-reply" : ""}`}>
       <Avatar
@@ -107,8 +118,12 @@ function CommentRow({
       <div className="fb-comment-main">
         <div className="fb-comment-head">
           <strong>{item.authorName}</strong>
-          {item.authorId === postAuthorId ? <span className="fb-comment-badge">Author</span> : null}
-          <time dateTime={new Date(item.createdAt).toISOString()}>{formatDate(item.createdAt)}</time>
+          {item.authorId === postAuthorId ? (
+            <span className="fb-comment-badge">{t("نویسنده", "Author")}</span>
+          ) : null}
+          <time dateTime={new Date(item.createdAt).toISOString()}>
+            {formatDate(item.createdAt, locale)}
+          </time>
         </div>
         <Markdown source={item.body} className="fb-prose fb-comment-body" />
         <div className="fb-comment-actions">
@@ -119,20 +134,20 @@ function CommentRow({
               onClick={() => onVote(item, 1)}
               disabled={pending}
               aria-pressed={item.myVote === 1}
-              aria-label="Upvote this comment"
-              title="Upvote"
+              aria-label={t("رای مثبت به این کامنت", "Upvote this comment")}
+              title={t("رای مثبت", "Upvote")}
             >
               <VoteUpIcon size={13} />
             </button>
-            <span className="fb-cvote-score">{formatNumber(item.score)}</span>
+            <span className="fb-cvote-score">{formatNumber(item.score, locale)}</span>
             <button
               type="button"
               className="fb-cvote-btn"
               onClick={() => onVote(item, -1)}
               disabled={pending}
               aria-pressed={item.myVote === -1}
-              aria-label="Downvote this comment"
-              title="Downvote"
+              aria-label={t("رای منفی به این کامنت", "Downvote this comment")}
+              title={t("رای منفی", "Downvote")}
             >
               <VoteDownIcon size={13} />
             </button>
@@ -140,7 +155,7 @@ function CommentRow({
           {onReply ? (
             <button type="button" className="fb-comment-reply-btn" onClick={onReply}>
               <ReplyIcon size={13} />
-              Reply
+              {t("پاسخ", "Reply")}
             </button>
           ) : null}
           {canDelete && onDelete ? (
@@ -149,11 +164,11 @@ function CommentRow({
               className="fb-comment-delete-btn"
               onClick={onDelete}
               disabled={deleting}
-              aria-label="Delete this comment"
-              title="Delete comment"
+              aria-label={t("حذف این کامنت", "Delete this comment")}
+              title={t("حذف کامنت", "Delete comment")}
             >
               <TrashIcon size={13} />
-              {deleting ? "Deleting..." : "Delete"}
+              {deleting ? t("در حال حذف...", "Deleting...") : t("حذف", "Delete")}
             </button>
           ) : null}
         </div>
@@ -180,6 +195,8 @@ export default function CommentSection({
   nextPath: string;
   locked: boolean;
 }) {
+  const locale = useLocale();
+  const t = useT();
   const router = useRouter();
   const [items, setItems] = useState<CommentView[]>(comments);
   const [draft, setDraft] = useState("");
@@ -331,13 +348,20 @@ export default function CommentSection({
       <div className="fb-comments-head">
         <h2 id="comments-title">
           <CommentIcon size={16} />
-          Conversation
+          {t("گفتگو", "Conversation")}
         </h2>
-        <span className="fb-comments-count">{formatNumber(items.length)} comments</span>
+        <span className="fb-comments-count">
+          {t(
+            `${formatNumber(items.length, locale)} کامنت`,
+            `${formatNumber(items.length, locale)} comments`,
+          )}
+        </span>
       </div>
 
       {locked ? (
-        <p className="fb-note">This feedback is hidden and no longer takes new comments.</p>
+        <p className="fb-note">
+          {t("این فیدبک پنهان شده و کامنت تازه نمی‌پذیرد.", "This feedback is hidden and no longer takes new comments.")}
+        </p>
       ) : signedIn ? (
         <CommentComposer
           value={draft}
@@ -345,14 +369,17 @@ export default function CommentSection({
           onSubmit={submitRoot}
           busy={sending}
           error={error}
-          placeholder="Add something that helps make this feedback better."
-          submitLabel="Post comment"
+          placeholder={t(
+            "چیزی بنویس که به بهتر شدن این فیدبک کمک کند.",
+            "Add something that helps make this feedback better.",
+          )}
+          submitLabel={t("ارسال کامنت", "Post comment")}
         />
       ) : (
         <div className="fb-comment-guest">
-          <p>Log in first to write comments and vote on them.</p>
+          <p>{t("برای نوشتن کامنت و رای دادن به کامنت‌ها اول وارد حسابت شو.", "Log in first to write comments and vote on them.")}</p>
           <button type="button" className="fb-btn fb-btn-primary fb-btn-sm" onClick={signIn}>
-            Log in to comment
+            {t("ورود و نوشتن کامنت", "Log in to comment")}
           </button>
         </div>
       )}
@@ -360,7 +387,7 @@ export default function CommentSection({
       {actionError ? <p className="field-error">{actionError}</p> : null}
 
       {items.length === 0 ? (
-        <p className="fb-comment-empty">No comments yet. Be the first.</p>
+        <p className="fb-comment-empty">{t("هنوز کامنتی نیست. اولین نفر باش.", "No comments yet. Be the first.")}</p>
       ) : (
         <ol className="fb-comment-list">
           {roots.map((item) => {
@@ -386,8 +413,8 @@ export default function CommentSection({
                         onSubmit={submitReply}
                         busy={replySending}
                         error={replyError}
-                        placeholder={`Reply to ${item.authorName}...`}
-                        submitLabel="Post reply"
+                        placeholder={t(`پاسخ به ${item.authorName}...`, `Reply to ${item.authorName}...`)}
+                        submitLabel={t("ارسال پاسخ", "Post reply")}
                         onCancel={cancelReply}
                       />
                     ) : null
@@ -419,13 +446,24 @@ export default function CommentSection({
 
       <ConfirmDialog
         open={confirmDelete !== null}
-        title={confirmDelete?.parentId ? "Delete reply?" : "Delete comment?"}
+        title={
+          confirmDelete?.parentId
+            ? t("حذف پاسخ؟", "Delete reply?")
+            : t("حذف کامنت؟", "Delete comment?")
+        }
         description={
           confirmDelete?.parentId
-            ? "This reply is gone for good."
-            : "This comment and your replies under it are gone for good."
+            ? t("این پاسخ برای همیشه حذف می‌شود.", "This reply is gone for good.")
+            : t(
+                "این کامنت و پاسخ‌های خودت برای همیشه حذف می‌شوند.",
+                "This comment and your replies under it are gone for good.",
+              )
         }
-        confirmLabel={confirmDelete?.parentId ? "Delete reply" : "Delete comment"}
+        confirmLabel={
+          confirmDelete?.parentId
+            ? t("حذف پاسخ", "Delete reply")
+            : t("حذف کامنت", "Delete comment")
+        }
         busy={Boolean(confirmDelete && deletingId === confirmDelete.id)}
         onConfirm={() => {
           if (confirmDelete) void remove(confirmDelete);

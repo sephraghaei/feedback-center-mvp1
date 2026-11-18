@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { answerSupportAction } from "@/app/feedback-actions";
 import { SUPPORT_STATUSES } from "@/lib/feedback/constants";
-import { STATUS_LABELS } from "@/lib/feedback/labels";
+import { statusLabel } from "@/lib/feedback/labels";
+import { useLocale, useT } from "@/lib/i18n/client";
 
 export default function SupportReply({
   postId,
@@ -16,6 +17,8 @@ export default function SupportReply({
   reply: string | null;
 }) {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useT();
   const [text, setText] = useState(reply ?? "");
   const [nextStatus, setNextStatus] = useState(status);
   const [busy, setBusy] = useState(false);
@@ -53,14 +56,15 @@ export default function SupportReply({
     >
       <div className="field">
         <label htmlFor={`reply-${postId}`}>
-          Reply to the user <span className="opt">(Markdown supported)</span>
+          {t("پاسخ به کاربر", "Reply to the user")}{" "}
+          <span className="opt">{t("(Markdown پشتیبانی می‌شود)", "(Markdown supported)")}</span>
         </label>
         <textarea
           id={`reply-${postId}`}
           rows={4}
           value={text}
           onChange={(event) => setText(event.target.value)}
-          placeholder="Write a clear, short reply."
+          placeholder={t("پاسخ روشن و کوتاه بنویس.", "Write a clear, short reply.")}
           maxLength={10000}
           disabled={busy}
         />
@@ -72,19 +76,19 @@ export default function SupportReply({
             value={nextStatus}
             onChange={(event) => setNextStatus(event.target.value)}
             disabled={busy}
-            aria-label="Request status"
+            aria-label={t("وضعیت درخواست", "Request status")}
           >
             {SUPPORT_STATUSES.map((option) => (
               <option key={option} value={option}>
-                {STATUS_LABELS[option]}
+                {statusLabel(option, locale)}
               </option>
             ))}
           </select>
         </div>
         <button type="submit" className="btn btn-primary" disabled={busy} style={{ marginTop: 4 }}>
-          {busy ? "Saving..." : "Save reply and status"}
+          {busy ? t("در حال ذخیره...", "Saving...") : t("ذخیره پاسخ و وضعیت", "Save reply and status")}
         </button>
-        {saved ? <span className="pill ok">Saved</span> : null}
+        {saved ? <span className="pill ok">{t("ذخیره شد", "Saved")}</span> : null}
       </div>
 
       {error ? <p className="form-error">{error}</p> : null}

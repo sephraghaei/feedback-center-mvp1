@@ -10,13 +10,15 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useT } from "@/lib/i18n/client";
+import type { T } from "@/lib/i18n/locale";
 
-function ShotStart() {
+function ShotStart({ t }: { t: T }) {
   return (
     <>
       <div className="fb-shot-head">
-        <span className="fb-shot-brand">Vasa boards</span>
-        <span className="fb-shot-pill">New</span>
+        <span className="fb-shot-brand">{t("بردهای وسا", "Vasa boards")}</span>
+        <span className="fb-shot-pill">{t("جدید", "New")}</span>
       </div>
       <div className="fb-shot-item is-ghost">
         <span className="fb-shot-num">1</span>
@@ -34,26 +36,26 @@ function ShotStart() {
       </div>
       <div className="fb-shot-empty">
         <span className="fb-shot-plus" />
-        <strong>No feedback yet</strong>
-        <span>Every board starts with one honest note</span>
+        <strong>{t("هنوز فیدبکی نیست", "No feedback yet")}</strong>
+        <span>{t("هر برد با یک جمله صادقانه شروع می‌شه", "Every board starts with one honest note")}</span>
       </div>
     </>
   );
 }
 
-function ShotWrite() {
+function ShotWrite({ t }: { t: T }) {
   return (
     <>
       <div className="fb-shot-head">
-        <span className="fb-shot-brand">New feedback</span>
-        <span className="fb-shot-pill">Draft</span>
+        <span className="fb-shot-brand">{t("فیدبک تازه", "New feedback")}</span>
+        <span className="fb-shot-pill">{t("پیش‌نویس", "Draft")}</span>
       </div>
       <div className="fb-shot-field">
-        <span className="fb-shot-label">Title</span>
-        <span className="fb-shot-input">Checkout button breaks on mobile</span>
+        <span className="fb-shot-label">{t("عنوان", "Title")}</span>
+        <span className="fb-shot-input">{t("دکمه پرداخت روی موبایل کار نمی‌کنه", "Checkout button breaks on mobile")}</span>
       </div>
       <div className="fb-shot-field is-grow">
-        <span className="fb-shot-label">Details</span>
+        <span className="fb-shot-label">{t("توضیحات", "Details")}</span>
         <span className="fb-shot-box">
           <span className="fb-shot-line w90" />
           <span className="fb-shot-line w75" />
@@ -62,20 +64,20 @@ function ShotWrite() {
         </span>
       </div>
       <div className="fb-shot-chips">
-        <span className="fb-shot-chip">Storefront</span>
-        <span className="fb-shot-chip is-soft">Mobile</span>
+        <span className="fb-shot-chip">{t("فروشگاه", "Storefront")}</span>
+        <span className="fb-shot-chip is-soft">{t("موبایل", "Mobile")}</span>
       </div>
-      <span className="fb-shot-btn">Post feedback</span>
+      <span className="fb-shot-btn">{t("ثبت فیدبک", "Post feedback")}</span>
     </>
   );
 }
 
-function ShotVote() {
+function ShotVote({ t }: { t: T }) {
   return (
     <>
       <div className="fb-shot-head">
-        <span className="fb-shot-brand">Vasa boards</span>
-        <span className="fb-shot-pill">Top voted</span>
+        <span className="fb-shot-brand">{t("بردهای وسا", "Vasa boards")}</span>
+        <span className="fb-shot-pill">{t("پررأی‌ترین", "Top voted")}</span>
       </div>
       <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
@@ -86,7 +88,7 @@ function ShotVote() {
           <span className="fb-shot-line w85" />
           <span className="fb-shot-line w55" />
         </span>
-        <span className="fb-shot-meta">8 comments</span>
+        <span className="fb-shot-meta">{t("۸ کامنت", "8 comments")}</span>
       </div>
       <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
@@ -97,7 +99,7 @@ function ShotVote() {
           <span className="fb-shot-line w70" />
           <span className="fb-shot-line w45" />
         </span>
-        <span className="fb-shot-meta">3 comments</span>
+        <span className="fb-shot-meta">{t("۳ کامنت", "3 comments")}</span>
       </div>
       <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
@@ -108,7 +110,7 @@ function ShotVote() {
           <span className="fb-shot-line w60" />
           <span className="fb-shot-line w35" />
         </span>
-        <span className="fb-shot-meta">1 comment</span>
+        <span className="fb-shot-meta">{t("۱ کامنت", "1 comment")}</span>
       </div>
       <div className="fb-shot-item is-tall">
         <span className="fb-shot-vote">
@@ -119,22 +121,22 @@ function ShotVote() {
           <span className="fb-shot-line w75" />
           <span className="fb-shot-line w40" />
         </span>
-        <span className="fb-shot-meta">2 comments</span>
+        <span className="fb-shot-meta">{t("۲ کامنت", "2 comments")}</span>
       </div>
     </>
   );
 }
 
-function ShotPlan() {
+function ShotPlan({ t }: { t: T }) {
   return (
     <>
       <div className="fb-shot-head">
-        <span className="fb-shot-brand">Roadmap</span>
-        <span className="fb-shot-pill">Public</span>
+        <span className="fb-shot-brand">{t("نقشه راه", "Roadmap")}</span>
+        <span className="fb-shot-pill">{t("عمومی", "Public")}</span>
       </div>
       <div className="fb-shot-board">
         <div className="fb-shot-col">
-          <span className="fb-shot-col-title">Planned</span>
+          <span className="fb-shot-col-title">{t("برنامه‌ریزی شده", "Planned")}</span>
           <span className="fb-shot-card">
             <i />
             <i />
@@ -145,7 +147,7 @@ function ShotPlan() {
           </span>
         </div>
         <div className="fb-shot-col is-live">
-          <span className="fb-shot-col-title">Building</span>
+          <span className="fb-shot-col-title">{t("در حال ساخت", "Building")}</span>
           <span className="fb-shot-card">
             <i />
             <i />
@@ -155,7 +157,7 @@ function ShotPlan() {
           </span>
         </div>
         <div className="fb-shot-col">
-          <span className="fb-shot-col-title">Shipped</span>
+          <span className="fb-shot-col-title">{t("منتشر شده", "Shipped")}</span>
           <span className="fb-shot-card">
             <i />
             <i />
@@ -166,32 +168,34 @@ function ShotPlan() {
   );
 }
 
-function ShotRelease() {
+function ShotRelease({ t }: { t: T }) {
   return (
     <>
       <div className="fb-shot-head">
-        <span className="fb-shot-brand">Updates</span>
-        <span className="fb-shot-pill">v3.2</span>
+        <span className="fb-shot-brand">{t("تغییرات", "Updates")}</span>
+        <span className="fb-shot-pill">{t("نسخه ۳٫۲", "v3.2")}</span>
       </div>
       <div className="fb-shot-release-block">
-        <span className="fb-shot-release">Dark mode is live</span>
-        <span className="fb-shot-release-meta">Published today, 2 feedback items closed</span>
+        <span className="fb-shot-release">{t("حالت تاریک فعال شد", "Dark mode is live")}</span>
+        <span className="fb-shot-release-meta">
+          {t("امروز منتشر شد، ۲ فیدبک بسته شد", "Published today, 2 feedback items closed")}
+        </span>
       </div>
       <div className="fb-shot-check">
         <i />
-        <span>Dark mode across the public board</span>
+        <span>{t("حالت تاریک در کل برد عمومی", "Dark mode across the public board")}</span>
       </div>
       <div className="fb-shot-check">
         <i />
-        <span>Saved filters per board</span>
+        <span>{t("فیلترهای ذخیره‌شده برای هر برد", "Saved filters per board")}</span>
       </div>
       <div className="fb-shot-versions">
         <div className="fb-shot-version">
-          <span>v3.1</span>
+          <span>{t("نسخه ۳٫۱", "v3.1")}</span>
           <i />
         </div>
         <div className="fb-shot-version">
-          <span>v3.0</span>
+          <span>{t("نسخه ۳٫۰", "v3.0")}</span>
           <i />
         </div>
       </div>
@@ -225,12 +229,15 @@ function chapterLinks(slug?: string) {
   };
 }
 
-function buildChapters(slug?: string): Chapter[] {
+function buildChapters(t: T, slug?: string): Chapter[] {
   const links = chapterLinks(slug);
   return [
     {
-      title: "A gap shows up",
-      body: "A customer hits a bug, a missing feature or a better way. That is where the loop starts, and no draft is needed to begin.",
+      title: t("یک جای خالی پیدا می‌شه", "A gap shows up"),
+      body: t(
+        "مشتری به یک باگ، یک قابلیت نبوده یا یک راه بهتر برمی‌خوره. حلقه از همین‌جا شروع می‌شه و برای شروع هیچ پیش‌نویسی لازم نیست.",
+        "A customer hits a bug, a missing feature or a better way. That is where the loop starts, and no draft is needed to begin.",
+      ),
       url: links.urlBoard,
       accent: "blue",
       icon: (
@@ -239,13 +246,16 @@ function buildChapters(slug?: string): Chapter[] {
           <path d="M12 3a6 6 0 0 0-3.4 10.9c.6.5 1 1.2 1.1 2h4.6c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z" />
         </svg>
       ),
-      scene: <ShotStart />,
+      scene: <ShotStart t={t} />,
       href: links.newPost,
-      cta: "Start with a note",
+      cta: t("با یک جمله شروع کن", "Start with a note"),
     },
     {
-      title: "Write it down",
-      body: "A clear title and two lines of detail are enough for everyone on the board to understand what happened and what you want.",
+      title: t("بنویسش", "Write it down"),
+      body: t(
+        "یک عنوان روشن و دو خط توضیح کافیه تا همه روی برد بفهمن چی شده و چی می‌خوای.",
+        "A clear title and two lines of detail are enough for everyone on the board to understand what happened and what you want.",
+      ),
       url: links.urlNewPost,
       accent: "violet",
       icon: (
@@ -254,13 +264,16 @@ function buildChapters(slug?: string): Chapter[] {
           <path d="M13.9 7.4l3.2 3.2" />
         </svg>
       ),
-      scene: <ShotWrite />,
+      scene: <ShotWrite t={t} />,
       href: links.board,
-      cta: "See what others wrote",
+      cta: t("ببین بقیه چی نوشتن", "See what others wrote"),
     },
     {
-      title: "Votes decide",
-      body: "Customers vote and comment, so the team sees what matters most to the most people, not just what is loudest.",
+      title: t("رأی‌ها تصمیم می‌گیرن", "Votes decide"),
+      body: t(
+        "مشتری‌ها رأی می‌دن و کامنت می‌ذارن، تا تیم ببینه چی برای بیشترین آدم مهم‌تره، نه فقط چی بلندتر صداش میاد.",
+        "Customers vote and comment, so the team sees what matters most to the most people, not just what is loudest.",
+      ),
       url: links.urlBoard,
       accent: "rose",
       icon: (
@@ -269,13 +282,16 @@ function buildChapters(slug?: string): Chapter[] {
           <path d="M6.8 11.7L12 6.5l5.2 5.2" />
         </svg>
       ),
-      scene: <ShotVote />,
+      scene: <ShotVote t={t} />,
       href: links.board,
-      cta: "Open the board",
+      cta: t("برد رو باز کن", "Open the board"),
     },
     {
-      title: "The team plans",
-      body: "Triage moves the note along a public roadmap, and the status changes for everyone watching it.",
+      title: t("تیم برنامه می‌ریزه", "The team plans"),
+      body: t(
+        "بررسی، نوشته رو روی نقشه راه عمومی جلو می‌بره و وضعیت برای همه‌ی دنبال‌کننده‌ها عوض می‌شه.",
+        "Triage moves the note along a public roadmap, and the status changes for everyone watching it.",
+      ),
       url: links.urlRoadmap,
       accent: "amber",
       icon: (
@@ -285,13 +301,16 @@ function buildChapters(slug?: string): Chapter[] {
           <rect x="15.4" y="4" width="4.6" height="6" rx="1.3" />
         </svg>
       ),
-      scene: <ShotPlan />,
+      scene: <ShotPlan t={t} />,
       href: links.roadmap,
-      cta: "Walk the roadmap",
+      cta: t("نقشه راه رو ببین", "Walk the roadmap"),
     },
     {
-      title: "It ships",
-      body: "A release note closes the loop: published updates mark the linked feedback as shipped and subscribers hear about it.",
+      title: t("منتشر می‌شه", "It ships"),
+      body: t(
+        "یک تغییر، حلقه رو کامل می‌کنه: تغییرات منتشرشده فیدبک‌های وصل‌شده رو «منتشر شده» می‌کنن و مشتری‌ها خبردار می‌شن.",
+        "A release note closes the loop: published updates mark the linked feedback as shipped and subscribers hear about it.",
+      ),
       url: links.urlUpdates,
       accent: "green",
       icon: (
@@ -300,9 +319,9 @@ function buildChapters(slug?: string): Chapter[] {
           <path d="M8.4 12.2l2.5 2.5 4.9-5.2" />
         </svg>
       ),
-      scene: <ShotRelease />,
+      scene: <ShotRelease t={t} />,
       href: links.updates,
-      cta: "Read the updates",
+      cta: t("تغییرات رو بخون", "Read the updates"),
     },
   ];
 }
@@ -320,8 +339,9 @@ function chapterCenter(row: HTMLLIElement | null) {
 }
 
 export default function HomeStory({ slug }: { slug?: string }) {
+  const t = useT();
   const uid = useId();
-  const chapters = buildChapters(slug);
+  const chapters = buildChapters(t, slug);
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState<"down" | "up">("down");
   const activeRef = useRef(0);
@@ -499,11 +519,13 @@ export default function HomeStory({ slug }: { slug?: string }) {
       <div className="fb-section-head" data-reveal>
         <div>
           <h2 id="story-title" className="fb-section-title">
-            From a first note to a shipped release
+            {t("از اولین جمله تا یک انتشار واقعی", "From a first note to a shipped release")}
           </h2>
           <p className="fb-section-sub">
-            Scroll the story: one piece of feedback as it is written, voted on, planned and
-            shipped.
+            {t(
+              "با اسکرول داستان رو ببین: یک فیدبک از نوشتن تا رأی گرفتن، برنامه‌ریزی و انتشار.",
+              "Scroll the story: one piece of feedback as it is written, voted on, planned and shipped.",
+            )}
           </p>
           <div className="fb-story-meter" aria-hidden="true">
             {chapters.map((chapter, index) => (

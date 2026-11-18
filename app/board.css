@@ -1264,3 +1264,8 @@
 .bd-footer-links a:hover {
   color: var(--ink);
 }
+
+/* User content keeps its own direction; in RTL it still aligns with the row. */
+[dir="rtl"] .bd-row-excerpt {
+  text-align: right;
+}

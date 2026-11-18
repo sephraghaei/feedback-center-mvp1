@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toggleUpvoteAction } from "@/app/feedback-actions";
 import { formatNumber } from "@/lib/feedback/labels";
+import { useLocale, useT } from "@/lib/i18n/client";
 import { VoteUpIcon } from "./icons";
 
 export default function VoteButton({
@@ -19,6 +20,8 @@ export default function VoteButton({
   signedIn: boolean;
   nextPath: string;
 }) {
+  const locale = useLocale();
+  const t = useT();
   const router = useRouter();
   const [state, setState] = useState({ count, upvoted });
   const [busy, setBusy] = useState(false);
@@ -61,19 +64,19 @@ export default function VoteButton({
       onClick={vote}
       disabled={busy}
       aria-pressed={state.upvoted}
-      aria-label={state.upvoted ? "Remove vote" : "Vote"}
+      aria-label={state.upvoted ? t("برداشتن رای", "Remove vote") : t("رای دادن", "Vote")}
       title={
         error ??
         (signedIn
           ? state.upvoted
-            ? "Remove vote"
-            : "Vote"
-          : "Log in to vote")
+            ? t("برداشتن رای", "Remove vote")
+            : t("رای دادن", "Vote")
+          : t("برای رای دادن وارد شو", "Log in to vote"))
       }
     >
       <VoteUpIcon size={15} />
       <span key={roll} className={`fb-vote-num${roll ? " is-rolling" : ""}`}>
-        {formatNumber(state.count)}
+        {formatNumber(state.count, locale)}
       </span>
     </button>
   );

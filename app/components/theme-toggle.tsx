@@ -2,6 +2,7 @@
 
 import type { MouseEvent } from "react";
 import { MoonIcon, SunIcon } from "@/app/components/feedback/icons";
+import { useT } from "@/lib/i18n/client";
 
 type ViewTransitionDocument = Document & {
   startViewTransition?: (callback: () => void) => unknown;
@@ -44,13 +45,15 @@ function toggleTheme(event: MouseEvent<HTMLButtonElement>) {
 }
 
 export default function ThemeToggle() {
+  const t = useT();
+  const label = t("تغییر حالت روشن و تاریک", "Toggle light and dark theme");
   return (
     <button
       type="button"
       className="theme-toggle"
       onClick={toggleTheme}
-      aria-label="Toggle light and dark theme"
-      title="Toggle light and dark theme"
+      aria-label={label}
+      title={label}
     >
       <span className="theme-icon theme-icon-moon" aria-hidden="true">
         <MoonIcon size={16} />

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { useT } from "@/lib/i18n/client";
 import { ChevronDownIcon } from "./icons";
 
 export default function CompanyFilter({
@@ -13,6 +14,7 @@ export default function CompanyFilter({
   selected?: string;
   sort?: "newest";
 }) {
+  const t = useT();
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function CompanyFilter({
     <details className="fb-company" ref={detailsRef}>
       <summary className="fb-filter fb-company-trigger">
         <span className="fb-company-current" dir="auto">
-          {selected ?? "همه شرکت‌ها"}
+          {selected ?? t("همه شرکت‌ها", "All companies")}
         </span>
         <ChevronDownIcon size={14} />
       </summary>
@@ -61,7 +63,7 @@ export default function CompanyFilter({
           className={`fb-company-item ${!selected ? "active" : ""}`}
           onClick={close}
         >
-          همه شرکت‌ها
+          {t("همه شرکت‌ها", "All companies")}
         </Link>
         {companies.map((company) => (
           <Link

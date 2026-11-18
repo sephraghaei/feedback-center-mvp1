@@ -1,8 +1,9 @@
 # Project rules
 
 - Do not use an em-dash for anything in code, text and comments.
-- The interface is English and LTR.
-- Use the Apple Helvetica stack (`"Helvetica Neue", Helvetica, Arial, sans-serif`) as the UI font, exposed as `--font-ui` in `app/globals.css`.
+- The interface is Persian RTL by default (`fc_locale` cookie, `fa`), with English LTR behind the language toggle (`fc_locale=en`). Every UI string goes through `t("فارسی", "English")` from `lib/i18n`, never a hardcoded one-language label.
+- Fonts: the Apple Helvetica stack (`"Helvetica Neue", Helvetica, Arial, sans-serif`) is the English UI font; `:root[lang="fa"]` in `app/globals.css` swaps `--font-ui` to Vazirmatn and `--font-brand` to Noto Kufi Arabic for the Persian surface.
+- Server actions and API routes return canonical English error messages and pass them through `localizeError(message, locale)` from `lib/i18n/errors.ts` so form errors follow the active language.
 
 The full stack lives in [docs/main-stack.md](docs/main-stack.md), with the details in:
 

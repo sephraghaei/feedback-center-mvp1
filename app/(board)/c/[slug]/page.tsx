@@ -17,21 +17,16 @@ import {
   formatDate,
   formatNumber,
   feedbackKind,
-  KIND_LABELS,
+  kindLabel,
   type FeedbackKind,
 } from "@/lib/feedback/labels";
 import { mediaUrl } from "@/lib/feedback/media";
 import { excerpt, listFeed } from "@/lib/feedback/posts";
 import { getViewer } from "@/lib/feedback/viewer";
+import { translator } from "@/lib/i18n/locale";
+import { getLocale } from "@/lib/i18n/server";
 
 type Search = { q?: string; kind?: string; sort?: string };
-
-const CATEGORIES: { value: FeedbackKind | null; label: string; Icon: typeof TagIcon }[] = [
-  { value: null, label: "All feedback", Icon: TagIcon },
-  { value: "bug", label: KIND_LABELS.bug, Icon: AlertIcon },
-  { value: "improvement", label: KIND_LABELS.improvement, Icon: BulbIcon },
-  { value: "praise", label: KIND_LABELS.praise, Icon: HeartIcon },
-];
 
 export async function generateMetadata({
   params,
@@ -39,11 +34,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const company = await getCompanyBySlug(slug);
-  if (!company) return { title: "Board not found | Vasa" };
+  const [company, locale] = await Promise.all([getCompanyBySlug(slug), getLocale()]);
+  const t = translator(locale);
+  if (!company) return { title: t("برد پیدا نشد | وسا", "Board not found | Vasa") };
   return {
-    title: `${company.name} feedback | Vasa`,
-    description: company.tagline ?? `Share feedback for ${company.name}.`,
+    title: t(`${company.name} فیدبک | وسا`, `${company.name} feedback | Vasa`),
+    description: company.tagline ?? t(`برای ${company.name} فیدبک بنویس.`, `Share feedback for ${company.name}.`),
   };
 }
 
@@ -72,10 +68,20 @@ export default async function CompanyBoardPage({
   const company = await getCompanyBySlug(slug);
   if (!company) notFound();
 
+  const locale = await getLocale();
+  const t = translator(locale);
+
+  const categories: { value: FeedbackKind | null; label: string; Icon: typeof TagIcon }[] = [
+    { value: null, label: t("همه فیدبک‌ها", "All feedback"), Icon: TagIcon },
+    { value: "bug", label: kindLabel("bug", locale), Icon: AlertIcon },
+    { value: "improvement", label: kindLabel("improvement", locale), Icon: BulbIcon },
+    { value: "praise", label: kindLabel("praise", locale), Icon: HeartIcon },
+  ];
+
   const viewer = await getViewer();
   const all = await listFeed({ companyId: company.id, viewerId: viewer?.userId, limit: 300 });
 
-  const kind = CATEGORIES.some((entry) => entry.value === search.kind)
+  const kind = categories.some((entry) => entry.value === search.kind)
     ? (search.kind as FeedbackKind)
     : null;
   const sortNewest = search.sort === "newest";
@@ -115,19 +121,26 @@ export default async function CompanyBoardPage({
     <>
       <section className="bd-hero">
         <div>
-          <h1>Feedback</h1>
+          <h1>{t("فیدبک", "Feedback")}</h1>
           <p>
-            {company.tagline ?? `Ideas, bugs and praise for ${company.name}.`} Vote on what
-            matters and follow each item as it moves forward.
+            {company.tagline ??
+              t(
+                `ایده‌ها، باگ‌ها و تشکرها برای ${company.name}.`,
+                `Ideas, bugs and praise for ${company.name}.`,
+              )}{" "}
+            {t(
+              "به مهم‌ها رأی بده و هر مورد رو تا جلو رفتنش دنبال کن.",
+              "Vote on what matters and follow each item as it moves forward.",
+            )}
           </p>
         </div>
       </section>
 
       <div className="bd-board">
         <aside className="bd-side">
-          <h2 className="bd-side-title">Board</h2>
+          <h2 className="bd-side-title">{t("برد", "Board")}</h2>
           <ul className="bd-cats">
-            {CATEGORIES.map(({ value, label, Icon }) => {
+            {categories.map(({ value, label, Icon }) => {
               const active = value === kind;
               const count = value ? counts.get(value) ?? 0 : all.length;
               return (
@@ -139,21 +152,21 @@ export default async function CompanyBoardPage({
                   >
                     <Icon size={14} />
                     {label}
-                    <span className="bd-cat-count">{formatNumber(count)}</span>
+                    <span className="bd-cat-count">{formatNumber(count, locale)}</span>
                   </Link>
                 </li>
               );
             })}
           </ul>
 
-          <h2 className="bd-side-title">Sort</h2>
+          <h2 className="bd-side-title">{t("ترتیب", "Sort")}</h2>
           <ul className="bd-sort">
             <li>
               <Link
                 href={hrefFor(company.slug, current, { sort: undefined })}
                 className={`bd-cat ${!sortNewest ? "active" : ""}`}
               >
-                Top voted
+                {t("پررأی‌ترین", "Top voted")}
               </Link>
             </li>
             <li>
@@ -161,7 +174,7 @@ export default async function CompanyBoardPage({
                 href={hrefFor(company.slug, current, { sort: "newest" })}
                 className={`bd-cat ${sortNewest ? "active" : ""}`}
               >
-                Newest
+                {t("تازه‌ها", "Newest")}
               </Link>
             </li>
           </ul>
@@ -170,23 +183,36 @@ export default async function CompanyBoardPage({
         <section aria-labelledby="feedback-list-title">
           <div className="bd-list-head">
             <h2 id="feedback-list-title">
-              {query ? `Results for “${query}”` : kind ? KIND_LABELS[kind] : "All feedback"}
+              {query
+                ? t(`نتایج «${query}»`, `Results for “${query}”`)
+                : kind
+                  ? kindLabel(kind, locale)
+                  : t("همه فیدبک‌ها", "All feedback")}
             </h2>
             <span className="bd-list-count">
-              {formatNumber(visible.length)} {visible.length === 1 ? "post" : "posts"}
+              {t(
+                `${formatNumber(visible.length, locale)} مورد`,
+                `${formatNumber(visible.length, locale)} ${visible.length === 1 ? "post" : "posts"}`,
+              )}
             </span>
           </div>
 
           {visible.length === 0 ? (
             <div className="bd-empty">
-              <strong>Nothing here yet.</strong>
+              <strong>{t("هنوز چیزی اینجا نیست.", "Nothing here yet.")}</strong>
               <p>
                 {query
-                  ? "No feedback matches that search. Try another word or clear the search."
-                  : "Be the first to share an idea, report a bug or send some praise."}
+                  ? t(
+                      "هیچ فیدبکی با این جستجو پیدا نشد. یک کلمه دیگر بزن یا جستجو رو پاک کن.",
+                      "No feedback matches that search. Try another word or clear the search.",
+                    )
+                  : t(
+                      "اولین نفر باش و یک ایده بنویس، باگ گزارش کن یا تشکر بفرست.",
+                      "Be the first to share an idea, report a bug or send some praise.",
+                    )}
               </p>
               <Link href={newHref} className="bd-btn bd-btn-primary">
-                Write the first post
+                {t("اولین نوشته رو بنویس", "Write the first post")}
               </Link>
             </div>
           ) : (
@@ -211,27 +237,29 @@ export default async function CompanyBoardPage({
                           <Link href={href}>{post.title}</Link>
                         </h3>
                       </div>
-                      <p className="bd-row-excerpt">{excerpt(post.body)}</p>
+                      <p className="bd-row-excerpt" dir="auto">
+                        {excerpt(post.body)}
+                      </p>
                       <div className="bd-row-meta">
-                        {postKind ? <FeedbackKindBadge kind={postKind} /> : null}
+                        {postKind ? <FeedbackKindBadge kind={postKind} locale={locale} /> : null}
                         <span className="bd-meta-item">
                           <Avatar
-                            name={post.authorName ?? "Member"}
+                            name={post.authorName ?? t("عضو", "Member")}
                             src={
                               post.authorAvatarPath ? mediaUrl(post.authorAvatarPath) : null
                             }
                             size={16}
                           />
-                          {post.authorName ?? "Member"}
+                          {post.authorName ?? t("عضو", "Member")}
                         </span>
                         <span className="bd-meta-dot" aria-hidden="true" />
                         <time dateTime={post.createdAt.toISOString()}>
-                          {formatDate(post.createdAt)}
+                          {formatDate(post.createdAt, locale)}
                         </time>
                         <span className="bd-meta-dot" aria-hidden="true" />
                         <span className="bd-meta-item">
                           <CommentIcon size={12} />
-                          {formatNumber(post.commentCount)}
+                          {formatNumber(post.commentCount, locale)}
                         </span>
                       </div>
                     </div>
@@ -243,19 +271,21 @@ export default async function CompanyBoardPage({
         </section>
 
         <aside className="bd-helpful">
-          <h2>Most helpful</h2>
-          <p className="bd-helpful-sub">The feedback this community wants most.</p>
+          <h2>{t("بیشترین کمک", "Most helpful")}</h2>
+          <p className="bd-helpful-sub">
+            {t("فیدبکی که این جامعه بیش از همه می‌خواد.", "The feedback this community wants most.")}
+          </p>
           <ol className="bd-helpful-list">
             {helpful.length === 0 ? (
-              <li className="bd-col-empty">No votes yet.</li>
+              <li className="bd-col-empty">{t("هنوز رأیی نیست.", "No votes yet.")}</li>
             ) : (
               helpful.map((post, index) => (
                 <li key={post.id} className="bd-helpful-item">
-                  <span className="bd-helpful-rank">{formatNumber(index + 1)}</span>
+                  <span className="bd-helpful-rank">{formatNumber(index + 1, locale)}</span>
                   <div>
                     <Link href={`${base}/p/${post.id}`}>{post.title}</Link>
                     <span className="bd-helpful-votes">
-                      <VoteUpIcon size={10} /> {formatNumber(post.upvotes)} votes
+                      <VoteUpIcon size={10} /> {t(`${formatNumber(post.upvotes, locale)} رأی`, `${formatNumber(post.upvotes, locale)} votes`)}
                     </span>
                   </div>
                 </li>

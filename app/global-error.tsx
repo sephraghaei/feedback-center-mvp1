@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { clientLogger } from "@/lib/client-logger";
+import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n/locale";
 
 export default function GlobalError({
   error,
@@ -10,6 +11,14 @@ export default function GlobalError({
   error: unknown;
   retry: () => void;
 }) {
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
+  const t = (fa: string, en: string) => (locale === "fa" ? fa : en);
+
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)fc_locale=([^;]+)/);
+    if (isLocale(match?.[1])) setLocale(match[1]);
+  }, []);
+
   useEffect(() => {
     clientLogger.error("ui.global_error", {
       message: "Global error boundary caught an error",
@@ -19,7 +28,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="en" dir="ltr">
+    <html lang={locale} dir={locale === "fa" ? "rtl" : "ltr"}>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -48,7 +57,7 @@ export default function GlobalError({
           placeItems: "center",
           background: "var(--paper)",
           color: "var(--ink)",
-          fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+          fontFamily: "var(--font-ui)",
           textAlign: "center",
           padding: "2rem",
         }}
@@ -74,10 +83,10 @@ export default function GlobalError({
               lineHeight: 1.2,
             }}
           >
-            Something went wrong
+            {t("مشکلی پیش آمد", "Something went wrong")}
           </h1>
           <p style={{ color: "var(--ink-3)", marginTop: "0.6rem", fontSize: "0.9rem" }}>
-            An unexpected error occurred. Please try again.
+            {t("یک خطای غیرمنتظره رخ داد. دوباره تلاش کن.", "An unexpected error occurred. Please try again.")}
           </p>
           <button
             type="button"
@@ -95,7 +104,7 @@ export default function GlobalError({
               cursor: "pointer",
             }}
           >
-            Try again
+            {t("تلاش دوباره", "Try again")}
           </button>
         </main>
       </body>

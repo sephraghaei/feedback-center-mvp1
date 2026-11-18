@@ -4,7 +4,9 @@ import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { saveProfileAction } from "@/app/feedback-actions";
 import { mediaUrl } from "@/lib/feedback/media";
-import { MAX_BIO_LENGTH, SEX_OPTIONS } from "@/lib/profile";
+import { MAX_BIO_LENGTH, SEX_OPTIONS, sexLabel } from "@/lib/profile";
+import { formatNumber } from "@/lib/feedback/labels";
+import { useLocale, useT } from "@/lib/i18n/client";
 import Avatar from "./avatar";
 
 type ProfileValues = {
@@ -29,6 +31,8 @@ export default function ProfileEditor({
   roleLabel: string | null;
   children?: ReactNode;
 }) {
+  const locale = useLocale();
+  const t = useT();
   const router = useRouter();
   const [values, setValues] = useState<ProfileValues>(profile);
   const [draft, setDraft] = useState<ProfileValues>(profile);
@@ -97,7 +101,7 @@ export default function ProfileEditor({
         {editing ? (
           <>
             <label className="label" htmlFor="profile-name">
-              Display name
+              {t("نام نمایشی", "Display name")}
             </label>
             <input
               id="profile-name"
@@ -110,24 +114,30 @@ export default function ProfileEditor({
             />
 
             <label className="label" htmlFor="profile-bio">
-              Short bio
+              {t("معرفی کوتاه", "Short bio")}
             </label>
             <textarea
               id="profile-bio"
               className="input fb-profile-bio-input"
               value={draft.bio}
               maxLength={MAX_BIO_LENGTH}
-              placeholder="What you work on, or what matters to you."
+              placeholder={t(
+                "مثلا روی چه محصولی کار می‌کنی یا چه چیزی برات مهمه.",
+                "What you work on, or what matters to you.",
+              )}
               onChange={(event) => patch({ bio: event.target.value })}
               disabled={saving}
             />
             <p className="field-hint">
-              {draft.bio.length} of {MAX_BIO_LENGTH} characters
+              {t(
+                `${formatNumber(draft.bio.length, locale)} از ${formatNumber(MAX_BIO_LENGTH, locale)} نویسه`,
+                `${formatNumber(draft.bio.length, locale)} of ${formatNumber(MAX_BIO_LENGTH, locale)} characters`,
+              )}
             </p>
 
             <div className="fb-profile-grid">
               <label className="fb-profile-field">
-                <span className="label">Company</span>
+                <span className="label">{t("شرکت", "Company")}</span>
                 <input
                   className="input"
                   value={draft.company}
@@ -137,7 +147,7 @@ export default function ProfileEditor({
                 />
               </label>
               <label className="fb-profile-field">
-                <span className="label">Age</span>
+                <span className="label">{t("سن", "Age")}</span>
                 <input
                   className="input ltr"
                   type="number"
@@ -150,17 +160,17 @@ export default function ProfileEditor({
                 />
               </label>
               <label className="fb-profile-field">
-                <span className="label">Gender</span>
+                <span className="label">{t("جنسیت", "Gender")}</span>
                 <select
                   className="input"
                   value={draft.sex}
                   onChange={(event) => patch({ sex: event.target.value })}
                   disabled={saving}
                 >
-                  <option value="">Prefer not to say</option>
+                  <option value="">{t("انتخاب نکن", "Prefer not to say")}</option>
                   {SEX_OPTIONS.map((option) => (
                     <option key={option} value={option}>
-                      {option}
+                      {sexLabel(option, locale)}
                     </option>
                   ))}
                 </select>
@@ -175,32 +185,35 @@ export default function ProfileEditor({
                 className="fb-btn fb-btn-primary"
                 disabled={saving || draft.name.trim().length < 2}
               >
-                {saving ? "Saving..." : "Save changes"}
+                {saving ? t("در حال ذخیره...", "Saving...") : t("ذخیره تغییرات", "Save changes")}
               </button>
               <button type="button" className="fb-btn" onClick={cancel} disabled={saving}>
-                Cancel
+                {t("انصراف", "Cancel")}
               </button>
             </div>
           </>
         ) : (
           <>
-            <p className="fb-eyebrow">Profile</p>
+            <p className="fb-eyebrow">{t("پروفایل", "Profile")}</p>
             <h1 className="fb-profile-title">{values.name}</h1>
             <p className="fb-profile-meta">
               {roleLabel ? <span className="fb-profile-role">{roleLabel}</span> : null}
-              <span>Member since {joinedLabel}</span>
+              <span>{t(`عضو از ${joinedLabel}`, `Member since ${joinedLabel}`)}</span>
               {contact ? <span dir="auto">{contact}</span> : null}
             </p>
             {values.bio ? (
               <p className="fb-profile-bio">{values.bio}</p>
             ) : (
               <p className="fb-profile-bio is-empty">
-                Add a short bio so people know who they are talking to.
+                {t(
+                  "یک معرفی کوتاه از خودت بنویس تا بقیه بدانند با کی حرف می‌زنند.",
+                  "Add a short bio so people know who they are talking to.",
+                )}
               </p>
             )}
             <div className="fb-profile-actions">
               <button type="button" className="fb-btn fb-btn-primary" onClick={startEditing}>
-                Edit profile
+                {t("ویرایش پروفایل", "Edit profile")}
               </button>
               {children}
             </div>

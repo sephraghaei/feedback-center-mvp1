@@ -4,8 +4,10 @@ import { useClerk } from "@clerk/nextjs";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { clientLogger } from "@/lib/client-logger";
+import { useT } from "@/lib/i18n/client";
 
 export function LogoutButton() {
+  const t = useT();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -27,12 +29,13 @@ export function LogoutButton() {
 
   return (
     <button type="button" className="ghost" onClick={logout} disabled={loading}>
-      {loading ? "Signing out..." : "Sign out"}
+      {loading ? t("در حال خروج...", "Signing out...") : t("خروج از حساب", "Sign out")}
     </button>
   );
 }
 
 export function ClerkSignOutButton() {
+  const t = useT();
   const router = useRouter();
   const { signOut } = useClerk();
   const [loading, setLoading] = useState(false);
@@ -52,7 +55,7 @@ export function ClerkSignOutButton() {
 
   return (
     <button type="button" className="ghost" onClick={logout} disabled={loading}>
-      {loading ? "Signing out..." : "Sign out"}
+      {loading ? t("در حال خروج...", "Signing out...") : t("خروج از حساب", "Sign out")}
     </button>
   );
 }

@@ -1,6 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { withApiLogging } from "@/lib/api-logger";
+import { localizeError } from "@/lib/i18n/errors";
+import { getLocale } from "@/lib/i18n/server";
 import { validateProfile } from "@/lib/profile";
 import {
   SESSION_COOKIE,
@@ -17,12 +19,13 @@ import {
 import { userRef } from "@/lib/user-ref";
 
 export const POST = withApiLogging("/api/auth/profile", async (request, _context, log) => {
+  const locale = await getLocale();
   const session = readSession(request.cookies.get(SESSION_COOKIE)?.value);
   const clerkAuth = session ? null : await auth();
   const clerkId = clerkAuth?.userId ?? null;
   if (!session && !clerkId) {
     log.warn("auth.profile.unauthorized");
-    return NextResponse.json({ message: "Log in first." }, { status: 401 });
+    return NextResponse.json({ message: localizeError("Log in first.", locale) }, { status: 401 });
   }
 
   const sessionRef = userRef(session?.phone ?? session?.email ?? clerkId);
@@ -32,7 +35,7 @@ export const POST = withApiLogging("/api/auth/profile", async (request, _context
     input = await request.json();
   } catch {
     log.warn("auth.profile.invalid_body", { context: { userRef: sessionRef } });
-    return NextResponse.json({ message: "That request is not valid." }, { status: 400 });
+    return NextResponse.json({ message: localizeError("That request is not valid.", locale) }, { status: 400 });
   }
 
   const result = validateProfile(input);
@@ -41,7 +44,7 @@ export const POST = withApiLogging("/api/auth/profile", async (request, _context
       message: result.error,
       context: { userRef: sessionRef },
     });
-    return NextResponse.json({ message: result.error }, { status: 400 });
+    return NextResponse.json({ message: localizeError(result.error, locale) }, { status: 400 });
   }
 
   const userId = session

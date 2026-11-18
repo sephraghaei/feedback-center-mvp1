@@ -4,12 +4,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { publishUpdateAction } from "@/app/(workspace)/actions";
 import type { ChangelogLinkedPost } from "@/lib/feedback/changelog";
+import { formatNumber } from "@/lib/feedback/labels";
+import { useLocale, useT } from "@/lib/i18n/client";
 
 export default function PublishUpdateForm({
   candidates,
 }: {
   candidates: ChangelogLinkedPost[];
 }) {
+  const locale = useLocale();
+  const t = useT();
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -55,12 +59,12 @@ export default function PublishUpdateForm({
   return (
     <form className="wk-form" onSubmit={submit}>
       <div className="wk-field-row">
-        <label htmlFor="update-title">Title</label>
+        <label htmlFor="update-title">{t("عنوان", "Title")}</label>
         <input
           id="update-title"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="Search is now twice as fast"
+          placeholder={t("جستجو حالا دو برابر سریع‌تره", "Search is now twice as fast")}
           maxLength={140}
           minLength={3}
           required
@@ -70,13 +74,13 @@ export default function PublishUpdateForm({
 
       <div className="wk-field-row">
         <label htmlFor="update-body">
-          What changed <span className="wk-hint">(Markdown)</span>
+          {t("چی عوض شد", "What changed")} <span className="wk-hint">(Markdown)</span>
         </label>
         <textarea
           id="update-body"
           value={body}
           onChange={(event) => setBody(event.target.value)}
-          placeholder={"## What shipped\n\n- ..."}
+          placeholder={t("## چی منتشر شد\n\n- ...", "## What shipped\n\n- ...")}
           maxLength={20000}
           required
           disabled={busy}
@@ -85,20 +89,25 @@ export default function PublishUpdateForm({
 
       <div className="wk-field-row">
         <label>
-          Feedback this resolves{" "}
-          <span className="wk-hint">({selected.length} selected)</span>
+          {t("فیدبکی که این حل می‌کنه", "Feedback this resolves")}{" "}
+          <span className="wk-hint">
+            {t(
+              `(${formatNumber(selected.length, locale)} انتخاب شده)`,
+              `(${formatNumber(selected.length, locale)} selected)`,
+            )}
+          </span>
         </label>
         <input
           type="search"
           value={filter}
           onChange={(event) => setFilter(event.target.value)}
-          placeholder="Search feedback"
+          placeholder={t("جستجوی فیدبک", "Search feedback")}
           disabled={busy || candidates.length === 0}
         />
         <div className="wk-select-list">
           {visible.length === 0 ? (
             <p className="wk-hint" style={{ padding: "8px" }}>
-              No feedback to link.
+              {t("فیدبکی برای وصل کردن نیست.", "No feedback to link.")}
             </p>
           ) : (
             visible.map((post) => (
@@ -115,12 +124,17 @@ export default function PublishUpdateForm({
           )}
         </div>
         <p className="wk-hint">
-          Linked feedback switches to Shipped when you publish.
+          {t(
+            "فیدبک‌های وصل‌شده موقع انتشار به منتشر شده می‌رن.",
+            "Linked feedback switches to Shipped when you publish.",
+          )}
         </p>
       </div>
 
       {error ? <p className="bd-alert">{error}</p> : null}
-      {published ? <p className="wk-success">Published. It is live on your board.</p> : null}
+      {published ? (
+        <p className="wk-success">{t("منتشر شد. حالا روی بردت زنده‌ست.", "Published. It is live on your board.")}</p>
+      ) : null}
 
       <div>
         <button
@@ -128,7 +142,7 @@ export default function PublishUpdateForm({
           className="bd-btn bd-btn-primary"
           disabled={busy || body.trim().length < 10}
         >
-          {busy ? "Publishing..." : "Publish update"}
+          {busy ? t("در حال انتشار...", "Publishing...") : t("انتشار تغییر", "Publish update")}
         </button>
       </div>
     </form>

@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { excerpt, type PostSummary } from "@/lib/feedback/posts";
-import { TYPE_LABELS, feedbackKind } from "@/lib/feedback/labels";
+import { feedbackKind, typeLabel } from "@/lib/feedback/labels";
 import { productBrand } from "@/lib/feedback/product";
+import { translator } from "@/lib/i18n/locale";
+import { getLocale } from "@/lib/i18n/server";
 import ProductMark from "./product-mark";
 import VoteButton from "./vote-button";
 import PostOwnerActions from "./post-owner-actions";
 import FeedbackKindBadge from "./kind-badge";
 
-export default function PostCard({
+export default async function PostCard({
   post,
   signedIn,
   nextPath,
@@ -22,6 +24,8 @@ export default function PostCard({
   vote?: boolean;
   ownerActions?: boolean;
 }) {
+  const locale = await getLocale();
+  const t = translator(locale);
   const brand = productBrand(post.product, post.productUrl);
   const href = `/p/${post.id}`;
   const snippet = excerpt(post.body);
@@ -52,24 +56,30 @@ export default function PostCard({
               </span>
             )}
             <span className="fb-card-product" dir="auto">
-              {brand?.display ?? "No product"}
+              {brand?.display ?? t("بدون محصول", "No product")}
             </span>
           </span>
 
-          {kind ? <FeedbackKindBadge kind={kind} /> : null}
+          {kind ? <FeedbackKindBadge kind={kind} locale={locale} /> : null}
           {!kind && showType ? (
-            <span className="fb-card-type-label">{TYPE_LABELS[post.type] ?? post.type}</span>
+            <span className="fb-card-type-label">{typeLabel(post.type, locale)}</span>
           ) : null}
 
           {ownerActions ? (
             <PostOwnerActions
               postId={post.id}
               redirectTo={nextPath}
-              label={post.type === "support" ? "Delete request" : "Delete feedback"}
+              label={post.type === "support" ? t("حذف درخواست", "Delete request") : t("حذف فیدبک", "Delete feedback")}
               confirmText={
                 post.type === "support"
-                  ? "Delete this support request for good?"
-                  : "Delete this feedback and all its comments for good?"
+                  ? t(
+                      "این درخواست پشتیبانی برای همیشه حذف شه؟",
+                      "Delete this support request for good?",
+                    )
+                  : t(
+                      "این فیدبک و همه کامنت‌هاش برای همیشه حذف شن؟",
+                      "Delete this feedback and all its comments for good?",
+                    )
               }
             />
           ) : null}
@@ -79,7 +89,11 @@ export default function PostCard({
           <Link href={href}>{post.title}</Link>
         </h3>
 
-        {snippet ? <p className="fb-card-excerpt">{snippet}</p> : null}
+        {snippet ? (
+          <p className="fb-card-excerpt" dir="auto">
+            {snippet}
+          </p>
+        ) : null}
       </div>
     </article>
   );

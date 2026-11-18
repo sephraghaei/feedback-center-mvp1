@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useT } from "@/lib/i18n/client";
 import { CheckIcon, ShareIcon } from "./icons";
 
 type ShareState = "idle" | "copied" | "failed";
@@ -32,6 +33,7 @@ export default function ShareButton({
   title?: string;
   label?: boolean;
 }) {
+  const t = useT();
   const [state, setState] = useState<ShareState>("idle");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -74,20 +76,27 @@ export default function ShareButton({
     resetLater();
   }
 
-  const labelText = state === "copied" ? "Copied" : state === "failed" ? "Failed" : "Share";
+  const labelText =
+    state === "copied"
+      ? t("کپی شد", "Copied")
+      : state === "failed"
+        ? t("نشد", "Failed")
+        : t("هم‌رسانی", "Share");
 
   return (
     <button
       type="button"
       className={`fb-action-btn ${state === "copied" ? "on" : ""}`}
       onClick={share}
-      aria-label={state === "copied" ? "Link copied" : "Copy link to share"}
-      title={state === "failed" ? "Could not copy the link" : "Share"}
+      aria-label={
+        state === "copied" ? t("لینک کپی شد", "Link copied") : t("کپی لینک برای هم‌رسانی", "Copy link to share")
+      }
+      title={state === "failed" ? t("کپی لینک ممکن نشد", "Could not copy the link") : t("هم‌رسانی", "Share")}
     >
       {state === "copied" ? <CheckIcon size={15} /> : <ShareIcon size={15} />}
       {label ? <span>{labelText}</span> : null}
       <span className="sr-only" role="status">
-        {state === "copied" ? "Link copied." : ""}
+        {state === "copied" ? t("لینک کپی شد.", "Link copied.") : ""}
       </span>
     </button>
   );

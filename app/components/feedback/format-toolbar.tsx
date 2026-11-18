@@ -1,6 +1,7 @@
 "use client";
 
 import type { RefObject } from "react";
+import { useT } from "@/lib/i18n/client";
 import EmojiPicker from "./emoji-picker";
 import {
   BoldIcon,
@@ -25,12 +26,14 @@ export default function FormatToolbar({
   textareaRef: RefObject<HTMLTextAreaElement | null>;
   compact?: boolean;
 }) {
+  const t = useT();
+
   function surround(before: string, after = before) {
     const el = textareaRef.current;
     if (!el) return;
     const start = el.selectionStart;
     const end = el.selectionEnd;
-    const selected = value.slice(start, end) || "text";
+    const selected = value.slice(start, end) || t("متن", "text");
     onChange(value.slice(0, start) + before + selected + after + value.slice(end));
     requestAnimationFrame(() => {
       el.focus();
@@ -55,7 +58,7 @@ export default function FormatToolbar({
     if (!el) return;
     const start = el.selectionStart;
     const end = el.selectionEnd;
-    const selected = value.slice(start, end) || "code";
+    const selected = value.slice(start, end) || t("کد", "code");
     const before = "```\n";
     const after = "\n```";
     onChange(value.slice(0, start) + before + selected + after + value.slice(end));
@@ -79,22 +82,26 @@ export default function FormatToolbar({
   }
 
   return (
-    <div className={`fb-format ${compact ? "compact" : ""}`} role="toolbar" aria-label="Text formatting">
-      <button type="button" className="fb-tool" onClick={() => prefixLine("## ")} title="Heading" aria-label="Heading">
+    <div
+      className={`fb-format ${compact ? "compact" : ""}`}
+      role="toolbar"
+      aria-label={t("قالب‌بندی متن", "Text formatting")}
+    >
+      <button type="button" className="fb-tool" onClick={() => prefixLine("## ")} title={t("عنوان", "Heading")} aria-label={t("عنوان", "Heading")}>
         <HeadingIcon size={15} />
       </button>
-      <button type="button" className="fb-tool" onClick={() => surround("**")} title="Bold" aria-label="Bold">
+      <button type="button" className="fb-tool" onClick={() => surround("**")} title={t("ضخیم", "Bold")} aria-label={t("ضخیم", "Bold")}>
         <BoldIcon size={15} />
       </button>
-      <button type="button" className="fb-tool" onClick={() => surround("_")} title="Italic" aria-label="Italic">
+      <button type="button" className="fb-tool" onClick={() => surround("_")} title={t("مورب", "Italic")} aria-label={t("مورب", "Italic")}>
         <ItalicIcon size={15} />
       </button>
       <button
         type="button"
         className="fb-tool"
         onClick={() => prefixLine("> ")}
-        title="Quote"
-        aria-label="Quote"
+        title={t("نقل‌قول", "Quote")}
+        aria-label={t("نقل‌قول", "Quote")}
       >
         <QuoteIcon size={15} />
       </button>
@@ -102,8 +109,8 @@ export default function FormatToolbar({
         type="button"
         className="fb-tool"
         onClick={() => prefixLine("- ")}
-        title="Bulleted list"
-        aria-label="Bulleted list"
+        title={t("فهرست نقطه‌ای", "Bulleted list")}
+        aria-label={t("فهرست نقطه‌ای", "Bulleted list")}
       >
         <ListIcon size={15} />
       </button>
@@ -111,8 +118,8 @@ export default function FormatToolbar({
         type="button"
         className="fb-tool"
         onClick={() => prefixLine("1. ")}
-        title="Numbered list"
-        aria-label="Numbered list"
+        title={t("فهرست شماره‌دار", "Numbered list")}
+        aria-label={t("فهرست شماره‌دار", "Numbered list")}
       >
         <OrderedListIcon size={15} />
       </button>
@@ -120,8 +127,8 @@ export default function FormatToolbar({
         type="button"
         className="fb-tool"
         onClick={() => surround("[", "](https://)")}
-        title="Link"
-        aria-label="Link"
+        title={t("پیوند", "Link")}
+        aria-label={t("پیوند", "Link")}
       >
         <LinkIcon size={15} />
       </button>
@@ -129,8 +136,8 @@ export default function FormatToolbar({
         type="button"
         className="fb-tool"
         onClick={() => surround("`")}
-        title="Inline code"
-        aria-label="Inline code"
+        title={t("کد درون‌خطی", "Inline code")}
+        aria-label={t("کد درون‌خطی", "Inline code")}
       >
         <CodeIcon size={15} />
       </button>
@@ -138,8 +145,8 @@ export default function FormatToolbar({
         type="button"
         className="fb-tool"
         onClick={fence}
-        title="Code block"
-        aria-label="Code block"
+        title={t("بلوک کد", "Code block")}
+        aria-label={t("بلوک کد", "Code block")}
       >
         <CodeBlockIcon size={15} />
       </button>

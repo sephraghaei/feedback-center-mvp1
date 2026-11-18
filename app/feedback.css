@@ -2776,7 +2776,7 @@ a.fb-product-name:hover {
   inset: 0;
   translate: calc(var(--px, 0) * 9px) calc(var(--py, 0) * 7px);
   background: radial-gradient(ellipse 60% 42% at 50% 27%, var(--ring-soft), transparent 68%);
-  transition: translate 0.7s ease-out;
+  transition: translate 1.1s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .fb-aura-grid {
@@ -2788,7 +2788,7 @@ a.fb-product-name:hover {
   opacity: 0.45;
   -webkit-mask-image: radial-gradient(ellipse 58% 55% at 50% 26%, #000 0%, transparent 68%);
   mask-image: radial-gradient(ellipse 58% 55% at 50% 26%, #000 0%, transparent 68%);
-  transition: translate 0.7s ease-out;
+  transition: translate 1.1s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .fb-hero-inner {
@@ -2810,6 +2810,24 @@ a.fb-product-name:hover {
   line-height: 1.14;
   letter-spacing: -0.035em;
   text-wrap: balance;
+}
+
+.fb-title-mark {
+  position: relative;
+  isolation: isolate;
+  white-space: nowrap;
+}
+
+.fb-title-mark::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-inline: -0.01em;
+  bottom: 0.1em;
+  height: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 78%, transparent);
+  transform-origin: 0 50%;
 }
 
 .fb-title-line {
@@ -5322,6 +5340,37 @@ a.fb-product-name:hover {
   }
 }
 
+@keyframes fb-hero-rise {
+  from {
+    opacity: 0;
+    translate: 0 26px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes fb-aura-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fb-mark-in {
+  from {
+    opacity: 0;
+    scale: 0 1;
+  }
+  to {
+    opacity: 1;
+    scale: 1 1;
+  }
+}
+
 @keyframes fb-page-in {
   from {
     opacity: 0;
@@ -5394,6 +5443,12 @@ a.fb-product-name:hover {
     animation: fb-page-in 0.38s cubic-bezier(0.22, 0.7, 0.25, 1) backwards;
   }
 
+  /* The landing runs its own hero entrance; a full page slide underneath it
+     reads as two motions fighting each other. */
+  html:has(.fb-home) .fb-page {
+    animation: none;
+  }
+
   .fb-tour-tip {
     animation: fb-dialog 0.26s cubic-bezier(0.22, 0.7, 0.25, 1) both;
   }
@@ -5426,24 +5481,48 @@ a.fb-product-name:hover {
     animation: none;
   }
 
-  .fb-home .fb-hero-inner > * {
-    animation: fb-reveal 0.7s cubic-bezier(0.22, 0.7, 0.25, 1) both;
+  /* The intro waits for the webfont so the hero never reflows mid-rise. The
+     head script holds the children until HeroIntro releases them. */
+  html[data-intro="hold"] .fb-home .fb-hero-inner > * {
+    opacity: 0;
+    translate: 0 26px;
   }
 
-  .fb-home .fb-hero-inner > :nth-child(2) {
-    animation-delay: 0.08s;
+  html[data-intro] .fb-home .fb-hero-inner > * {
+    will-change: opacity, transform;
   }
 
-  .fb-home .fb-hero-inner > :nth-child(3) {
-    animation-delay: 0.16s;
+  html[data-intro="play"] .fb-home .fb-hero-inner > * {
+    animation: fb-hero-rise 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  .fb-home .fb-hero-inner > :nth-child(4) {
-    animation-delay: 0.24s;
+  html[data-intro="play"] .fb-home .fb-hero-inner > :nth-child(2) {
+    animation-delay: 0.07s;
   }
 
-  .fb-home .fb-hero-inner > :nth-child(5) {
-    animation-delay: 0.34s;
+  html[data-intro="play"] .fb-home .fb-hero-inner > :nth-child(3) {
+    animation-delay: 0.15s;
+  }
+
+  html[data-intro="play"] .fb-home .fb-hero-inner > :nth-child(4) {
+    animation-delay: 0.23s;
+  }
+
+  html[data-intro="play"] .fb-home .fb-hero-inner > :nth-child(5) {
+    animation-delay: 0.33s;
+  }
+
+  html[data-intro="hold"] .fb-title-mark::after {
+    opacity: 0;
+    scale: 0 1;
+  }
+
+  [dir="rtl"] .fb-title-mark::after {
+    transform-origin: 100% 50%;
+  }
+
+  html[data-intro="play"] .fb-title-mark::after {
+    animation: fb-mark-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.52s both;
   }
 
   .fb-home .fb-hero .fb-btn {
@@ -6078,6 +6157,12 @@ a.fb-product-name:hover {
   color: var(--ink-4);
 }
 
+.fb-mode-num {
+  color: var(--ink-3);
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
 .fb-mode h2 {
   margin: 0;
   font-size: clamp(1.15rem, 2.4vw, 1.45rem);
@@ -6177,6 +6262,12 @@ a.fb-product-name:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Company taglines are often English inside the Persian layout; plaintext keeps
+   their punctuation on the correct side without breaking RTL alignment. */
+[dir="rtl"] .fb-board-text span {
+  unicode-bidi: plaintext;
 }
 
 .fb-board-arrow {
@@ -6323,35 +6414,43 @@ a.fb-product-name:hover {
 }
 
 @keyframes fb-demo-status-a {
-  0%, 31% {
+  0%, 29% {
     opacity: 1;
+    translate: 0 0;
   }
   35%, 100% {
     opacity: 0;
+    translate: 0 -0.4em;
   }
 }
 
 @keyframes fb-demo-status-b {
-  0%, 32% {
+  0%, 31% {
     opacity: 0;
+    translate: 0 0.4em;
   }
-  36%, 64% {
+  37%, 62% {
     opacity: 1;
+    translate: 0 0;
   }
   68%, 100% {
     opacity: 0;
+    translate: 0 -0.4em;
   }
 }
 
 @keyframes fb-demo-status-c {
-  0%, 65% {
+  0%, 64% {
     opacity: 0;
+    translate: 0 0.4em;
   }
-  69%, 96% {
+  70%, 94% {
     opacity: 1;
+    translate: 0 0;
   }
   100% {
     opacity: 0;
+    translate: 0 -0.4em;
   }
 }
 
@@ -6383,11 +6482,11 @@ a.fb-product-name:hover {
 @media (prefers-reduced-motion: no-preference) {
   [data-reveal] {
     opacity: 0;
-    translate: 0 20px;
+    translate: 0 24px;
     transition:
-      opacity 0.7s cubic-bezier(0.22, 0.7, 0.25, 1),
-      translate 0.7s cubic-bezier(0.22, 0.7, 0.25, 1);
-    transition-delay: calc(var(--i, 0) * 80ms);
+      opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+      translate 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--i, 0) * 70ms);
   }
 
   [data-reveal].is-revealed {
@@ -6399,8 +6498,12 @@ a.fb-product-name:hover {
     animation: fb-landing-pulse 3.6s ease-in-out infinite;
   }
 
+  .fb-home .fb-hero-aura {
+    animation: fb-aura-in 1.2s ease-out both;
+  }
+
   .fb-hero-aura .fb-aura-glow {
-    animation: fb-aura-breathe 9s ease-in-out infinite alternate;
+    animation: fb-aura-breathe 16s ease-in-out infinite alternate;
   }
 
   .fb-home .fb-section-head::after {
@@ -6479,7 +6582,7 @@ a.fb-product-name:hover {
 
   @keyframes fb-aura-breathe {
     from {
-      opacity: 0.7;
+      opacity: 0.8;
     }
     to {
       opacity: 1;
@@ -6697,5 +6800,35 @@ a.fb-product-name:hover {
     height: 14px;
     background: linear-gradient(var(--paper), transparent);
     pointer-events: none;
+  }
+}
+
+/* User content keeps its own direction; in RTL it still aligns with the card. */
+[dir="rtl"] .fb-card-excerpt {
+  text-align: right;
+}
+
+/* Arrows follow the reading direction: forward moves toward the start edge. */
+[dir="rtl"] .fb-mode-link:hover .fb-mode-arrow,
+[dir="rtl"] .fb-board-link:hover .fb-board-arrow {
+  transform: translateX(-3px);
+}
+
+[dir="rtl"] .fb-story-link::after {
+  transform: rotate(-45deg);
+}
+
+[dir="rtl"] .fb-story-link:hover {
+  transform: translateX(-1px);
+}
+
+@media (max-width: 700px) {
+  .fb-aura-grid {
+    background-size: 18px 18px;
+    opacity: 0.34;
+  }
+
+  .fb-aura-glow {
+    background: radial-gradient(ellipse 88% 46% at 50% 30%, var(--ring-soft), transparent 70%);
   }
 }

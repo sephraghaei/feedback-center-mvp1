@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { formatNumber } from "@/lib/feedback/labels";
+import { useLocale } from "@/lib/i18n/client";
 
 export default function CountUp({ value, duration = 900 }: { value: number; duration?: number }) {
+  const locale = useLocale();
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState(0);
 
@@ -51,8 +53,8 @@ export default function CountUp({ value, duration = 900 }: { value: number; dura
 
   return (
     <span ref={ref} className="fb-count">
-      <span aria-hidden="true">{formatNumber(display)}</span>
-      <span className="sr-only">{formatNumber(value)}</span>
+      <span aria-hidden="true">{formatNumber(display, locale)}</span>
+      <span className="sr-only">{formatNumber(value, locale)}</span>
     </span>
   );
 }

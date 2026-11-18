@@ -70,9 +70,9 @@ function hash(value: string): number {
   return h;
 }
 
-export function initialsOf(label: string, fallback: string): string {
+export function initialsOf(label: string, fallback: string, empty = "?"): string {
   const source = label.trim() || fallback.trim();
-  if (!source) return "?";
+  if (!source) return empty;
   const parts = source.split(/\s+/).filter(Boolean);
   const first = parts[0]?.[0] ?? "";
   const second = parts.length > 1 ? parts[1]?.[0] ?? "" : "";
@@ -101,11 +101,11 @@ export function Avatar({
   );
 }
 
-const METHOD_LABEL: Record<UserMethod, string> = {
-  phone: "Phone",
-  email: "Email",
-  clerk: "Clerk",
-  unknown: "Unknown",
+const METHOD_LABEL: Record<UserMethod, [string, string]> = {
+  phone: ["موبایل", "Phone"],
+  email: ["ایمیل", "Email"],
+  clerk: ["Clerk", "Clerk"],
+  unknown: ["نامشخص", "Unknown"],
 };
 const METHOD_ICON: Record<UserMethod, IconName> = {
   phone: "phone",
@@ -114,28 +114,21 @@ const METHOD_ICON: Record<UserMethod, IconName> = {
   unknown: "user",
 };
 
-export function MethodBadge({ method }: { method: UserMethod }) {
+export function MethodBadge({ method, fa }: { method: UserMethod; fa?: boolean }) {
+  const [persian, english] = METHOD_LABEL[method];
   return (
     <span className={`badge-method ${method}`}>
       <Icon name={METHOD_ICON[method]} size={13} />
-      <span className={method === "clerk" ? "ltr" : undefined}>{METHOD_LABEL[method]}</span>
+      <span className={method === "clerk" ? "ltr" : undefined}>{fa ? persian : english}</span>
     </span>
   );
 }
 
-export function ProfilePill({ complete }: { complete: boolean }) {
+export function ProfilePill({ complete, fa }: { complete: boolean; fa?: boolean }) {
   return (
     <span className={`pill ${complete ? "ok" : "warn"}`}>
       <span className="dot" />
-      {complete ? "Complete profile" : "Incomplete profile"}
+      {complete ? (fa ? "پروفایل کامل" : "Complete profile") : fa ? "پروفایل ناقص" : "Incomplete profile"}
     </span>
   );
-}
-
-export function formatDate(iso: string): string {
-  try {
-    return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(new Date(iso));
-  } catch {
-    return iso.slice(0, 10);
-  }
 }

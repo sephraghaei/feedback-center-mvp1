@@ -10,40 +10,25 @@ import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-button
 import { listCompanies } from "@/lib/companies";
 import { formatNumber } from "@/lib/feedback/labels";
 import { getViewer } from "@/lib/feedback/viewer";
+import { translator } from "@/lib/i18n/locale";
+import { getLocale } from "@/lib/i18n/server";
 import { getProfile } from "@/lib/user-store";
 
-export const metadata: Metadata = {
-  title: "Vasa | Customer feedback boards",
-  description:
-    "Customers post ideas on a public board, vote on what matters, and follow the roadmap. Companies get a workspace to triage and ship.",
-};
-
-const MODES = [
-  {
-    id: "customers",
-    label: "For customers",
-    title: "Say what you need, then watch it happen",
-    points: [
-      "One board per company, sorted by votes or by newest.",
-      "Post a bug, an idea or a compliment in under a minute.",
-      "Follow the status from New to Shipped without asking anyone.",
-    ],
-    href: "#boards",
-    link: "Find a board",
-  },
-  {
-    id: "companies",
-    label: "For companies",
-    title: "A workspace behind every public board",
-    points: [
-      "Triage new feedback and move it along a public roadmap.",
-      "Publish updates that mark the linked feedback as shipped.",
-      "Invite teammates and match the board to your brand accent.",
-    ],
-    href: "/workspace",
-    link: "Open the workspace",
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  if (locale === "fa") {
+    return {
+      title: "وسا | بردهای فیدبک مشتری",
+      description:
+        "مشتری‌ها روی برد عمومی ایده می‌نویسن، به مهم‌ها رأی می‌دن و نقشه راه رو دنبال می‌کنن. شرکت‌ها هم پنلی برای بررسی و انتشار دارن.",
+    };
+  }
+  return {
+    title: "Vasa | Customer feedback boards",
+    description:
+      "Customers post ideas on a public board, vote on what matters, and follow the roadmap. Companies get a workspace to triage and ship.",
+  };
+}
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
   const params = await searchParams;
@@ -55,6 +40,54 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
 
   const viewer = await getViewer();
   if (viewer && nextPath) redirect(nextPath);
+
+  const locale = await getLocale();
+  const t = translator(locale);
+
+  const modes = [
+    {
+      id: "customers",
+      label: t("برای مشتری‌ها", "For customers"),
+      title: t("بگو چی لازم داری، بعد ببین چطور جلو می‌ره", "Say what you need, then watch it happen"),
+      points: [
+        t(
+          "یک برد برای هر شرکت، مرتب بر اساس رأی یا تازه‌ترین.",
+          "One board per company, sorted by votes or by newest.",
+        ),
+        t(
+          "یک باگ، ایده یا تشکر رو در کمتر از یک دقیقه بنویس.",
+          "Post a bug, an idea or a compliment in under a minute.",
+        ),
+        t(
+          "وضعیت رو از جدید تا منتشر شده دنبال کن، بدون اینکه از کسی بپرسی.",
+          "Follow the status from New to Shipped without asking anyone.",
+        ),
+      ],
+      href: "#boards",
+      link: t("یک برد پیدا کن", "Find a board"),
+    },
+    {
+      id: "companies",
+      label: t("برای شرکت‌ها", "For companies"),
+      title: t("پشت هر برد عمومی، یک پنل شرکت", "A workspace behind every public board"),
+      points: [
+        t(
+          "فیدبک‌های تازه رو بررسی کن و روی نقشه راه عمومی جلو ببرشون.",
+          "Triage new feedback and move it along a public roadmap.",
+        ),
+        t(
+          "تغییرات رو منتشر کن تا فیدبک‌های وصل بهش خودکار «منتشر شده» بشن.",
+          "Publish updates that mark the linked feedback as shipped.",
+        ),
+        t(
+          "هم‌تیمی‌ها رو دعوت کن و رنگ برد رو با برندت هماهنگ کن.",
+          "Invite teammates and match the board to your brand accent.",
+        ),
+      ],
+      href: "/workspace",
+      link: t("باز کردن پنل شرکت", "Open the workspace"),
+    },
+  ];
 
   const companies = await listCompanies();
   const profile = viewer ? await getProfile(viewer.userId) : null;
@@ -72,50 +105,72 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         <div className="fb-hero-inner">
           <span className="fb-landing-kicker">
             <span className="fb-landing-dot" aria-hidden="true" />
-            Customer feedback, end to end
+            {t("فیدبک مشتری، از اول تا آخر", "Customer feedback, end to end")}
           </span>
-          <h1 className="fb-title">Ship what customers actually ask for.</h1>
+          <h1 className="fb-title">
+            {locale === "fa" ? (
+              <>
+                همون چیزی رو بساز که <span className="fb-title-mark">مشتری‌ها</span> واقعاً
+                می‌خوان.
+              </>
+            ) : (
+              <>
+                Ship what <span className="fb-title-mark">customers</span> actually ask for.
+              </>
+            )}
+          </h1>
           <p className="fb-lede">
-            Vasa gives every company a public board where customers post ideas, vote on what
-            matters, and follow the roadmap. The company team gets a workspace behind it to
-            triage, plan and publish.
+            {t(
+              "وسا به هر شرکت یک برد عمومی می‌ده که مشتری‌ها ایده می‌نویسن، به مهم‌ها رأی می‌دن و نقشه راه رو دنبال می‌کنن. تیم شرکت هم پشتش یک پنل داره برای بررسی، برنامه‌ریزی و انتشار.",
+              "Vasa gives every company a public board where customers post ideas, vote on what matters, and follow the roadmap. The company team gets a workspace behind it to triage, plan and publish.",
+            )}
           </p>
           <div className="fb-hero-actions">
             <Link href="#boards" className="fb-btn fb-btn-primary">
-              Browse boards
+              {t("بردها رو ببین", "Browse boards")}
             </Link>
             <Link href="/workspace" className="fb-btn">
-              Company panel
+              {t("پنل شرکت", "Company panel")}
             </Link>
           </div>
           <div className="fb-hero-demo" data-tilt aria-hidden="true">
             <span className="fb-demo-vote">
               <span className="fb-demo-arrow" />
-              <strong>42</strong>
-              <span className="fb-demo-vote-label">votes</span>
+              <strong>{formatNumber(42, locale)}</strong>
+              <span className="fb-demo-vote-label">{t("رأی", "votes")}</span>
             </span>
             <span className="fb-demo-copy">
-              <strong>Dark mode for the public board</strong>
-              <span>Posted by a customer, 12 comments</span>
+              <strong>{t("حالت تاریک برای برد عمومی", "Dark mode for the public board")}</strong>
+              <span>
+                {t(
+                  "نوشته یک مشتری، ۱۲ کامنت",
+                  "Posted by a customer, 12 comments",
+                )}
+              </span>
             </span>
             <span className="fb-demo-status">
-              <span>New</span>
-              <span>Planned</span>
-              <span>Shipped</span>
+              <span>{t("جدید", "New")}</span>
+              <span>{t("برنامه‌ریزی شده", "Planned")}</span>
+              <span>{t("منتشر شده", "Shipped")}</span>
             </span>
           </div>
         </div>
       </section>
 
       <div className="fb-modes" id="modes">
-        {MODES.map((mode, index) => (
+        {modes.map((mode, index) => (
           <article
             key={mode.id}
             className="fb-mode"
             data-reveal
             style={{ "--i": index } as CSSProperties}
           >
-            <span className="fb-mode-label">{mode.label}</span>
+            <span className="fb-mode-label">
+              <span className="fb-mode-num" aria-hidden="true">
+                {formatNumber(index + 1, locale).padStart(2, locale === "fa" ? "۰" : "0")}
+              </span>
+              {mode.label}
+            </span>
             <h2>{mode.title}</h2>
             <ul>
               {mode.points.map((point) => (
@@ -125,7 +180,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
             <Link href={mode.href} className="fb-mode-link">
               {mode.link}
               <span className="fb-mode-arrow" aria-hidden="true">
-                →
+                {locale === "fa" ? "←" : "→"}
               </span>
             </Link>
           </article>
@@ -138,14 +193,23 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         <div className="fb-section-head" data-reveal>
           <div>
             <h2 id="boards-title" className="fb-section-title">
-              Public boards
+              {t("بردهای عمومی", "Public boards")}
             </h2>
             <p className="fb-section-sub">
               {companies.length === 0
-                ? "Boards show up here as soon as a company joins."
+                ? t(
+                    "بردها همین‌جا میان، به‌محض اینکه شرکتی عضو بشه.",
+                    "Boards show up here as soon as a company joins.",
+                  )
                 : companies.length === 1
-                  ? "One company is collecting feedback right now."
-                  : `${formatNumber(companies.length)} companies are collecting feedback right now.`}
+                  ? t(
+                      "همین حالا یک شرکت داره فیدبک جمع می‌کنه.",
+                      "One company is collecting feedback right now.",
+                    )
+                  : t(
+                      `${formatNumber(companies.length, locale)} شرکت همین حالا فیدبک جمع می‌کنن.`,
+                      `${formatNumber(companies.length, locale)} companies are collecting feedback right now.`,
+                    )}
             </p>
           </div>
         </div>
@@ -170,21 +234,24 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
                 </span>
                 <span className="fb-board-text">
                   <strong>{company.name}</strong>
-                  <span>{company.tagline ?? "Feedback board"}</span>
+                  <span>{company.tagline ?? t("برد فیدبک", "Feedback board")}</span>
                 </span>
                 <span className="fb-board-arrow" aria-hidden="true">
-                  →
+                  {locale === "fa" ? "←" : "→"}
                 </span>
               </Link>
             ))}
           </div>
         ) : (
           <div className="fb-empty">
-            <strong>No boards yet.</strong>
-            Companies open their first board from the workspace.
+            <strong>{t("هنوز بردی نیست.", "No boards yet.")}</strong>
+            {t(
+              "شرکت‌ها اولین بردشون رو از پنل شرکت باز می‌کنن.",
+              "Companies open their first board from the workspace.",
+            )}
             <div className="fb-empty-action">
               <Link href="/workspace" className="fb-btn fb-btn-primary fb-btn-sm">
-                Open the workspace
+                {t("باز کردن پنل شرکت", "Open the workspace")}
               </Link>
             </div>
           </div>
@@ -195,30 +262,33 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         <div className="fb-section-head" data-reveal>
           <div>
             <h2 id="account-title" className="fb-section-title">
-              Your account
+              {t("حساب خودت", "Your account")}
             </h2>
             <p className="fb-section-sub">
-              One account works across every board and the company workspace.
+              {t(
+                "یک حساب برای همه بردها و پنل شرکت کار می‌کنه.",
+                "One account works across every board and the company workspace.",
+              )}
             </p>
           </div>
         </div>
 
         {viewer ? (
           <div className="fb-account" data-reveal>
-            <p className="fb-account-greeting">Welcome back, {viewer.name}</p>
+            <p className="fb-account-greeting">{t(`خوش برگشتی، ${viewer.name}`, `Welcome back, ${viewer.name}`)}</p>
             <div className="fb-hero-actions">
               <Link href="/requests" className="fb-btn fb-btn-primary">
-                Your posts
+                {t("نوشته‌های من", "Your posts")}
               </Link>
               <Link href="/profile" className="fb-btn">
-                My profile
+                {t("پروفایل من", "My profile")}
               </Link>
               <Link href="/workspace" className="fb-btn fb-btn-ghost">
-                Workspace
+                {t("پنل شرکت", "Workspace")}
               </Link>
               {viewer.role === "admin" ? (
                 <Link href="/admin" className="fb-btn fb-btn-ghost">
-                  Admin
+                  {t("مدیر", "Admin")}
                 </Link>
               ) : null}
             </div>
@@ -229,7 +299,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
         ) : (
           <div className="fb-account" data-reveal>
             <p className="fb-lede">
-              Log in with your email or Google account to post feedback and vote.
+              {t(
+                "با ایمیل یا حساب گوگل وارد شو تا فیدبک بنویسی و رأی بدی.",
+                "Log in with your email or Google account to post feedback and vote.",
+              )}
             </p>
             <AuthFlow status={status} nextPath={nextPath} />
           </div>

@@ -4,9 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import BrandMark from "../brand-mark";
+import LanguageToggle from "../language-toggle";
 import { ClerkSignOutButton, LogoutButton } from "../logout-buttons";
 import ThemeToggle from "../theme-toggle";
 import { mediaUrl } from "@/lib/feedback/media";
+import { useT } from "@/lib/i18n/client";
 import Avatar from "./avatar";
 import { ChevronDownIcon, MenuIcon } from "./icons";
 
@@ -17,15 +19,14 @@ type HeaderViewer = {
   avatarPath: string | null;
 } | null;
 
-const LINKS: { href: string; label: string }[] = [{ href: "/feed", label: "Boards" }];
-
-const METHOD_LABELS: Record<"phone" | "email" | "clerk", string> = {
-  phone: "Signed in with mobile",
-  email: "Signed in with email",
-  clerk: "Signed in with email or Google",
+const METHOD_LABELS: Record<"phone" | "email" | "clerk", [string, string]> = {
+  phone: ["ورود با موبایل", "Signed in with mobile"],
+  email: ["ورود با ایمیل", "Signed in with email"],
+  clerk: ["ورود با ایمیل یا گوگل", "Signed in with email or Google"],
 };
 
 export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer; admin: boolean }) {
+  const t = useT();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -35,11 +36,11 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
 
   const links = viewer
     ? [
-        ...LINKS,
-        { href: "/requests", label: "Your posts" },
-        { href: "/workspace", label: "Workspace" },
+        { href: "/feed", label: t("بردها", "Boards") },
+        { href: "/requests", label: t("نوشته‌های من", "Your posts") },
+        { href: "/workspace", label: t("پنل شرکت", "Workspace") },
       ]
-    : LINKS;
+    : [{ href: "/feed", label: t("بردها", "Boards") }];
 
   function isActive(href: string): boolean {
     return pathname === href || pathname.startsWith(`${href}/`);
@@ -115,9 +116,9 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
   return (
     <header className="site-nav">
       <div className="nav-inner">
-        <Link href="/" className="nav-brand" aria-label="Vasa home">
+        <Link href="/" className="nav-brand" aria-label={t("صفحه اصلی وسا", "Vasa home")}>
           <BrandMark className="nav-mark" />
-          <span className="nav-name">Vasa</span>
+          <span className="nav-name">{t("وسا", "Vasa")}</span>
         </Link>
 
         {open ? (
@@ -128,19 +129,19 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
           ref={navRef}
           id="fb-nav"
           className={`fb-nav ${open ? "open" : ""}`}
-          aria-label="Main navigation"
+          aria-label={t("منوی اصلی", "Main navigation")}
         >
           <div className="fb-sheet-head">
             <span className="fb-sheet-grab" aria-hidden="true" />
             <div className="fb-sheet-row">
-              <span className="fb-sheet-title">Menu</span>
+              <span className="fb-sheet-title">{t("منو", "Menu")}</span>
               <button
                 type="button"
                 className="fb-sheet-close"
                 onClick={closeMenu}
-                aria-label="Close menu"
+                aria-label={t("بستن منو", "Close menu")}
               >
-                Close
+                {t("بستن", "Close")}
               </button>
             </div>
           </div>
@@ -160,16 +161,17 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
               className="fb-nav-link fb-nav-login"
               onClick={closeMenu}
             >
-              Log in
+              {t("ورود", "Log in")}
             </Link>
           ) : null}
         </nav>
 
         <div className="fb-nav-actions">
+          <LanguageToggle />
           <ThemeToggle />
           {admin ? (
             <Link href="/admin" className="fb-link">
-              Admin
+              {t("مدیر", "Admin")}
             </Link>
           ) : null}
           {viewer ? (
@@ -180,7 +182,7 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
                 onClick={() => setProfileOpen((value) => !value)}
                 aria-expanded={profileOpen}
                 aria-haspopup="true"
-                aria-label={`Account: ${viewer.name}`}
+                aria-label={`${t("حساب", "Account")}: ${viewer.name}`}
                 title={viewer.name}
               >
                 <Avatar
@@ -196,13 +198,13 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
                 <div className="fb-profile-menu">
                   <div className="fb-profile-head">
                     <strong>{viewer.name}</strong>
-                    <span>{METHOD_LABELS[viewer.method]}</span>
+                    <span>{t(...METHOD_LABELS[viewer.method])}</span>
                   </div>
                   <Link href="/profile" className="fb-profile-item" onClick={() => setProfileOpen(false)}>
-                    My profile
+                    {t("پروفایل من", "My profile")}
                   </Link>
                   <Link href="/requests" className="fb-profile-item" onClick={() => setProfileOpen(false)}>
-                    Your posts
+                    {t("نوشته‌های من", "Your posts")}
                   </Link>
                   {viewer.method === "clerk" ? <ClerkSignOutButton /> : <LogoutButton />}
                 </div>
@@ -210,14 +212,14 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
             </div>
           ) : (
             <Link href="/?next=/feed#account" className="fb-link fb-login-inline">
-              Log in
+              {t("ورود", "Log in")}
             </Link>
           )}
           <button
             ref={menuButtonRef}
             type="button"
             className="fb-menu"
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? t("بستن منو", "Close menu") : t("باز کردن منو", "Open menu")}
             aria-expanded={open}
             aria-controls="fb-nav"
             onClick={() => (open ? closeMenu() : setOpen(true))}

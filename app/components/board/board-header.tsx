@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LanguageToggle from "@/app/components/language-toggle";
 import ThemeToggle from "@/app/components/theme-toggle";
 import { PlusIcon, SearchIcon } from "@/app/components/feedback/icons";
+import { useT } from "@/lib/i18n/client";
 
 type Company = { slug: string; name: string; tagline: string | null };
 
@@ -18,13 +20,14 @@ export default function BoardHeader({
   member: boolean;
   query?: string;
 }) {
+  const t = useT();
   const pathname = usePathname();
   const base = `/c/${company.slug}`;
 
   const tabs = [
-    { href: base, label: "Feedback" },
-    { href: `${base}/roadmap`, label: "Roadmap" },
-    { href: `${base}/updates`, label: "Updates" },
+    { href: base, label: t("فیدبک", "Feedback") },
+    { href: `${base}/roadmap`, label: t("نقشه راه", "Roadmap") },
+    { href: `${base}/updates`, label: t("تغییرات", "Updates") },
   ];
 
   function isActive(href: string): boolean {
@@ -45,7 +48,7 @@ export default function BoardHeader({
         </Link>
         {company.tagline ? <span className="bd-brand-tag">{company.tagline}</span> : null}
 
-        <nav className="bd-tabs" aria-label={`${company.name} pages`}>
+        <nav className="bd-tabs" aria-label={t(`صفحه‌های ${company.name}`, `${company.name} pages`)}>
           {tabs.map((tab) => (
             <Link
               key={tab.href}
@@ -65,13 +68,13 @@ export default function BoardHeader({
               type="search"
               name="q"
               defaultValue={query ?? ""}
-              placeholder="Search"
-              aria-label="Search feedback"
+              placeholder={t("جستجو", "Search")}
+              aria-label={t("جستجوی فیدبک", "Search feedback")}
             />
           </form>
           {member ? (
             <Link href="/workspace" className="bd-nav-link quiet">
-              Manage
+              {t("مدیریت", "Manage")}
             </Link>
           ) : null}
           {viewerName ? (
@@ -80,13 +83,14 @@ export default function BoardHeader({
             </Link>
           ) : (
             <Link href={`/?next=${encodeURIComponent(base)}#account`} className="bd-nav-link">
-              Log in
+              {t("ورود", "Log in")}
             </Link>
           )}
+          <LanguageToggle className="bd-nav-link" />
           <ThemeToggle />
           <Link href={`${base}/new`} className="bd-submit">
             <PlusIcon size={14} />
-            <span>Submit feedback</span>
+            <span>{t("ثبت فیدبک", "Submit feedback")}</span>
           </Link>
         </div>
       </div>

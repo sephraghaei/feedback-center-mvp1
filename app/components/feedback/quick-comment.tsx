@@ -16,6 +16,7 @@ import { createPortal } from "react-dom";
 import { addCommentAction } from "@/app/feedback-actions";
 import { formatNumber } from "@/lib/feedback/labels";
 import { CommentIcon, SendIcon } from "./icons";
+import { useLocale, useT } from "@/lib/i18n/client";
 
 const EDGE = 12;
 const GAP = 8;
@@ -34,6 +35,8 @@ export default function QuickComment({
   signedIn: boolean;
   nextPath: string;
 }) {
+  const locale = useLocale();
+  const t = useT();
   const router = useRouter();
   const panelId = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -149,7 +152,7 @@ export default function QuickComment({
 
     const text = draft.trim();
     if (text.length < 2) {
-      setError("کامنت باید حداقل ۲ نویسه باشد.");
+      setError(t("کامنت باید حداقل ۲ نویسه باشد.", "Comments need at least 2 characters."));
       return;
     }
 
@@ -183,7 +186,7 @@ export default function QuickComment({
               ref={panelRef}
               id={panelId}
               role="dialog"
-              aria-label="گفتگو"
+              aria-label={t("گفتگو", "Conversation")}
               className={`fb-quick ${spot ? "placed" : ""} ${spot?.above ? "above" : ""}`}
               style={
                 spot
@@ -194,9 +197,14 @@ export default function QuickComment({
               <div className="fb-quick-head">
                 <span className="fb-quick-title">
                   <CommentIcon size={13} />
-                  گفتگو
+                  {t("گفتگو", "Conversation")}
                 </span>
-                <span className="fb-quick-total">{formatNumber(total)} کامنت</span>
+                <span className="fb-quick-total">
+                  {t(
+                    `${formatNumber(total, locale)} کامنت`,
+                    `${formatNumber(total, locale)} comments`,
+                  )}
+                </span>
               </div>
 
               {signedIn ? (
@@ -213,8 +221,8 @@ export default function QuickComment({
                         event.currentTarget.form?.requestSubmit();
                       }
                     }}
-                    placeholder="کامنتت رو بنویس..."
-                    aria-label="متن کامنت"
+                    placeholder={t("کامنتت رو بنویس...", "Write your comment...")}
+                    aria-label={t("متن کامنت", "Comment text")}
                     autoFocus
                   />
                   {error ? (
@@ -224,11 +232,14 @@ export default function QuickComment({
                   ) : null}
                   <div className="fb-quick-foot">
                     <span className="fb-quick-hint">
-                      {formatNumber(draft.trim().length)} از ۲۰۰۰ نویسه
+                      {t(
+                        `${formatNumber(draft.trim().length, locale)} از ۲۰۰۰ نویسه`,
+                        `${formatNumber(draft.trim().length, locale)} of 2000 characters`,
+                      )}
                     </span>
                     <div className="fb-quick-actions">
                       <Link href={`/p/${postId}#comments`} className="fb-quick-link">
-                        دیدن گفتگو
+                        {t("دیدن گفتگو", "View conversation")}
                       </Link>
                       <button
                         type="submit"
@@ -236,20 +247,20 @@ export default function QuickComment({
                         disabled={sending || draft.trim().length < 2}
                       >
                         <SendIcon size={14} />
-                        {sending ? "در حال ارسال" : "ارسال"}
+                        {sending ? t("در حال ارسال", "Sending") : t("ارسال", "Send")}
                       </button>
                     </div>
                   </div>
                 </form>
               ) : (
                 <div className="fb-quick-guest">
-                  <p>برای نوشتن کامنت اول وارد حسابت شو.</p>
+                  <p>{t("برای نوشتن کامنت اول وارد حسابت شو.", "Log in first to write a comment.")}</p>
                   <div className="fb-quick-foot">
                     <Link href={`/p/${postId}#comments`} className="fb-quick-link">
-                      دیدن گفتگو
+                      {t("دیدن گفتگو", "View conversation")}
                     </Link>
                     <button type="button" className="fb-btn fb-btn-primary fb-btn-sm" onClick={signIn}>
-                      ورود
+                      {t("ورود", "Log in")}
                     </button>
                   </div>
                 </div>
@@ -266,20 +277,25 @@ export default function QuickComment({
         ref={triggerRef}
         type="button"
         className={`fb-action-btn ${open ? "on" : ""}`}
-        aria-label={`${formatNumber(total)} کامنت، نوشتن کامنت`}
+        aria-label={t(
+          `${formatNumber(total, locale)} کامنت، نوشتن کامنت`,
+          `${formatNumber(total, locale)} comments, write a comment`,
+        )}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-controls={open ? panelId : undefined}
-        title="نوشتن کامنت"
+        title={t("نوشتن کامنت", "Write a comment")}
         onClick={toggle}
       >
         <CommentIcon size={15} />
-        <span className={`fb-action-count ${bump ? "bump" : ""}`}>{formatNumber(total)}</span>
-        <span className="fb-action-label">کامنت</span>
+        <span className={`fb-action-count ${bump ? "bump" : ""}`}>
+          {formatNumber(total, locale)}
+        </span>
+        <span className="fb-action-label">{t("کامنت", "Comment")}</span>
       </button>
       {panel}
       <span className="sr-only" role="status">
-        {bump ? "کامنت ثبت شد." : ""}
+        {bump ? t("کامنت ثبت شد.", "Comment posted.") : ""}
       </span>
     </>
   );

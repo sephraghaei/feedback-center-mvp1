@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { switchWorkspaceCompany } from "@/app/(workspace)/actions";
 import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-buttons";
 import ThemeToggle from "@/app/components/theme-toggle";
+import { useT } from "@/lib/i18n/client";
 
 type Membership = { slug: string; name: string };
 
@@ -21,17 +22,18 @@ export default function WorkspaceSidebar({
   method: "phone" | "email" | "clerk";
   memberships: Membership[];
 }) {
+  const t = useT();
   const pathname = usePathname();
 
   const main = [
-    { href: "/workspace", label: "Overview" },
-    { href: "/workspace/feedback", label: "Feedback" },
-    { href: "/workspace/roadmap", label: "Roadmap" },
-    { href: "/workspace/updates", label: "Updates" },
+    { href: "/workspace", label: t("مرور کلی", "Overview") },
+    { href: "/workspace/feedback", label: t("فیدبک", "Feedback") },
+    { href: "/workspace/roadmap", label: t("نقشه راه", "Roadmap") },
+    { href: "/workspace/updates", label: t("تغییرات", "Updates") },
   ];
   const companyLinks = [
-    { href: "/workspace/team", label: "Team" },
-    { href: "/workspace/settings", label: "Settings" },
+    { href: "/workspace/team", label: t("تیم", "Team") },
+    { href: "/workspace/settings", label: t("تنظیمات", "Settings") },
   ];
 
   return (
@@ -42,14 +44,14 @@ export default function WorkspaceSidebar({
         </span>
         <span className="wk-brand-text">
           <strong>{company.name}</strong>
-          <span>Company workspace</span>
+          <span>{t("پنل شرکت", "Company workspace")}</span>
         </span>
       </Link>
 
       {memberships.length > 1 ? (
         <form action={switchWorkspaceCompany} className="wk-side-switch">
           <label className="wk-nav-label" htmlFor="workspace-company">
-            Switch company
+            {t("تعویض شرکت", "Switch company")}
           </label>
           <select
             id="workspace-company"
@@ -65,13 +67,13 @@ export default function WorkspaceSidebar({
             ))}
           </select>
           <button type="submit" className="wk-chip-btn">
-            Switch
+            {t("جابه‌جا", "Switch")}
           </button>
         </form>
       ) : null}
 
-      <nav className="wk-nav-group" aria-label="Workspace">
-        <span className="wk-nav-label">Workspace</span>
+      <nav className="wk-nav-group" aria-label={t("پنل", "Workspace")}>
+        <span className="wk-nav-label">{t("پنل", "Workspace")}</span>
         {main.map((item) => (
           <Link
             key={item.href}
@@ -84,8 +86,8 @@ export default function WorkspaceSidebar({
         ))}
       </nav>
 
-      <nav className="wk-nav-group" aria-label="Company">
-        <span className="wk-nav-label">Company</span>
+      <nav className="wk-nav-group" aria-label={t("شرکت", "Company")}>
+        <span className="wk-nav-label">{t("شرکت", "Company")}</span>
         {companyLinks.map((item) => (
           <Link
             key={item.href}
@@ -101,10 +103,10 @@ export default function WorkspaceSidebar({
       <div className="wk-side-foot">
         <div className="wk-side-links">
           <Link href={`/c/${company.slug}`} className="wk-nav-link">
-            Public board ↗
+            {t("برد عمومی ↗", "Public board ↗")}
           </Link>
           <Link href="/" className="wk-nav-link">
-            Vasa home
+            {t("خانه وسا", "Vasa home")}
           </Link>
         </div>
         <div className="wk-side-actions">

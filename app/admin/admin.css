@@ -1030,8 +1030,7 @@ body:has(.admin-login) {
 .drawer {
   position: fixed;
   inset-block: 0;
-  inset-inline-end: auto;
-  left: 0;
+  inset-inline-start: 0;
   width: min(440px, 100%);
   background: var(--surface);
   border-inline-end: 1px solid var(--line);
@@ -1048,6 +1047,17 @@ body:has(.admin-login) {
   to {
     transform: translateX(0);
   }
+}
+@keyframes admin-slide-rtl {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+[dir="rtl"] .drawer {
+  animation-name: admin-slide-rtl;
 }
 @keyframes admin-fade {
   from {
@@ -1587,10 +1597,13 @@ body:has(.admin-login) {
   .admin-sidebar {
     position: fixed;
     inset-block: 0;
-    right: 0;
+    inset-inline-end: 0;
     transform: translateX(100%);
     transition: transform 0.22s ease;
     box-shadow: 0 0 0 1px var(--line);
+  }
+  [dir="rtl"] .admin-sidebar {
+    transform: translateX(-100%);
   }
   .admin-sidebar.open {
     transform: translateX(0);

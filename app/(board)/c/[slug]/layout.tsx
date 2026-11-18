@@ -7,6 +7,7 @@ import "../../../feedback.css";
 import "../../../board.css";
 import { getCompanyBySlug, getMembership } from "@/lib/companies";
 import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
+import { getT } from "@/lib/i18n/server";
 
 export default async function BoardLayout({
   children,
@@ -18,6 +19,7 @@ export default async function BoardLayout({
   const { slug } = await params;
   const company = await getCompanyBySlug(slug);
   if (!company) notFound();
+  const t = await getT();
 
   const [viewer, admin] = await Promise.all([getViewer(), isAdminRequest()]);
   const member = viewer
@@ -39,12 +41,12 @@ export default async function BoardLayout({
         <div className="bd-footer-inner">
           <Link href="/" className="bd-footer-brand">
             <BrandMark className="nav-mark" simple />
-            Powered by Vasa
+            {t("قدرت‌گرفته از وسا", "Powered by Vasa")}
           </Link>
           <div className="bd-footer-links">
-            <Link href={`/c/${company.slug}/roadmap`}>Roadmap</Link>
-            <Link href={`/c/${company.slug}/updates`}>Updates</Link>
-            <Link href="/workspace">For companies</Link>
+            <Link href={`/c/${company.slug}/roadmap`}>{t("نقشه راه", "Roadmap")}</Link>
+            <Link href={`/c/${company.slug}/updates`}>{t("تغییرات", "Updates")}</Link>
+            <Link href="/workspace">{t("برای شرکت‌ها", "For companies")}</Link>
           </div>
         </div>
       </footer>

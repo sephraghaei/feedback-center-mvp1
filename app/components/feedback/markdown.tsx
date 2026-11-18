@@ -27,7 +27,7 @@ function keepLineBreaks(source: string): string {
 
 export default function Markdown({ source, className = "fb-prose" }: { source: string; className?: string }) {
   return (
-    <div className={className}>
+    <div className={className} dir="auto">
       <ReactMarkdown
         components={{
           a: ({ href, children }) => (
