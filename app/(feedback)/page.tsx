@@ -4,8 +4,20 @@ import { redirect } from "next/navigation";
 import type { CSSProperties } from "react";
 import AuthFlow from "@/app/components/auth-flow";
 import HomeStory from "@/app/components/feedback/home-story";
-import PointerFx from "@/app/components/feedback/pointer-fx";
 import ScrollReveal from "@/app/components/feedback/scroll-reveal";
+import {
+  BulbIcon,
+  CheckIcon,
+  CommentIcon,
+  CompassIcon,
+  HeartIcon,
+  ListIcon,
+  ReplyIcon,
+  SearchIcon,
+  SendIcon,
+  TagIcon,
+  VoteUpIcon,
+} from "@/app/components/feedback/icons";
 import { ClerkSignOutButton, LogoutButton } from "@/app/components/logout-buttons";
 import { listCompanies } from "@/lib/companies";
 import { formatNumber } from "@/lib/feedback/labels";
@@ -93,71 +105,169 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
   const profile = viewer ? await getProfile(viewer.userId) : null;
   const status = !viewer ? "guest" : profile ? "ready" : "needs-profile";
 
+  const heroWords = [
+    {
+      before: "",
+      key: t("برد فیدبک", "feedback board"),
+      after: t(" مشتری‌هات", " they love"),
+      color: "#1d4ed8",
+    },
+    {
+      before: t("", "the "),
+      key: t("نقشه راه", "roadmap"),
+      after: t(" مشتری‌هات", " they love"),
+      color: "#b45309",
+    },
+    {
+      before: t("", "the "),
+      key: t("لیست تغییرات", "changelog"),
+      after: t(" مشتری‌هات", " they love"),
+      color: "#6d28d9",
+    },
+    {
+      before: t("صندوق ", "the "),
+      key: t("ایده‌ها", "idea box"),
+      after: t("ی مشتری‌هات", " they love"),
+      color: "#be185d",
+    },
+    {
+      before: t("", "the "),
+      key: t("برد باگ‌ها", "bug board"),
+      after: t(" مشتری‌هات", " they love"),
+      color: "#0f766e",
+    },
+    {
+      before: t("کانال ", "the "),
+      key: t("بازخورد", "feedback hub"),
+      after: t(" مشتری‌هات", " they love"),
+      color: "#0369a1",
+    },
+  ];
+
+  const chips = [
+    { label: t("فیدبک مشتری", "Customer feedback"), icon: CommentIcon, color: "#2563eb" },
+    { label: t("رأی دادن", "Upvotes"), icon: VoteUpIcon, color: "#16a34a" },
+    { label: t("نقشه راه", "Roadmap"), icon: CompassIcon, color: "#d97706" },
+    { label: t("وضعیت شفاف", "Status tracking"), icon: CheckIcon, color: "#7c3aed" },
+    { label: t("لیست تغییرات", "Changelog"), icon: ListIcon, color: "#db2777" },
+    { label: t("کامنت و پاسخ", "Comments"), icon: ReplyIcon, color: "#0d9488" },
+    { label: t("جستجو در برد", "Board search"), icon: SearchIcon, color: "#0284c7" },
+    { label: t("برچسب و دسته", "Tags"), icon: TagIcon, color: "#c026d3" },
+    { label: t("انتشار سریع", "Fast shipping"), icon: SendIcon, color: "#ea580c" },
+    { label: t("بازخورد محبوب", "Loved feedback"), icon: HeartIcon, color: "#e11d48" },
+    { label: t("ایده جدید", "New ideas"), icon: BulbIcon, color: "#ca8a04" },
+  ];
+  const chipRows = [chips.slice(0, 6), chips.slice(6)];
+
   return (
     <div className="fb-home fb-landing">
-      <PointerFx />
       <ScrollReveal />
-      <section className="fb-hero" data-cursor>
-        <div className="fb-hero-aura" aria-hidden="true">
-          <span className="fb-aura-glow" />
-          <span className="fb-aura-grid" />
-        </div>
-        <div className="fb-hero-inner">
-          <span className="fb-landing-kicker">
-            <span className="fb-landing-dot" aria-hidden="true" />
+      <section className="landing-hero" aria-labelledby="home-title">
+        <div className="landing-hero-inner">
+          <span className="landing-badge">
             {t("فیدبک مشتری، از اول تا آخر", "Customer feedback, end to end")}
           </span>
-          <h1 className="fb-title">
-            {locale === "fa" ? (
-              <>
-                همون چیزی رو بساز که <span className="fb-title-mark">مشتری‌ها</span> واقعاً
-                می‌خوان.
-              </>
-            ) : (
-              <>
-                Ship what <span className="fb-title-mark">customers</span> actually ask for.
-              </>
-            )}
-          </h1>
-          <p className="fb-lede">
-            {t(
-              "وسا به هر شرکت یک برد عمومی می‌ده که مشتری‌ها ایده می‌نویسن، به مهم‌ها رأی می‌دن و نقشه راه رو دنبال می‌کنن. تیم شرکت هم پشتش یک پنل داره برای بررسی، برنامه‌ریزی و انتشار.",
-              "Vasa gives every company a public board where customers post ideas, vote on what matters, and follow the roadmap. The company team gets a workspace behind it to triage, plan and publish.",
-            )}
-          </p>
-          <div className="fb-hero-actions">
-            <Link href="#boards" className="fb-btn fb-btn-primary">
-              {t("بردها رو ببین", "Browse boards")}
-            </Link>
-            <Link href="/workspace" className="fb-btn">
-              {t("پنل شرکت", "Company panel")}
-            </Link>
-          </div>
-          <div className="fb-hero-demo" data-tilt aria-hidden="true">
-            <span className="fb-demo-vote">
-              <span className="fb-demo-arrow" />
-              <strong>{formatNumber(42, locale)}</strong>
-              <span className="fb-demo-vote-label">{t("رأی", "votes")}</span>
+          <h1 className="landing-headline" id="home-title">
+            <span className="sr-only">
+              {t(
+                "برد فیدبک مشتری‌هات رو بساز و منتشر کن.",
+                "Build the feedback board customers love, then ship it.",
+              )}
             </span>
-            <span className="fb-demo-copy">
-              <strong>{t("حالت تاریک برای برد عمومی", "Dark mode for the public board")}</strong>
-              <span>
-                {t(
-                  "نوشته یک مشتری، ۱۲ کامنت",
-                  "Posted by a customer, 12 comments",
-                )}
+            <span className="landing-headline-visual" aria-hidden="true">
+              <span className="landing-headline-line">
+                <span className="landing-word-stage">
+                  {heroWords.map((word, index) => (
+                    <span
+                      key={word.key}
+                      className="landing-word"
+                      style={
+                        {
+                          "--word-color": word.color,
+                          "--word-delay": `${(index * 4.4).toFixed(1)}s`,
+                        } as CSSProperties
+                      }
+                    >
+                      {word.before}
+                      <span className="landing-word-key">{word.key}</span>
+                      {word.after}
+                    </span>
+                  ))}
+                </span>
+              </span>
+              <span className="landing-headline-line landing-tail">
+                {t("رو بساز و منتشر کن.", "Build it and ship it.")}
               </span>
             </span>
-            <span className="fb-demo-status">
-              <span>{t("جدید", "New")}</span>
-              <span>{t("برنامه‌ریزی شده", "Planned")}</span>
-              <span>{t("منتشر شده", "Shipped")}</span>
+          </h1>
+
+          <form className="landing-claim" action="/workspace" method="get">
+            <span className="landing-claim-ring" aria-hidden="true" />
+            <div className="landing-claim-bar">
+              <span className="landing-claim-origin" dir="ltr">
+                vasa.app/
+              </span>
+              <span className="landing-claim-field">
+                <label htmlFor="board-slug" className="sr-only">
+                  {t("آدرس برد", "Board address")}
+                </label>
+                <input
+                  id="board-slug"
+                  name="slug"
+                  type="text"
+                  dir="ltr"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  maxLength={32}
+                  placeholder=" "
+                />
+                <span className="landing-type-hint" dir="ltr" aria-hidden="true">
+                  your-board
+                </span>
+              </span>
+              <button type="submit" className="landing-claim-btn">
+                {t("رایگان شروع کن!", "Start for free")}
+              </button>
+            </div>
+            <span className="landing-claim-tip" aria-hidden="true">
+              <svg viewBox="0 0 24 12" width="24" height="12" aria-hidden="true">
+                <path d="M12 0 24 12H0Z" fill="currentColor" />
+              </svg>
+              {t("رایگان شروع کن!", "Start free")}
             </span>
+          </form>
+
+          <div className="landing-chips">
+            {chipRows.map((row, rowIndex) => (
+              <div
+                key={rowIndex}
+                className={`landing-chip-row ${rowIndex === 1 ? "landing-chip-row-reverse" : ""}`}
+              >
+                <ul className="landing-chip-track">
+                  {[...row, ...row].map((chip, index) => {
+                    const Icon = chip.icon;
+                    return (
+                      <li
+                        key={`${chip.label}-${index}`}
+                        className="landing-chip"
+                        aria-hidden={index >= row.length}
+                        style={{ "--chip-color": chip.color } as CSSProperties}
+                      >
+                        <Icon size={17} />
+                        <span>{chip.label}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <div className="fb-modes" id="modes">
+      <div className="fb-landing-body">
+      <div className="fb-modes" id="how">
         {modes.map((mode, index) => (
           <article
             key={mode.id}
@@ -308,6 +418,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
           </div>
         )}
       </section>
+      </div>
     </div>
   );
 }

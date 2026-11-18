@@ -2812,6 +2812,22 @@ a.fb-product-name:hover {
   text-wrap: balance;
 }
 
+/* Arabic script has connected letters and deeper descenders than Latin, so the
+   tight Latin tracking and leading read cramped. Loosen both and keep the mark
+   clear of the letter tails. */
+:root[lang="fa"] .fb-home .fb-title {
+  max-width: 24ch;
+  font-size: clamp(2.05rem, 1rem + 4.2vw, 4rem);
+  font-weight: 650;
+  line-height: 1.34;
+  letter-spacing: 0;
+}
+
+:root[lang="fa"] .fb-title-mark::after {
+  bottom: -0.02em;
+  height: 2.5px;
+}
+
 .fb-title-mark {
   position: relative;
   isolation: isolate;
@@ -6414,43 +6430,35 @@ a.fb-product-name:hover {
 }
 
 @keyframes fb-demo-status-a {
-  0%, 29% {
+  0%, 30% {
     opacity: 1;
-    translate: 0 0;
   }
-  35%, 100% {
+  33%, 100% {
     opacity: 0;
-    translate: 0 -0.4em;
   }
 }
 
 @keyframes fb-demo-status-b {
-  0%, 31% {
+  0%, 32% {
     opacity: 0;
-    translate: 0 0.4em;
   }
-  37%, 62% {
+  35%, 62% {
     opacity: 1;
-    translate: 0 0;
   }
-  68%, 100% {
+  65%, 100% {
     opacity: 0;
-    translate: 0 -0.4em;
   }
 }
 
 @keyframes fb-demo-status-c {
   0%, 64% {
     opacity: 0;
-    translate: 0 0.4em;
   }
-  70%, 94% {
+  67%, 94% {
     opacity: 1;
-    translate: 0 0;
   }
-  100% {
+  97%, 100% {
     opacity: 0;
-    translate: 0 -0.4em;
   }
 }
 
@@ -6830,5 +6838,795 @@ a.fb-product-name:hover {
 
   .fb-aura-glow {
     background: radial-gradient(ellipse 88% 46% at 50% 30%, var(--ring-soft), transparent 70%);
+  }
+}
+
+/* Landing hero, rebuilt after the kioar reference */
+
+.fb-shell:has(.landing-hero) .top-strip {
+  display: none;
+}
+
+.site-nav.landing-nav-wrap {
+  position: static;
+  background: #08090c;
+  border-bottom: 0;
+  border-radius: 0 0 clamp(22px, 3vw, 32px) clamp(22px, 3vw, 32px);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.landing-nav-wrap .nav-inner {
+  height: 74px;
+}
+
+.landing-nav-wrap .nav-mark {
+  width: 21px;
+  height: 21px;
+}
+
+.landing-nav-wrap .nav-name {
+  font-size: 1.08rem;
+}
+
+.landing-nav-wrap .nav-brand,
+.landing-nav-wrap .nav-name {
+  color: #f7f9fc;
+}
+
+.landing-nav-wrap .nav-mark {
+  color: #ffffff;
+}
+
+.landing-nav-wrap .fb-nav:not(.open) .fb-nav-link {
+  color: rgba(247, 249, 252, 0.74);
+}
+
+.landing-nav-wrap .fb-nav:not(.open) .fb-nav-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.landing-nav-wrap .fb-nav:not(.open) .fb-nav-link.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.landing-nav-wrap .theme-toggle {
+  color: rgba(247, 249, 252, 0.74);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.landing-nav-wrap .theme-toggle:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.36);
+}
+
+.landing-nav-wrap .fb-link {
+  padding: 0 6px;
+  border: 0;
+  background: transparent;
+  color: rgba(247, 249, 252, 0.74);
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.landing-nav-wrap .fb-link:hover {
+  color: #ffffff;
+}
+
+.landing-nav-wrap .fb-menu {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.landing-nav-wrap .fb-profile-btn {
+  color: rgba(247, 249, 252, 0.82);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.landing-nav-wrap .fb-profile-btn:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.landing-nav-wrap .fb-profile-caret {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.landing-announce {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: filter 0.18s ease;
+}
+
+.landing-announce:hover {
+  filter: brightness(1.05);
+}
+
+.landing-announce-arrow {
+  transition: translate 0.18s ease;
+}
+
+.landing-announce:hover .landing-announce-arrow {
+  translate: -2px 0;
+}
+
+.landing-cta {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 18px;
+  border-radius: var(--pill);
+  background: #ffffff;
+  color: #0b0d12;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  transition: background-color 0.18s ease, translate 0.18s ease;
+}
+
+.landing-cta:hover {
+  background: #e9edf6;
+  translate: 0 -1px;
+}
+
+.fb-main:has(.fb-home) {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fb-landing-body {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(20px, 3vw, 30px) clamp(20px, 5vw, 48px) 72px;
+}
+
+.landing-hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--hairline);
+  border-radius: 0 0 clamp(24px, 4vw, 44px) clamp(24px, 4vw, 44px);
+  padding: clamp(42px, 7.5vw, 92px) 0 clamp(44px, 7vw, 84px);
+  overflow: hidden;
+}
+
+.landing-hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-inline: clamp(18px, 4vw, 32px);
+  text-align: center;
+}
+
+.landing-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 22px;
+  border-radius: var(--pill);
+  background: var(--wash);
+  color: var(--ink-2);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.landing-headline {
+  margin: clamp(18px, 3vw, 28px) 0 0;
+  color: var(--ink);
+  font-size: clamp(1.55rem, 7.1vw, 4.8rem);
+  font-weight: 700;
+  line-height: 1.42;
+  letter-spacing: 0;
+}
+
+:root[lang="en"] .landing-headline {
+  font-size: clamp(1.25rem, 6.2vw, 3.7rem);
+  line-height: 1.16;
+  letter-spacing: -0.03em;
+}
+
+.landing-headline-visual {
+  display: block;
+}
+
+.landing-headline-line {
+  display: block;
+}
+
+.landing-tail {
+  margin-top: 0.04em;
+}
+
+.landing-word-stage {
+  display: inline-grid;
+  overflow: hidden;
+  padding: 0.05em 0.14em 0.09em;
+  margin-inline: -0.14em;
+  vertical-align: baseline;
+  line-height: inherit;
+}
+
+.landing-word {
+  grid-area: 1 / 1;
+  justify-self: center;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(108%);
+  animation: landing-word-cycle 26.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation-delay: var(--word-delay, 0s);
+  will-change: transform, opacity;
+}
+
+.landing-word-key {
+  display: inline-block;
+  padding: 0.01em 0.16em 0.05em;
+  border-radius: 0.26em;
+  background: color-mix(in srgb, var(--word-color) 13%, transparent);
+  color: var(--word-color);
+}
+
+@keyframes landing-word-cycle {
+  0% {
+    transform: translateY(108%);
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  1.2% {
+    transform: translateY(0);
+    opacity: 1;
+    animation-timing-function: linear;
+  }
+  14.6% {
+    transform: translateY(0);
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.55, 0, 0.35, 1);
+  }
+  15.9%,
+  100% {
+    transform: translateY(-108%);
+    opacity: 0;
+  }
+}
+
+:root[data-theme="dark"] .landing-word-key {
+  background: color-mix(in srgb, var(--word-color) 26%, transparent);
+  color: color-mix(in srgb, var(--word-color) 42%, #ffffff);
+}
+
+@property --claim-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.landing-claim {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 580px);
+  margin-top: clamp(26px, 4vw, 40px);
+  padding: 2px;
+  border-radius: var(--pill);
+  background: color-mix(in srgb, var(--accent) 16%, var(--hairline));
+  transition: box-shadow 0.18s ease;
+}
+
+.landing-claim:focus-within {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.landing-claim-ring {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  overflow: hidden;
+  box-shadow: 0 18px 40px -34px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.landing-claim-ring::before {
+  content: "";
+  position: absolute;
+  inset: -120%;
+  background: conic-gradient(
+    from var(--claim-angle),
+    transparent 0deg,
+    transparent 300deg,
+    var(--accent) 348deg,
+    transparent 360deg
+  );
+  animation: landing-claim-spin 5.5s linear infinite;
+}
+
+@keyframes landing-claim-spin {
+  to {
+    --claim-angle: 360deg;
+  }
+}
+
+.landing-claim-bar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 8px 8px 20px;
+  border-radius: inherit;
+  background: var(--surface);
+  direction: ltr;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hairline) 70%, transparent);
+}
+
+.landing-claim-origin {
+  flex: none;
+  color: var(--ink-3);
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+
+.landing-claim-field {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.landing-claim-field input {
+  width: 100%;
+  height: 52px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  outline: 0;
+  direction: ltr;
+}
+
+.landing-type-hint {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: 0;
+  overflow: hidden;
+  color: var(--ink-4);
+  font-size: 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: landing-type 8s linear infinite;
+}
+
+.landing-type-hint::after {
+  content: "";
+  flex: none;
+  width: 1.5px;
+  height: 1.15em;
+  margin-left: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+  animation: landing-caret 1s steps(2, jump-none) infinite;
+}
+
+.landing-claim-field input:not(:placeholder-shown) + .landing-type-hint,
+.landing-claim-field:focus-within .landing-type-hint {
+  display: none;
+}
+
+@keyframes landing-type {
+  0% {
+    width: 0;
+  }
+  6% {
+    width: 0;
+    animation-timing-function: steps(9, end);
+  }
+  18% {
+    width: 9.6ch;
+  }
+  62% {
+    width: 9.6ch;
+  }
+  66%,
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes landing-caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.landing-claim-btn {
+  flex: none;
+  height: 52px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: var(--pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: filter 0.18s ease, translate 0.18s ease;
+}
+
+.landing-claim-btn:hover {
+  filter: brightness(1.05);
+  translate: 0 -1px;
+}
+
+.landing-claim-btn:active {
+  translate: 0 0;
+}
+
+.landing-claim-tip {
+  position: absolute;
+  top: calc(100% + 16px);
+  left: 24%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: var(--pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+  translate: -50% 0;
+  animation: landing-tip 3.2s ease-in-out infinite;
+}
+
+.landing-claim-tip svg {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  color: var(--accent);
+  translate: -50% 0;
+}
+
+@keyframes landing-tip {
+  0%,
+  100% {
+    translate: -50% 0;
+  }
+  50% {
+    translate: -50% -4px;
+  }
+}
+
+.landing-chips {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  margin-top: clamp(58px, 8vw, 90px);
+}
+
+.landing-chip-row {
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.landing-chip-track {
+  display: flex;
+  width: max-content;
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  animation: landing-marquee 34s linear infinite;
+}
+
+.landing-chip-row-reverse .landing-chip-track {
+  animation-direction: reverse;
+  animation-duration: 40s;
+}
+
+.landing-chips:hover .landing-chip-track {
+  animation-play-state: paused;
+}
+
+.landing-chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  margin-inline-end: 10px;
+  padding: 11px 20px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--pill);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.landing-chip svg {
+  flex: none;
+  color: var(--chip-color);
+}
+
+@keyframes landing-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* The duplicated chips sit toward the reading start. In RTL that is the left
+   side, so the track has to drift right to bring the second copy in. */
+@keyframes landing-marquee-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+
+[dir="rtl"] .landing-chip-track {
+  animation-name: landing-marquee-rtl;
+}
+
+.fb-home [id] {
+  scroll-margin-top: 24px;
+}
+
+.fb-home .fb-modes {
+  margin-top: clamp(36px, 5vw, 64px);
+  gap: 18px;
+  border: 0;
+}
+
+.fb-home .fb-mode {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: clamp(24px, 3vw, 38px);
+  box-shadow: var(--shadow-card);
+}
+
+.fb-home .fb-mode + .fb-mode {
+  border-inline-start: 1px solid var(--hairline);
+}
+
+.fb-home .fb-mode h2 {
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.fb-home .fb-mode li {
+  line-height: 1.85;
+}
+
+.fb-home .fb-mode-label {
+  font-size: 0.74rem;
+}
+
+.fb-home .fb-section-title {
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.fb-home .fb-section-sub {
+  font-size: 0.95rem;
+  line-height: 1.9;
+}
+
+.fb-home .fb-board-links {
+  gap: 10px;
+  border-top: 0;
+}
+
+.fb-home .fb-board-link {
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 16px 20px;
+}
+
+.fb-home .fb-board-link:hover {
+  border-color: var(--hairline-strong);
+  background: var(--surface);
+  padding-inline: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+@media (max-width: 900px) {
+  .landing-headline {
+    font-size: clamp(1.5rem, 5.4vw, 3rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .landing-nav-wrap .nav-inner {
+    height: 62px;
+  }
+
+  .landing-hero {
+    padding-top: 36px;
+    padding-bottom: 44px;
+  }
+
+  .landing-badge {
+    padding: 8px 18px;
+    font-size: 0.8rem;
+  }
+
+  .landing-headline {
+    font-size: clamp(1.5rem, 7.4vw, 2.8rem);
+    line-height: 1.45;
+  }
+
+  .landing-claim {
+    margin-top: 24px;
+  }
+
+  .landing-claim-bar {
+    padding: 7px 7px 7px 14px;
+  }
+
+  .landing-claim-origin,
+  .landing-claim-field input,
+  .landing-type-hint {
+    font-size: 0.9rem;
+  }
+
+  .landing-claim-field input {
+    height: 46px;
+  }
+
+  .landing-claim-btn {
+    height: 46px;
+    padding: 0 18px;
+    font-size: 0.86rem;
+  }
+
+  .landing-chips {
+    margin-top: 62px;
+  }
+
+  .landing-chip {
+    padding: 9px 16px;
+    font-size: 0.84rem;
+  }
+
+  .landing-cta {
+    height: 32px;
+    padding: 0 14px;
+    font-size: 0.78rem;
+  }
+
+  .fb-home .fb-section-title {
+    font-size: 1.9rem;
+  }
+
+  .fb-home .fb-section-sub {
+    font-size: 1rem;
+  }
+
+  .fb-home .fb-mode {
+    padding: 22px;
+  }
+
+  .fb-home .fb-mode h2 {
+    font-size: 1.3rem;
+  }
+
+  .fb-home .fb-mode li {
+    font-size: 0.94rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .landing-cta {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .landing-announce {
+    padding: 10px 14px;
+    font-size: 0.8rem;
+  }
+
+  .landing-hero-inner {
+    padding-inline: 18px;
+  }
+
+  .landing-claim-tip {
+    left: 50%;
+  }
+
+  .fb-home .fb-modes {
+    gap: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-word {
+    animation: none;
+    transform: none;
+    opacity: 0;
+  }
+
+  .landing-word:first-child {
+    opacity: 1;
+  }
+
+  .landing-chip-row {
+    display: flex;
+    justify-content: center;
+  }
+
+  .landing-chip-track {
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: none;
+  }
+
+  .landing-chip[aria-hidden="true"] {
+    display: none;
+  }
+
+  .landing-chip {
+    margin: 4px 5px;
+  }
+
+  .landing-claim-ring::before {
+    animation: none;
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .landing-type-hint {
+    animation: none;
+    width: 9.6ch;
+  }
+
+  .landing-type-hint::after,
+  .landing-claim-tip {
+    animation: none;
   }
 }

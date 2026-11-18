@@ -28,21 +28,29 @@ const METHOD_LABELS: Record<"phone" | "email" | "clerk", [string, string]> = {
 export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer; admin: boolean }) {
   const t = useT();
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-  const links = viewer
+  const links = isHome
     ? [
-        { href: "/feed", label: t("بردها", "Boards") },
-        { href: "/requests", label: t("نوشته‌های من", "Your posts") },
-        { href: "/workspace", label: t("پنل شرکت", "Workspace") },
+        { href: "#how", label: t("چطور کار می‌کنه", "How it works") },
+        { href: "#boards", label: t("بردها", "Boards") },
+        ...(viewer ? [{ href: "/workspace", label: t("پنل شرکت", "Workspace") }] : []),
       ]
-    : [{ href: "/feed", label: t("بردها", "Boards") }];
+    : viewer
+      ? [
+          { href: "/feed", label: t("بردها", "Boards") },
+          { href: "/requests", label: t("نوشته‌های من", "Your posts") },
+          { href: "/workspace", label: t("پنل شرکت", "Workspace") },
+        ]
+      : [{ href: "/feed", label: t("بردها", "Boards") }];
 
   function isActive(href: string): boolean {
+    if (href.startsWith("#")) return false;
     return pathname === href || pathname.startsWith(`${href}/`);
   }
 
@@ -114,7 +122,15 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
   }
 
   return (
-    <header className="site-nav">
+    <header className={`site-nav ${isHome ? "landing-nav-wrap" : ""}`}>
+      {isHome ? (
+        <Link href="#account" className="landing-announce">
+          <span>{t("۷ روز استفاده رایگان از همه امکانات", "7 days of every feature, free")}</span>
+          <span className="landing-announce-arrow" aria-hidden="true">
+            {t("←", "→")}
+          </span>
+        </Link>
+      ) : null}
       <div className="nav-inner">
         <Link href="/" className="nav-brand" aria-label={t("صفحه اصلی وسا", "Vasa home")}>
           <BrandMark className="nav-mark" />
@@ -211,9 +227,16 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
               ) : null}
             </div>
           ) : (
-            <Link href="/?next=/feed#account" className="fb-link fb-login-inline">
-              {t("ورود", "Log in")}
-            </Link>
+            <>
+              <Link href="/?next=/feed#account" className="fb-link fb-login-inline">
+                {t("ورود", "Log in")}
+              </Link>
+              {isHome ? (
+                <Link href="#account" className="landing-cta">
+                  {t("شروع رایگان", "Start free")}
+                </Link>
+              ) : null}
+            </>
           )}
           <button
             ref={menuButtonRef}
