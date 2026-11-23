@@ -547,9 +547,16 @@ export async function createChangelogEntry(input: {
 
     if (ids.length > 0) {
       const valid = await tx
-        .select({ id: posts.id })
-        .from(posts)
-        .where(and(inArray(posts.id, ids), eq(posts.type, "feedback")));
+        .update(posts)
+        .set({ status: "shipped", updatedAt: new Date() })
+        .where(
+          and(
+            inArray(posts.id, ids),
+            eq(posts.type, "feedback"),
+            input.companyId ? eq(posts.companyId, input.companyId) : undefined,
+          ),
+        )
+        .returning({ id: posts.id });
 
       if (valid.length > 0) {
         await tx

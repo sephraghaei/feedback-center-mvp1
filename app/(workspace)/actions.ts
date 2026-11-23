@@ -3,10 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { and, eq, inArray } from "drizzle-orm";
 import { addCompanyMember, updateCompany } from "@/lib/companies";
-import { getDb } from "@/lib/db";
-import { posts } from "@/lib/db/schema";
 import { FEEDBACK_STATUSES } from "@/lib/feedback/constants";
 import {
   PostError,
@@ -15,13 +12,17 @@ import {
   isUuid,
   setPostStatus,
 } from "@/lib/feedback/posts";
+import { safeNext } from "@/lib/feedback/viewer";
+import { localizeError } from "@/lib/i18n/errors";
+import type { Locale } from "@/lib/i18n/locale";
+import { getLocale } from "@/lib/i18n/server";
 import { getWorkspaceContext, WORKSPACE_COMPANY_COOKIE } from "@/lib/workspace";
 
 type Result = { ok: true } | { ok: false; error: string };
 
-function message(error: unknown): string {
-  if (error instanceof PostError) return error.message;
-  return "That action could not be completed. Try again.";
+function message(error: unknown, locale: Locale): string {
+  if (error instanceof PostError) return localizeError(error.message, locale);
+  return localizeError("That action could not be completed. Try again.", locale);
 }
 
 function canManage(role: string, admin: boolean): boolean {
@@ -50,7 +51,7 @@ export async function switchWorkspaceCompany(formData: FormData): Promise<void> 
 export async function workspaceStatusAction(formData: FormData): Promise<void> {
   const postId = String(formData.get("postId") ?? "");
   const status = String(formData.get("status") ?? "");
-  const back = String(formData.get("back") ?? "/workspace/feedback");
+  const back = safeNext(String(formData.get("back") ?? "/workspace/feedback"));
 
   const context = await getWorkspaceContext();
   if (!context) redirect("/workspace");
@@ -78,10 +79,11 @@ export async function publishUpdateAction(input: {
   body: string;
   postIds: string[];
 }): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  const locale = await getLocale();
   const context = await getWorkspaceContext();
-  if (!context) return { ok: false, error: "Open the workspace to publish updates." };
+  if (!context) return { ok: false, error: localizeError("Open the workspace to publish updates.", locale) };
   if (!canManage(context.role, context.admin)) {
-    return { ok: false, error: "Only company owners and admins can publish updates." };
+    return { ok: false, error: localizeError("Only company owners and admins can publish updates.", locale) };
   }
 
   try {
@@ -93,19 +95,6 @@ export async function publishUpdateAction(input: {
       postIds,
     });
 
-    if (postIds.length > 0) {
-      await getDb()
-        .update(posts)
-        .set({ status: "shipped", updatedAt: new Date() })
-        .where(
-          and(
-            inArray(posts.id, postIds),
-            eq(posts.companyId, context.company.id),
-            eq(posts.type, "feedback"),
-          ),
-        );
-    }
-
     revalidatePath("/workspace/updates");
     revalidatePath("/workspace/feedback");
     revalidatePath("/workspace/roadmap");
@@ -113,7 +102,7 @@ export async function publishUpdateAction(input: {
     revalidatePath(`/c/${context.company.slug}/roadmap`);
     return { ok: true, id };
   } catch (error) {
-    return { ok: false, error: message(error) };
+    return { ok: false, error: message(error, locale) };
   }
 }
 
@@ -123,10 +112,11 @@ export async function saveCompanySettingsAction(input: {
   website: string;
   accent: string;
 }): Promise<Result> {
+  const locale = await getLocale();
   const context = await getWorkspaceContext();
-  if (!context) return { ok: false, error: "Open the workspace to edit settings." };
+  if (!context) return { ok: false, error: localizeError("Open the workspace to edit settings.", locale) };
   if (!canManage(context.role, context.admin)) {
-    return { ok: false, error: "Only company owners and admins can change settings." };
+    return { ok: false, error: localizeError("Only company owners and admins can change settings.", locale) };
   }
 
   try {
@@ -136,15 +126,16 @@ export async function saveCompanySettingsAction(input: {
     revalidatePath(`/c/${context.company.slug}`);
     return { ok: true };
   } catch (error) {
-    return { ok: false, error: message(error) };
+    return { ok: false, error: message(error, locale) };
   }
 }
 
 export async function addMemberAction(email: string): Promise<Result> {
+  const locale = await getLocale();
   const context = await getWorkspaceContext();
-  if (!context) return { ok: false, error: "Open the workspace to invite teammates." };
+  if (!context) return { ok: false, error: localizeError("Open the workspace to invite teammates.", locale) };
   if (!canManage(context.role, context.admin)) {
-    return { ok: false, error: "Only company owners and admins can add teammates." };
+    return { ok: false, error: localizeError("Only company owners and admins can add teammates.", locale) };
   }
 
   try {
@@ -152,6 +143,6 @@ export async function addMemberAction(email: string): Promise<Result> {
     revalidatePath("/workspace/team");
     return { ok: true };
   } catch (error) {
-    return { ok: false, error: message(error) };
+    return { ok: false, error: message(error, locale) };
   }
 }

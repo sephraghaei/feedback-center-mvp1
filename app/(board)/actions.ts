@@ -11,7 +11,9 @@ import {
   isUuid,
   setPostStatus,
 } from "@/lib/feedback/posts";
-import { getViewer, isAdminRequest } from "@/lib/feedback/viewer";
+import { getViewer, isAdminRequest, safeNext } from "@/lib/feedback/viewer";
+import { localizeError } from "@/lib/i18n/errors";
+import { getLocale } from "@/lib/i18n/server";
 
 type SubmitResult =
   | { ok: true; id: string }
@@ -21,13 +23,14 @@ export async function submitFeedbackAction(
   slug: string,
   input: { kind: string; title: string; body: string },
 ): Promise<SubmitResult> {
+  const locale = await getLocale();
   const viewer = await getViewer();
   if (!viewer) {
-    return { ok: false, error: "Sign in to post feedback.", signIn: true };
+    return { ok: false, error: localizeError("Log in first to post feedback.", locale), signIn: true };
   }
 
   const company = await getCompanyBySlug(slug);
-  if (!company) return { ok: false, error: "That board could not be found." };
+  if (!company) return { ok: false, error: localizeError("That board could not be found.", locale) };
 
   try {
     const id = await createPost({
@@ -47,7 +50,10 @@ export async function submitFeedbackAction(
   } catch (error) {
     return {
       ok: false,
-      error: error instanceof PostError ? error.message : "Could not save your feedback.",
+      error: localizeError(
+        error instanceof PostError ? error.message : "Could not save your feedback.",
+        locale,
+      ),
     };
   }
 }
@@ -56,7 +62,7 @@ export async function updateFeedbackStatusAction(formData: FormData): Promise<vo
   const slug = String(formData.get("slug") ?? "");
   const postId = String(formData.get("postId") ?? "");
   const status = String(formData.get("status") ?? "");
-  const back = String(formData.get("back") ?? `/c/${slug}`);
+  const back = safeNext(String(formData.get("back") ?? `/c/${slug}`));
 
   const viewer = await getViewer();
   if (!viewer) redirect(`/?next=${encodeURIComponent(back)}#account`);

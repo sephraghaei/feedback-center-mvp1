@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import { getDb } from "./db";
 import { profiles, users, type ProfileRow } from "./db/schema";
 import type { Profile } from "./profile";
@@ -41,8 +41,43 @@ export async function ensureUserByEmail(email: string): Promise<string> {
   return user.id;
 }
 
-export async function ensureUserByClerkId(clerkId: string, email?: string | null): Promise<string> {
+/**
+ * Links a Clerk user to a row in `users`. `resolveEmail` is only called when the
+ * row is new or still has no email, so teammates can be invited by email and
+ * older email accounts are reused instead of duplicated.
+ */
+export async function ensureUserByClerkId(
+  clerkId: string,
+  resolveEmail?: () => Promise<string | null | undefined>,
+): Promise<string> {
   const db = getDb();
+  const readEmail = async () => (await resolveEmail?.())?.trim().toLowerCase() || null;
+
+  const [linked] = await db
+    .select({ id: users.id, email: users.email })
+    .from(users)
+    .where(eq(users.clerkId, clerkId))
+    .limit(1);
+  if (linked) {
+    if (!linked.email && resolveEmail) {
+      const email = await readEmail();
+      if (email) {
+        await db
+          .update(users)
+          .set({ email, updatedAt: new Date() })
+          .where(
+            and(
+              eq(users.id, linked.id),
+              isNull(users.email),
+              sql`not exists (select 1 from ${users} as taken where taken.email = ${email})`,
+            ),
+          );
+      }
+    }
+    return linked.id;
+  }
+
+  const email = await readEmail();
   if (email) {
     const [existing] = await db
       .select({ id: users.id, clerkId: users.clerkId })
