@@ -123,14 +123,6 @@ export default function FeedbackHeader({ viewer, admin }: { viewer: HeaderViewer
 
   return (
     <header className={`site-nav ${isHome ? "landing-nav-wrap" : ""}`}>
-      {isHome ? (
-        <Link href="#account" className="landing-announce">
-          <span>{t("۷ روز استفاده رایگان از همه امکانات", "7 days of every feature, free")}</span>
-          <span className="landing-announce-arrow" aria-hidden="true">
-            {t("←", "→")}
-          </span>
-        </Link>
-      ) : null}
       <div className="nav-inner">
         <Link href="/" className="nav-brand" aria-label={t("صفحه اصلی وسا", "Vasa home")}>
           <BrandMark className="nav-mark" />
