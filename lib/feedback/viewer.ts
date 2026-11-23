@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -31,6 +31,14 @@ function maskContact(phone: string | null, email: string | null): string | null 
   return null;
 }
 
+export async function clerkEmail(): Promise<string | null> {
+  try {
+    return (await currentUser())?.primaryEmailAddress?.emailAddress ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export const getViewer = cache(async (): Promise<Viewer | null> => {
   const store = await cookies();
   const session = readSession(store.get(SESSION_COOKIE)?.value);
@@ -41,7 +49,7 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
   if (!userId) {
     const clerk = await auth();
     if (clerk.userId) {
-      userId = await ensureUserByClerkId(clerk.userId);
+      userId = await ensureUserByClerkId(clerk.userId, clerkEmail);
       method = "clerk";
     }
   }
@@ -98,6 +106,14 @@ export async function requireAdminActor(): Promise<Viewer | null> {
 }
 
 export function safeNext(value: string | undefined | null): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/";
-  return value;
+  if (!value || !value.startsWith("/")) return "/";
+  const base = "http://local.invalid";
+  try {
+    const url = new URL(value, base);
+    const path = `${url.pathname}${url.search}${url.hash}`;
+    if (url.origin !== base || path.startsWith("//")) return "/";
+    return path;
+  } catch {
+    return "/";
+  }
 }

@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { withApiLogging } from "@/lib/api-logger";
+import { clerkEmail } from "@/lib/feedback/viewer";
 import { localizeError } from "@/lib/i18n/errors";
 import { getLocale } from "@/lib/i18n/server";
 import { validateProfile } from "@/lib/profile";
@@ -51,7 +52,7 @@ export const POST = withApiLogging("/api/auth/profile", async (request, _context
     ? session.phone
       ? await ensureUserByPhone(session.phone)
       : await ensureUserByEmail(session.email ?? "")
-    : await ensureUserByClerkId(clerkId as string);
+    : await ensureUserByClerkId(clerkId as string, clerkEmail);
   await saveProfile(userId, result.profile);
 
   const response = NextResponse.json({ ok: true, profile: result.profile });

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import { getDb } from "./db";
 import { profiles, users, type ProfileRow } from "./db/schema";
 import type { Profile } from "./profile";
@@ -41,19 +41,64 @@ export async function ensureUserByEmail(email: string): Promise<string> {
   return user.id;
 }
 
-export async function ensureUserByClerkId(clerkId: string, email?: string | null): Promise<string> {
+/**
+ * Links a Clerk user to a row in `users`. `resolveEmail` is only called when the
+ * row is new or has never had an email (an admin-cleared email stays cleared), so teammates can be invited by email and
+ * older email accounts are reused instead of duplicated.
+ */
+export async function ensureUserByClerkId(
+  clerkId: string,
+  resolveEmail?: () => Promise<string | null | undefined>,
+): Promise<string> {
   const db = getDb();
+  const readEmail = async () => (await resolveEmail?.())?.trim().toLowerCase() || null;
+
+  const [linked] = await db
+    .select({ id: users.id, email: users.email, createdAt: users.createdAt, updatedAt: users.updatedAt })
+    .from(users)
+    .where(eq(users.clerkId, clerkId))
+    .limit(1);
+  if (linked) {
+    const neverEdited = linked.updatedAt.getTime() === linked.createdAt.getTime();
+    if (!linked.email && neverEdited && resolveEmail) {
+      const email = await readEmail();
+      if (email) {
+        await db
+          .update(users)
+          .set({ email, updatedAt: new Date() })
+          .where(
+            and(
+              eq(users.id, linked.id),
+              isNull(users.email),
+              eq(users.updatedAt, users.createdAt),
+              sql`not exists (select 1 from ${users} as taken where taken.email = ${email})`,
+            ),
+          );
+      }
+    }
+    return linked.id;
+  }
+
+  const email = await readEmail();
   if (email) {
     const [existing] = await db
       .select({ id: users.id, clerkId: users.clerkId })
       .from(users)
       .where(eq(users.email, email))
       .limit(1);
+    if (existing && !existing.clerkId) {
+      const [claimed] = await db
+        .update(users)
+        .set({ clerkId, updatedAt: new Date() })
+        .where(and(eq(users.id, existing.id), isNull(users.clerkId)))
+        .returning({ id: users.id });
+      if (claimed) return claimed.id;
+    }
     if (existing) {
-      if (!existing.clerkId) {
-        await db.update(users).set({ clerkId, updatedAt: new Date() }).where(eq(users.id, existing.id));
-      }
-      return existing.id;
+      await db.insert(users).values({ clerkId }).onConflictDoNothing({ target: users.clerkId });
+      const [user] = await db.select({ id: users.id }).from(users).where(eq(users.clerkId, clerkId)).limit(1);
+      if (!user) throw new Error("Could not create or find the user");
+      return user.id;
     }
   }
   await db.insert(users).values({ clerkId, email: email ?? null }).onConflictDoNothing({ target: users.clerkId });
