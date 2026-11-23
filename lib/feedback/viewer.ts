@@ -106,6 +106,13 @@ export async function requireAdminActor(): Promise<Viewer | null> {
 }
 
 export function safeNext(value: string | undefined | null): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/";
-  return value;
+  if (!value || !value.startsWith("/")) return "/";
+  const base = "http://local.invalid";
+  try {
+    const url = new URL(value, base);
+    if (url.origin !== base) return "/";
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return "/";
+  }
 }
