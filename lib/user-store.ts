@@ -43,7 +43,7 @@ export async function ensureUserByEmail(email: string): Promise<string> {
 
 /**
  * Links a Clerk user to a row in `users`. `resolveEmail` is only called when the
- * row is new or still has no email, so teammates can be invited by email and
+ * row is new or has never had an email (an admin-cleared email stays cleared), so teammates can be invited by email and
  * older email accounts are reused instead of duplicated.
  */
 export async function ensureUserByClerkId(
@@ -54,12 +54,13 @@ export async function ensureUserByClerkId(
   const readEmail = async () => (await resolveEmail?.())?.trim().toLowerCase() || null;
 
   const [linked] = await db
-    .select({ id: users.id, email: users.email })
+    .select({ id: users.id, email: users.email, createdAt: users.createdAt, updatedAt: users.updatedAt })
     .from(users)
     .where(eq(users.clerkId, clerkId))
     .limit(1);
   if (linked) {
-    if (!linked.email && resolveEmail) {
+    const neverEdited = linked.updatedAt.getTime() === linked.createdAt.getTime();
+    if (!linked.email && neverEdited && resolveEmail) {
       const email = await readEmail();
       if (email) {
         await db
@@ -69,6 +70,7 @@ export async function ensureUserByClerkId(
             and(
               eq(users.id, linked.id),
               isNull(users.email),
+              eq(users.updatedAt, users.createdAt),
               sql`not exists (select 1 from ${users} as taken where taken.email = ${email})`,
             ),
           );
