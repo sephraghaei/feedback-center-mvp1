@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "black-project",
+  "name": "feedback-center-mvp1",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-10-28",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
