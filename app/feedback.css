@@ -6937,33 +6937,6 @@ a.fb-product-name:hover {
   color: rgba(255, 255, 255, 0.6);
 }
 
-.landing-announce {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 18px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: 0.88rem;
-  font-weight: 600;
-  line-height: 1.4;
-  text-decoration: none;
-  transition: filter 0.18s ease;
-}
-
-.landing-announce:hover {
-  filter: brightness(1.05);
-}
-
-.landing-announce-arrow {
-  transition: translate 0.18s ease;
-}
-
-.landing-announce:hover .landing-announce-arrow {
-  translate: -2px 0;
-}
-
 .landing-cta {
   display: inline-flex;
   align-items: center;
@@ -7281,11 +7254,6 @@ a.fb-product-name:hover {
 }
 
 @media (max-width: 560px) {
-  .landing-announce {
-    padding: 10px 14px;
-    font-size: 0.8rem;
-  }
-
   .landing-hero-inner {
     padding-inline: 18px;
   }
