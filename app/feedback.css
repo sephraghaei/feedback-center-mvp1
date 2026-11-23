@@ -7056,26 +7056,6 @@ a.fb-product-name:hover {
   margin-top: 0.04em;
 }
 
-.landing-word-stage {
-  display: inline-grid;
-  overflow: hidden;
-  padding: 0.05em 0.14em 0.09em;
-  margin-inline: -0.14em;
-  vertical-align: baseline;
-  line-height: inherit;
-}
-
-.landing-word {
-  grid-area: 1 / 1;
-  justify-self: center;
-  white-space: nowrap;
-  opacity: 0;
-  transform: translateY(108%);
-  animation: landing-word-cycle 26.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-  animation-delay: var(--word-delay, 0s);
-  will-change: transform, opacity;
-}
-
 .landing-word-key {
   display: inline-block;
   padding: 0.01em 0.16em 0.05em;
@@ -7084,176 +7064,9 @@ a.fb-product-name:hover {
   color: var(--word-color);
 }
 
-@keyframes landing-word-cycle {
-  0% {
-    transform: translateY(108%);
-    opacity: 0;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  1.2% {
-    transform: translateY(0);
-    opacity: 1;
-    animation-timing-function: linear;
-  }
-  14.6% {
-    transform: translateY(0);
-    opacity: 1;
-    animation-timing-function: cubic-bezier(0.55, 0, 0.35, 1);
-  }
-  15.9%,
-  100% {
-    transform: translateY(-108%);
-    opacity: 0;
-  }
-}
-
 :root[data-theme="dark"] .landing-word-key {
   background: color-mix(in srgb, var(--word-color) 26%, transparent);
   color: color-mix(in srgb, var(--word-color) 42%, #ffffff);
-}
-
-@property --claim-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-
-.landing-claim {
-  position: relative;
-  isolation: isolate;
-  width: min(100%, 580px);
-  margin-top: clamp(26px, 4vw, 40px);
-  padding: 2px;
-  border-radius: var(--pill);
-  background: color-mix(in srgb, var(--accent) 16%, var(--hairline));
-  transition: box-shadow 0.18s ease;
-}
-
-.landing-claim:focus-within {
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
-}
-
-.landing-claim-ring {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  overflow: hidden;
-  box-shadow: 0 18px 40px -34px color-mix(in srgb, var(--accent) 55%, transparent);
-}
-
-.landing-claim-ring::before {
-  content: "";
-  position: absolute;
-  inset: -120%;
-  background: conic-gradient(
-    from var(--claim-angle),
-    transparent 0deg,
-    transparent 300deg,
-    var(--accent) 348deg,
-    transparent 360deg
-  );
-  animation: landing-claim-spin 5.5s linear infinite;
-}
-
-@keyframes landing-claim-spin {
-  to {
-    --claim-angle: 360deg;
-  }
-}
-
-.landing-claim-bar {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 8px 8px 20px;
-  border-radius: inherit;
-  background: var(--surface);
-  direction: ltr;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hairline) 70%, transparent);
-}
-
-.landing-claim-origin {
-  flex: none;
-  color: var(--ink-3);
-  font-size: 0.98rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.4;
-}
-
-.landing-claim-field {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-}
-
-.landing-claim-field input {
-  width: 100%;
-  height: 52px;
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  outline: 0;
-  direction: ltr;
-}
-
-.landing-type-hint {
-  position: absolute;
-  inset-block: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  width: 0;
-  overflow: hidden;
-  color: var(--ink-4);
-  font-size: 1rem;
-  font-weight: 500;
-  white-space: nowrap;
-  pointer-events: none;
-  animation: landing-type 8s linear infinite;
-}
-
-.landing-type-hint::after {
-  content: "";
-  flex: none;
-  width: 1.5px;
-  height: 1.15em;
-  margin-left: 2px;
-  border-radius: 1px;
-  background: var(--accent);
-  animation: landing-caret 1s steps(2, jump-none) infinite;
-}
-
-.landing-claim-field input:not(:placeholder-shown) + .landing-type-hint,
-.landing-claim-field:focus-within .landing-type-hint {
-  display: none;
-}
-
-@keyframes landing-type {
-  0% {
-    width: 0;
-  }
-  6% {
-    width: 0;
-    animation-timing-function: steps(9, end);
-  }
-  18% {
-    width: 9.6ch;
-  }
-  62% {
-    width: 9.6ch;
-  }
-  66%,
-  100% {
-    width: 0;
-  }
 }
 
 @keyframes landing-caret {
@@ -7266,99 +7079,50 @@ a.fb-product-name:hover {
   }
 }
 
-.landing-claim-btn {
-  flex: none;
+.landing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: clamp(26px, 4vw, 40px);
+}
+
+.landing-action {
+  display: inline-flex;
+  align-items: center;
   height: 52px;
   padding: 0 26px;
-  border: 0;
+  border: 1px solid var(--hairline-strong);
   border-radius: var(--pill);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-family: inherit;
+  background: var(--surface);
+  color: var(--ink);
   font-size: 0.95rem;
   font-weight: 700;
+  text-decoration: none;
   white-space: nowrap;
-  cursor: pointer;
   transition: filter 0.18s ease, translate 0.18s ease;
 }
 
-.landing-claim-btn:hover {
+.landing-action-primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.landing-action:hover {
   filter: brightness(1.05);
   translate: 0 -1px;
 }
 
-.landing-claim-btn:active {
-  translate: 0 0;
-}
-
-.landing-claim-tip {
-  position: absolute;
-  top: calc(100% + 16px);
-  left: 24%;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 16px;
-  border-radius: var(--pill);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: 0.82rem;
-  font-weight: 700;
-  line-height: 1.3;
-  white-space: nowrap;
-  pointer-events: none;
-  translate: -50% 0;
-  animation: landing-tip 3.2s ease-in-out infinite;
-}
-
-.landing-claim-tip svg {
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  color: var(--accent);
-  translate: -50% 0;
-}
-
-@keyframes landing-tip {
-  0%,
-  100% {
-    translate: -50% 0;
-  }
-  50% {
-    translate: -50% -4px;
-  }
-}
-
 .landing-chips {
-  display: grid;
-  gap: 12px;
-  width: 100%;
-  margin-top: clamp(58px, 8vw, 90px);
-}
-
-.landing-chip-row {
-  width: 100%;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-}
-
-.landing-chip-track {
   display: flex;
-  width: max-content;
-  margin: 0;
-  padding: 0.25rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 880px;
+  padding: 0;
   list-style: none;
-  animation: landing-marquee 34s linear infinite;
-}
-
-.landing-chip-row-reverse .landing-chip-track {
-  animation-direction: reverse;
-  animation-duration: 40s;
-}
-
-.landing-chips:hover .landing-chip-track {
-  animation-play-state: paused;
+  margin-top: clamp(58px, 8vw, 90px);
 }
 
 .landing-chip {
@@ -7366,7 +7130,6 @@ a.fb-product-name:hover {
   flex: none;
   align-items: center;
   gap: 8px;
-  margin-inline-end: 10px;
   padding: 11px 20px;
   border: 1px solid var(--hairline);
   border-radius: var(--pill);
@@ -7381,30 +7144,6 @@ a.fb-product-name:hover {
 .landing-chip svg {
   flex: none;
   color: var(--chip-color);
-}
-
-@keyframes landing-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* The duplicated chips sit toward the reading start. In RTL that is the left
-   side, so the track has to drift right to bring the second copy in. */
-@keyframes landing-marquee-rtl {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(50%);
-  }
-}
-
-[dir="rtl"] .landing-chip-track {
-  animation-name: landing-marquee-rtl;
 }
 
 .fb-home [id] {
@@ -7499,30 +7238,6 @@ a.fb-product-name:hover {
     line-height: 1.45;
   }
 
-  .landing-claim {
-    margin-top: 24px;
-  }
-
-  .landing-claim-bar {
-    padding: 7px 7px 7px 14px;
-  }
-
-  .landing-claim-origin,
-  .landing-claim-field input,
-  .landing-type-hint {
-    font-size: 0.9rem;
-  }
-
-  .landing-claim-field input {
-    height: 46px;
-  }
-
-  .landing-claim-btn {
-    height: 46px;
-    padding: 0 18px;
-    font-size: 0.86rem;
-  }
-
   .landing-chips {
     margin-top: 62px;
   }
@@ -7575,58 +7290,7 @@ a.fb-product-name:hover {
     padding-inline: 18px;
   }
 
-  .landing-claim-tip {
-    left: 50%;
-  }
-
   .fb-home .fb-modes {
     gap: 12px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .landing-word {
-    animation: none;
-    transform: none;
-    opacity: 0;
-  }
-
-  .landing-word:first-child {
-    opacity: 1;
-  }
-
-  .landing-chip-row {
-    display: flex;
-    justify-content: center;
-  }
-
-  .landing-chip-track {
-    width: auto;
-    flex-wrap: wrap;
-    justify-content: center;
-    animation: none;
-  }
-
-  .landing-chip[aria-hidden="true"] {
-    display: none;
-  }
-
-  .landing-chip {
-    margin: 4px 5px;
-  }
-
-  .landing-claim-ring::before {
-    animation: none;
-    background: color-mix(in srgb, var(--accent) 45%, transparent);
-  }
-
-  .landing-type-hint {
-    animation: none;
-    width: 9.6ch;
-  }
-
-  .landing-type-hint::after,
-  .landing-claim-tip {
-    animation: none;
   }
 }
