@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     // Cloudflare Workers cannot run sharp/libvips, so image optimization is off.
     unoptimized: true,
   },
+  experimental: {
+    agentUpgrade: "security",
+  },
 };
 
 export default nextConfig;
