@@ -84,11 +84,19 @@ export async function ensureUserByClerkId(
       .from(users)
       .where(eq(users.email, email))
       .limit(1);
+    if (existing && !existing.clerkId) {
+      const [claimed] = await db
+        .update(users)
+        .set({ clerkId, updatedAt: new Date() })
+        .where(and(eq(users.id, existing.id), isNull(users.clerkId)))
+        .returning({ id: users.id });
+      if (claimed) return claimed.id;
+    }
     if (existing) {
-      if (!existing.clerkId) {
-        await db.update(users).set({ clerkId, updatedAt: new Date() }).where(eq(users.id, existing.id));
-      }
-      return existing.id;
+      await db.insert(users).values({ clerkId }).onConflictDoNothing({ target: users.clerkId });
+      const [user] = await db.select({ id: users.id }).from(users).where(eq(users.clerkId, clerkId)).limit(1);
+      if (!user) throw new Error("Could not create or find the user");
+      return user.id;
     }
   }
   await db.insert(users).values({ clerkId, email: email ?? null }).onConflictDoNothing({ target: users.clerkId });
