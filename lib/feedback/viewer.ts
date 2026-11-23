@@ -110,8 +110,9 @@ export function safeNext(value: string | undefined | null): string {
   const base = "http://local.invalid";
   try {
     const url = new URL(value, base);
-    if (url.origin !== base) return "/";
-    return `${url.pathname}${url.search}${url.hash}`;
+    const path = `${url.pathname}${url.search}${url.hash}`;
+    if (url.origin !== base || path.startsWith("//")) return "/";
+    return path;
   } catch {
     return "/";
   }
